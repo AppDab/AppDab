@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Export an archive (.xcarchive) to a distributable package (.ipa)
  
@@ -24,3 +25,4 @@ public func exportArchive(archivePath: String? = nil, exportPath: String = ".", 
     ActionsEnvironment.logger.trace("The exported archive is here: \(exportedArchivePath)")
     ActionsEnvironment.values.ipaPath = exportedArchivePath
 }
+#endif

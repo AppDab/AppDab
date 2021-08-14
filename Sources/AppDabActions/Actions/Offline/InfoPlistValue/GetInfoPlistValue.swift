@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Get a value for a key in an Info.plist
  
@@ -15,3 +16,4 @@ public func getInfoPlistValue<T>(forKey key: String, infoPlistPath: String? = ni
     ActionsEnvironment.logger.info("👍 Got Info.plist value: \(value)")
     return value
 }
+#endif

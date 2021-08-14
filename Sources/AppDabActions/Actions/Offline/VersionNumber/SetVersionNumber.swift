@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Set the version number for a project
  
@@ -13,3 +14,4 @@ public func setVersionNumber(_ version: String, xcodeProjPath: String? = nil) th
     let output = try ActionsEnvironment.shell.run(command, at: path)
     ActionsEnvironment.logger.info("📔 Output from agvtool:\n\(output)")
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Build and archive (.xcarchive) a scheme in a project
  
@@ -24,3 +25,4 @@ public func buildAndArchive(xcodeProjPath: String? = nil, schemeName: String? = 
     ActionsEnvironment.logger.trace("The archive is here: \(archivePath)")
     ActionsEnvironment.values.xcarchivePath = archivePath
 }
+#endif

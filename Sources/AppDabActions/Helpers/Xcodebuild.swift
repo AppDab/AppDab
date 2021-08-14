@@ -1,5 +1,6 @@
 import Foundation
 
+#if os(macOS)
 internal protocol XcodebuildProtocol {
     func findXcodeProject(at path: String) throws -> String
     func findSchemeName(at path: String) throws -> String
@@ -55,3 +56,4 @@ public enum XcodebuildError: ActionError, Equatable {
         }
     }
 }
+#endif

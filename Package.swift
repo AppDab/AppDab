@@ -28,7 +28,7 @@ let package = Package(
                 "CertificateSigningRequest",
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "XcbeautifyLib", package: "xcbeautify"),
-                .product(name: "xchtmlreportcore", package: "XCTestHTMLReport"),
+                .product(name: "xchtmlreportcore", package: "XCTestHTMLReport", condition: .when(platforms: [.macOS, .macCatalyst])),
             ]),
         .testTarget(
             name: "AppDabActionsTests",

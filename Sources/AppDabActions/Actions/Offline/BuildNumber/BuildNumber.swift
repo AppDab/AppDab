@@ -1,5 +1,6 @@
 import Foundation
 
+#if os(macOS)
 /// A representation of a future build number. It could either an exact build number or the number of commits on the current Git branch.
 public enum BuildNumber: ExpressibleByStringLiteral {
     public typealias StringLiteralType = String
@@ -27,3 +28,4 @@ public enum BuildNumber: ExpressibleByStringLiteral {
         }
     }
 }
+#endif

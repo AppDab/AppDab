@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Increment the build number for a project
  
@@ -12,3 +13,4 @@ public func incrementBuildNumber(xcodeProjPath: String? = nil) throws {
     let output = try ActionsEnvironment.shell.run(command, at: path)
     ActionsEnvironment.logger.info("📔 Output from agvtool:\n\(output)")
 }
+#endif

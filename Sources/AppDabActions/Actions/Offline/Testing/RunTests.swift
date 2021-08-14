@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Run tests for a scheme in a project
  
@@ -23,3 +24,4 @@ public func runTests(xcodeProjPath: String? = nil, schemeName: String? = nil) th
     try ActionsEnvironment.writeStringFile(html, reportPath)
     ActionsEnvironment.logger.info("🎉 Test finished running. The report is here: \(reportPath)")
 }
+#endif

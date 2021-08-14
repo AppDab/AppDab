@@ -1,5 +1,6 @@
 import Foundation
 
+#if os(macOS)
 internal protocol InfoPlistProtocol {
     func findInfoPlist() throws -> String
     func loadInfoPlist(at path: String) throws -> NSMutableDictionary
@@ -53,3 +54,4 @@ public enum InfoPlistError: ActionError, Equatable {
         }
     }
 }
+#endif

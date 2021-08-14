@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Get the current build number for a project
  
@@ -14,3 +15,4 @@ public func getBuildNumber(xcodeProjPath: String? = nil) throws -> String {
     ActionsEnvironment.logger.info("👍 Got build number: \(output)")
     return output
 }
+#endif

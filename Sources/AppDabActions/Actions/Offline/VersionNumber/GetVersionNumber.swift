@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Get the current version number for a project
  
@@ -14,3 +15,4 @@ public func getVersionNumber(xcodeProjPath: String? = nil) throws -> String {
     ActionsEnvironment.logger.info("👍 Got version number: \(output)")
     return output
 }
+#endif
