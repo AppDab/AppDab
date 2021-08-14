@@ -1,3 +1,4 @@
+#if os(macOS)
 import Bagbutik
 import CertificateSigningRequest
 import Foundation
@@ -314,3 +315,4 @@ extension Data {
         return self.map { String(format: "%02hhx", $0) }.joined()
     }
 }
+#endif

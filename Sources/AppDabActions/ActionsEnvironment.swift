@@ -2,7 +2,9 @@ import Bagbutik
 import Foundation
 import Logging
 import XcbeautifyLib
+#if os(macOS)
 import XCTestHTMLReportCore
+#endif
 
 public enum ActionsEnvironment {
     // MARK: - Logger
@@ -31,10 +33,12 @@ public enum ActionsEnvironment {
     // MARK: - Internal
 
     internal static var fileManager: FileManagerProtocol = FileManager.default
+    #if os(macOS)
     internal static var infoPlist: InfoPlistProtocol = InfoPlist()
     internal static var shell: ShellProtocol = Shell()
     internal static var terminal: TerminalProtocol = Terminal()
     internal static var xcodebuild: XcodebuildProtocol = Xcodebuild()
+    #endif
 
     internal static var getCurrentDate: () -> Date = { Date() }
     internal static var parseXcodebuildOutput: (String, Bool) -> String? = Parser().parse(line:colored:)
@@ -42,9 +46,11 @@ public enum ActionsEnvironment {
         try contents.write(toFile: path, atomically: true, encoding: .utf8)
     }
 
+    #if os(macOS)
     internal static var generateTestResultHtmlReport: (_ xcresultPath: String) -> String = { xcresultPath in
         Summary(resultPaths: [xcresultPath], renderingMode: .inline).generatedHtmlReport()
     }
+    #endif
 }
 
 public struct AuthConfig {

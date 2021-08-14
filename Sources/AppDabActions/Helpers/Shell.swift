@@ -12,6 +12,7 @@ internal extension ShellProtocol {
     }
 }
 
+#if os(macOS)
 internal struct Shell: ShellProtocol {
     internal func run(_ command: String, at path: String, outputCallback: ((String) -> Void)?) throws -> String {
         let augmentedCommand: String
@@ -78,6 +79,7 @@ internal struct Shell: ShellProtocol {
         return String(data: outputData, encoding: .utf8) ?? ""
     }
 }
+#endif
 
 internal struct ShellError: Error {
     let terminationStatus: Int32

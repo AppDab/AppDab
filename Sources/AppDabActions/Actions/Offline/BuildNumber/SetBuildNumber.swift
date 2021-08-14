@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Set the build number for a project
  
@@ -14,3 +15,4 @@ public func setBuildNumber(_ buildNumber: BuildNumber, xcodeProjPath: String? = 
     let output = try ActionsEnvironment.shell.run(command, at: path)
     ActionsEnvironment.logger.info("📔 Output from agvtool:\n\(output)")
 }
+#endif

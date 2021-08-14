@@ -1,3 +1,4 @@
+#if os(macOS)
 /**
  Increment the version number for a project
  
@@ -15,3 +16,4 @@ public func incrementVersionNumber(_ versionBump: VersionBump, xcodeProjPath: St
     let output = try ActionsEnvironment.shell.run(command, at: path)
     ActionsEnvironment.logger.info("📔 Output from agvtool:\n\(output)")
 }
+#endif
