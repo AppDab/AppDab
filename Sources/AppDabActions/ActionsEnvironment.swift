@@ -23,7 +23,7 @@ public enum ActionsEnvironment {
     }
 
     public static func configureService(authConfig: AuthConfig) throws {
-        _service = try BagbutikService(keyId: authConfig.keyId, issuerId: authConfig.issuerId, privateKeyPath: authConfig.privateKeyPath)
+        _service = try BagbutikService(keyId: authConfig.keyId, issuerId: authConfig.issuerId, privateKey: authConfig.privateKey)
     }
 
     // MARK: - Shared values
@@ -56,12 +56,12 @@ public enum ActionsEnvironment {
 public struct AuthConfig {
     public let keyId: String
     public let issuerId: String
-    public let privateKeyPath: String
+    public let privateKey: String
 
-    public init(keyId: String, issuerId: String, privateKeyPath: String) {
+    public init(keyId: String, issuerId: String, privateKey: String) {
         self.keyId = keyId
         self.issuerId = issuerId
-        self.privateKeyPath = privateKeyPath
+        self.privateKey = privateKey
     }
 }
 
