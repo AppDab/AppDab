@@ -12,6 +12,8 @@ jobs:
   build-apple:
     name: Build and Test
     runs-on: macos-11
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_13.0.app
     steps:
     - uses: actions/checkout@v2
     - name: Build
@@ -24,7 +26,6 @@ jobs:
       uses: paambaati/codeclimate-action@v2.7.5
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        DEVELOPER_DIR: /Applications/Xcode_13.0.app
       with:
         coverageCommand: ls
         coverageLocations: coverage.lcov:lcov
