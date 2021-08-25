@@ -1,17 +1,17 @@
 import Bagbutik
 
-public func disableDevice(withId id: String) throws {
+public func disableDevice(withId id: String) async throws {
     let requestBody = DeviceUpdateRequest(data: .init(id: id, attributes: .init(status: .disabled)))
     ActionsEnvironment.logger.info("🚀 Disabling device with id '\(id)'...")
-    _ = try ActionsEnvironment.service.requestSynchronously(.updateDevice(id: id, requestBody: requestBody)).get()
+    _ = try await ActionsEnvironment.service.request(.updateDevice(id: id, requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Device disabled")
 }
 
-public func disableDevice(named name: String) throws {
+public func disableDevice(named name: String) async throws {
     ActionsEnvironment.logger.info("🚀 Fetching device by name '\(name)'...")
-    guard let device = try ActionsEnvironment.service.requestSynchronously(.listDevices(filters: [.name([name])])).get().data.first else {
+    guard let device = try await ActionsEnvironment.service.request(.listDevices(filters: [.name([name])])).data.first else {
         throw DeviceError.deviceWitNameNotFound
     }
     ActionsEnvironment.logger.info("👍 Found device named '\(name)' (\(device.id))")
-    try disableDevice(withId: device.id)
+    try await disableDevice(withId: device.id)
 }

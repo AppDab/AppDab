@@ -3,18 +3,18 @@ import Bagbutik
 import CertificateSigningRequest
 import Foundation
 
-public func ensureCertificate(type: ListCertificates.Filter.CertificateType = .distribution, policy: EnsureCertificatePolicy = .readOnly, encryptedCertificatesFolderPath: String? = nil, certificateSerialNumber requestedCertificateSerialNumber: String? = nil) throws {
+public func ensureCertificate(type: ListCertificates.Filter.CertificateType = .distribution, policy: EnsureCertificatePolicy = .readOnly, encryptedCertificatesFolderPath: String? = nil, certificateSerialNumber requestedCertificateSerialNumber: String? = nil) async throws {
     ActionsEnvironment.logger.info("⏬ Fetching list of available certificates...")
     var filters: [ListCertificates.Filter] = [.certificateType([type])]
     if let requestedCertificateSerialNumber = requestedCertificateSerialNumber {
         filters.append(.serialNumber([requestedCertificateSerialNumber]))
     }
-    let certificates = try ActionsEnvironment.service.requestSynchronously(.listCertificates(filters: filters)).get().data
+    let certificates = try await ActionsEnvironment.service.request(.listCertificates(filters: filters)).data
     let encryptedCertificatesFolderPath = encryptedCertificatesFolderPath ?? "Signing"
     guard certificates.count > 0 else {
         ActionsEnvironment.logger.info("🤷🏼 No certificates found online")
         if ActionsEnvironment.terminal.getBoolInput(question: "Should we create a new certificate?") {
-            try maybeCreateCertificate(type: type, policy: policy, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
+            try await maybeCreateCertificate(type: type, policy: policy, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
         } else {
             ActionsEnvironment.logger.info("🙅🏼 Won't create a new certificate")
         }
@@ -35,7 +35,7 @@ public func ensureCertificate(type: ListCertificates.Filter.CertificateType = .d
             try exportIdentity(certificateSerialNumber: serialNumber, identity: identity, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
         } else {
             ActionsEnvironment.logger.info("⏰ The certificate expired \(Formatters.dateTimeFormatter.string(from: expirationDate))")
-            try maybeCreateCertificate(type: type, policy: policy, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
+            try await maybeCreateCertificate(type: type, policy: policy, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
         }
     } else {
         ActionsEnvironment.logger.info("🤷🏼 No certificates found in Keychain")
@@ -70,7 +70,7 @@ public func ensureCertificate(type: ListCertificates.Filter.CertificateType = .d
                     ActionsEnvironment.logger.info("🤷🏼 No saved certificate and private key found")
                 }
                 if ActionsEnvironment.terminal.getBoolInput(question: "Should we create a new certificate?") {
-                    try maybeCreateCertificate(type: type, policy: policy, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
+                    try await maybeCreateCertificate(type: type, policy: policy, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
                 } else {
                     ActionsEnvironment.logger.info("🙅🏼 Won't create a new certificate")
                 }
@@ -151,7 +151,7 @@ private func saveCertificateInKeychain(certificate: Certificate, encryptedCertif
     }
 }
 
-private func maybeCreateCertificate(type: ListCertificates.Filter.CertificateType, policy: EnsureCertificatePolicy, encryptedCertificatesFolderPath: String) throws {
+private func maybeCreateCertificate(type: ListCertificates.Filter.CertificateType, policy: EnsureCertificatePolicy, encryptedCertificatesFolderPath: String) async throws {
     if policy == .readOnly {
         ActionsEnvironment.logger.error("🚫 In read-only mode, so no new certificate is created")
     } else {
@@ -187,7 +187,7 @@ private func maybeCreateCertificate(type: ListCertificates.Filter.CertificateTyp
             csrContent: csrString
         )))
         ActionsEnvironment.logger.info("🚀 Creating certificate online...")
-        let certificate = try ActionsEnvironment.service.requestSynchronously(.createCertificate(requestBody: requestBody)).get().data
+        let certificate = try await ActionsEnvironment.service.request(.createCertificate(requestBody: requestBody)).data
         ActionsEnvironment.logger.info("👍 Certificate created online")
         let saveCertificateResult = try saveCertificateInKeychain(certificate: certificate, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
         switch saveCertificateResult {
