@@ -4,7 +4,7 @@ import Foundation
 import XCTest
 
 final class DeleteBundleIdTests: ActionsTestCase {
-    func testDeleteBundleId_WithIdentifier() {
+    func testDeleteBundleId_WithIdentifier() async {
         let fetchResponse = BundleIdsResponse(
             data: [.init(id: "some-id", links: .init(self: ""),
                          attributes: .init(identifier: "com.example.Awesome", name: "Awesome", platform: .universal, seedId: "F65JDS54"),
@@ -13,7 +13,7 @@ final class DeleteBundleIdTests: ActionsTestCase {
         let deleteResponse = EmptyResponse()
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .delete))
-        try! deleteBundleId(withIdentifier: "com.example.Awesome")
+        try! await deleteBundleId(withIdentifier: "com.example.Awesome")
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching bundle ID by identifier 'com.example.Awesome'..."),
             Log(level: .info, message: "👍 Found bundle ID 'com.example.Awesome' (some-id)"),
@@ -22,10 +22,10 @@ final class DeleteBundleIdTests: ActionsTestCase {
         ])
     }
 
-    func testDeleteBundleId_WithIdentifier_NotFound() {
+    func testDeleteBundleId_WithIdentifier_NotFound() async {
         let fetchResponse = BundleIdsResponse(data: [], links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
-        XCTAssertThrowsError(try deleteBundleId(withIdentifier: "com.example.Awesome")) { error in
+        await XCTAssertAsyncThrowsError(try await deleteBundleId(withIdentifier: "com.example.Awesome")) { error in
             XCTAssertEqual(error as! BundleIdError, .bundleIdWithIdentifierNotFound("com.example.Awesome"))
         }
         XCTAssertEqual(mockLogHandler.logs, [
@@ -33,7 +33,7 @@ final class DeleteBundleIdTests: ActionsTestCase {
         ])
     }
 
-    func testDeleteBundleId_WithName() {
+    func testDeleteBundleId_WithName() async {
         let fetchResponse = BundleIdsResponse(
             data: [.init(id: "some-id", links: .init(self: ""),
                          attributes: .init(identifier: "com.example.Awesome", name: "Awesome", platform: .universal, seedId: "F65JDS54"),
@@ -42,7 +42,7 @@ final class DeleteBundleIdTests: ActionsTestCase {
         let deleteResponse = EmptyResponse()
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .delete))
-        try! deleteBundleId(named: "Awesome")
+        try! await deleteBundleId(named: "Awesome")
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching bundle ID by name 'Awesome'..."),
             Log(level: .info, message: "👍 Found bundle ID named 'Awesome' (some-id)"),
@@ -51,10 +51,10 @@ final class DeleteBundleIdTests: ActionsTestCase {
         ])
     }
 
-    func testDeleteBundleId_WithName_NotFound() {
+    func testDeleteBundleId_WithName_NotFound() async {
         let fetchResponse = BundleIdsResponse(data: [], links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
-        XCTAssertThrowsError(try deleteBundleId(named: "Awesome")) { error in
+        await XCTAssertAsyncThrowsError(try await deleteBundleId(named: "Awesome")) { error in
             XCTAssertEqual(error as! BundleIdError, .bundleIdWithNameNotFound("Awesome"))
         }
         XCTAssertEqual(mockLogHandler.logs, [
