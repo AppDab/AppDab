@@ -92,7 +92,7 @@ struct Endpoint: Hashable {
     let method: HTTPMethod
 }
 
-class MockBagbutikService: PatchedBagbutikServiceProtocol {
+class MockBagbutikService: BagbutikServiceProtocol {
     private(set) var responseDataByEndpoint = [Endpoint: Data]()
     private(set) var errorResponseDataByEndpoint = [Endpoint: Data]()
     private(set) var requestBodyJsons = [String]()
@@ -123,10 +123,6 @@ class MockBagbutikService: PatchedBagbutikServiceProtocol {
         case .failure(let error):
             completionHandler(.failure(error))
         }
-    }
-
-    func requestSynchronously<T>(_ request: Request<T, ErrorResponse>) -> Result<T, Error> where T: Decodable {
-        return decodeResponseData(for: request)
     }
 
     func request<T>(_ request: Request<T, ErrorResponse>) async throws -> T where T: Decodable {

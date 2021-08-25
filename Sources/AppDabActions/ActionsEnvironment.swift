@@ -13,8 +13,8 @@ public enum ActionsEnvironment {
 
     // MARK: - Service
 
-    internal static var _service: PatchedBagbutikServiceProtocol?
-    public static var service: PatchedBagbutikServiceProtocol {
+    internal static var _service: BagbutikServiceProtocol?
+    public static var service: BagbutikServiceProtocol {
         guard let service = _service
         else {
             fatalError("Service not configured. Call \(String(describing: ActionsEnvironment.configureService(authConfig:)))")
@@ -63,8 +63,4 @@ public struct AuthConfig {
         self.issuerId = issuerId
         self.privateKey = privateKey
     }
-}
-
-public protocol PatchedBagbutikServiceProtocol: BagbutikServiceProtocol {
-    func requestSynchronously<T: Decodable>(_ request: Request<T, ErrorResponse>) -> Result<T, Error>
 }
