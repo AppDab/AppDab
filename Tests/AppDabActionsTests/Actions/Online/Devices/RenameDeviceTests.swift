@@ -4,7 +4,7 @@ import Foundation
 import XCTest
 
 final class RenameDeviceTests: ActionsTestCase {
-    func testRenameDevice() {
+    func testRenameDevice() async {
         let fetchResponse = DevicesResponse(
             data: [.init(id: "some-id", links: .init(self: ""))],
             links: .init(self: ""))
@@ -13,7 +13,7 @@ final class RenameDeviceTests: ActionsTestCase {
             links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/devices", method: .get))
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/devices/some-id", method: .patch))
-        try! renameDevice(named: "Some name", newName: "Some new name")
+        try! await renameDevice(named: "Some name", newName: "Some new name")
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching device by name 'Some name'..."),
             Log(level: .info, message: "👍 Found device named 'Some name' (some-id)"),
@@ -22,10 +22,10 @@ final class RenameDeviceTests: ActionsTestCase {
         ])
     }
     
-    func testEnalbeDevice_WithName_NotFound() {
+    func testEnalbeDevice_WithName_NotFound() async {
         let fetchResponse = DevicesResponse(data: [], links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/devices", method: .get))
-        XCTAssertThrowsError(try renameDevice(named: "Some name", newName: "Some new name")) { error in
+        await XCTAssertAsyncThrowsError(try await renameDevice(named: "Some name", newName: "Some new name")) { error in
             XCTAssertEqual(error as! DeviceError, .deviceWitNameNotFound)
         }
         XCTAssertEqual(mockLogHandler.logs, [
