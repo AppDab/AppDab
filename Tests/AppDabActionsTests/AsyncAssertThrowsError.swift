@@ -1,5 +1,7 @@
 import XCTest
 
+// Inspired by: https://www.wwt.com/article/unit-testing-on-ios-with-async-await/
+
 extension XCTest {
     func XCTAssertAsyncThrowsError(
         _ expression: @autoclosure () async throws -> Void,
