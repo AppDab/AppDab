@@ -1,6 +1,8 @@
+import Bagbutik
 import XCTest
 
-// Inspired by: https://www.wwt.com/article/unit-testing-on-ios-with-async-await/
+// This is temporary until Apple releases support for async/await in XCTAssertThrowsError
+// Read more here: https://www.wwt.com/article/unit-testing-on-ios-with-async-await/
 
 extension XCTest {
     func XCTAssertAsyncThrowsError(
@@ -18,7 +20,7 @@ extension XCTest {
         }
     }
 
-    func XCTAssertAsyncThrowsError<T: Sendable>(
+    func XCTAssertAsyncThrowsError<T>(
         _ expression: @autoclosure () async throws -> T,
         _ message: @autoclosure () -> String = "",
         file: StaticString = #filePath,
@@ -32,5 +34,4 @@ extension XCTest {
             errorHandler(error)
         }
     }
-
 }

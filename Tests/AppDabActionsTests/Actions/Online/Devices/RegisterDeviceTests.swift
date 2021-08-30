@@ -10,7 +10,8 @@ final class RegisterDeviceTests: ActionsTestCase {
             links: .init(self: "")
         )
         mockBagbutikService.setResponse(response, for: Endpoint(path: "/v1/devices", method: .post))
-        try! await registerDevice(named: "iFun", platform: .iOS, udid: "some-udid")
+        let device = try! await registerDevice(named: "iFun", platform: .iOS, udid: "some-udid")
+        XCTAssertEqual(device, response.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Registering a new device called 'iFun' (some-udid) for iOS..."),
             Log(level: .info, message: "👍 Device registered"),
