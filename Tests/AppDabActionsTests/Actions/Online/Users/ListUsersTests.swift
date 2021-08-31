@@ -12,13 +12,13 @@ final class ListUserTests: ActionsTestCase {
         )
         mockBagbutikService.setResponse(response, for: Endpoint(path: "/v1/users", method: .get))
         let users = try! await listUsers()
+        XCTAssertEqual(users, response.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching list of users..."),
             Log(level: .info, message: "👍 Users fetched"),
             Log(level: .info, message: " ◦ Steve Jobs (sjobs@apple.com)"),
             Log(level: .info, message: " ◦ Scott Forstall (forstall@apple.com)"),
         ])
-        XCTAssertEqual(users, response.data)
     }
 }
 

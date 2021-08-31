@@ -17,7 +17,8 @@ final class RenameBundleIdTests: ActionsTestCase {
             links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .patch))
-        try! await renameBundleId(withIdentifier: "com.example.Awesome", newName: "MoreAwesome")
+        let bundleId = try! await renameBundleId(withIdentifier: "com.example.Awesome", newName: "MoreAwesome")
+        XCTAssertEqual(bundleId, updateResponse.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching bundle ID by identifier 'com.example.Awesome'..."),
             Log(level: .info, message: "👍 Found bundle ID 'com.example.Awesome' (some-id)"),
@@ -50,7 +51,8 @@ final class RenameBundleIdTests: ActionsTestCase {
             links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .patch))
-        try! await renameBundleId(named: "Awesome", newName: "MoreAwesome")
+        let bundleId = try! await renameBundleId(named: "Awesome", newName: "MoreAwesome")
+        XCTAssertEqual(bundleId, updateResponse.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching bundle ID by name 'Awesome'..."),
             Log(level: .info, message: "👍 Found bundle ID named 'Awesome' (some-id)"),

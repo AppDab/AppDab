@@ -13,7 +13,8 @@ final class RenameDeviceTests: ActionsTestCase {
             links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/devices", method: .get))
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/devices/some-id", method: .patch))
-        try! await renameDevice(named: "Some name", newName: "Some new name")
+        let device = try! await renameDevice(named: "Some name", newName: "Some new name")
+        XCTAssertEqual(device, updateResponse.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching device by name 'Some name'..."),
             Log(level: .info, message: "👍 Found device named 'Some name' (some-id)"),

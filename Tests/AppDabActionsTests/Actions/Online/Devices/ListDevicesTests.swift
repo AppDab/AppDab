@@ -11,14 +11,14 @@ final class ListDevicesTests: ActionsTestCase {
             links: .init(self: "")
         )
         mockBagbutikService.setResponse(response, for: Endpoint(path: "/v1/devices", method: .get))
-        let users = try! await listDevices()
+        let devices = try! await listDevices()
+        XCTAssertEqual(devices, response.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching list of devices..."),
             Log(level: .info, message: "👍 Devices fetched"),
             Log(level: .info, message: " ◦ 🟢 iFun (iPhone) - iphone-udid"),
             Log(level: .info, message: " ◦ 🔴 AndCheese (Mac) - mac-udid"),
         ])
-        XCTAssertEqual(users, response.data)
     }
 }
 
