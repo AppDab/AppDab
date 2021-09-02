@@ -3,7 +3,7 @@ import Bagbutik
 @discardableResult
 public func listDevices() async throws -> [Device] {
     ActionsEnvironment.logger.info("🚀 Fetching list of devices...")
-    let response = try await ActionsEnvironment.service.request(.listDevices())
+    let response = try await ActionsEnvironment.service.requestAllPages(.listDevices())
     ActionsEnvironment.logger.info("👍 Devices fetched")
     response.data.map(\.attributes).forEach { deviceAttributes in
         let enabledEmoji = deviceAttributes!.status == .enabled ? "🟢" : "🔴"
