@@ -107,26 +107,21 @@ class MockBagbutikService: BagbutikServiceProtocol {
         errorResponseDataByEndpoint[endpoint] = try! JSONEncoder().encode(errorResponse)
     }
 
-    func request<T>(_ request: Request<T, ErrorResponse>) -> AnyPublisher<T, Error> where T: Decodable {
-        switch decodeResponseData(for: request) {
-        case .success(let response):
-            return CurrentValueSubject<T, Error>(response).eraseToAnyPublisher()
-        case .failure(let error):
-            return Fail(error: error).eraseToAnyPublisher()
-        }
-    }
-
-    func request<T>(_ request: Request<T, ErrorResponse>, completionHandler: @escaping (Result<T, Error>) -> Void) where T: Decodable {
-        switch decodeResponseData(for: request) {
-        case .success(let response):
-            completionHandler(.success(response))
-        case .failure(let error):
-            completionHandler(.failure(error))
-        }
-    }
-
     func request<T>(_ request: Request<T, ErrorResponse>) async throws -> T where T: Decodable {
         return try decodeResponseData(for: request).get()
+    }
+    
+    func requestAllPages<T>(_ request: Request<T, ErrorResponse>) async throws -> (responses: [T], data: [T.Data]) where T : PagedResponse, T : Decodable {
+        let response = try decodeResponseData(for: request).get()
+        return (responses: [response], data: response.data)
+    }
+    
+    func requestNextPage<T>(for response: T) async throws -> T? where T : PagedResponse, T : Decodable {
+        return response
+    }
+    
+    func requestAllPages<T>(for response: T) async throws -> (responses: [T], data: [T.Data]) where T : PagedResponse, T : Decodable {
+        return (responses: [response], data: response.data)
     }
 
     private func decodeResponseData<T>(for request: Request<T, ErrorResponse>) -> Result<T, Error> where T: Decodable {
