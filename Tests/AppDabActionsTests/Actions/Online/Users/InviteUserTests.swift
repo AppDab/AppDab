@@ -41,7 +41,7 @@ final class InviteUserTests: ActionsTestCase {
             links: .init(self: "")
         )
         mockBagbutikService.setResponse(response, for: Endpoint(path: "/v1/userInvitations", method: .post))
-        let userInvitation = try! await inviteUser(email: "forstall@apple.com", firstName: "Scott", lastName: "Forstall", roles: [.readOnly], visibleAppIds: ["some-app-id"])
+        let userInvitation = try! await inviteUser(email: "forstall@apple.com", firstName: "Scott", lastName: "Forstall", roles: [.developer], visibleAppIds: ["some-app-id"])
         XCTAssertEqual(userInvitation, response.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Inviting user 'Scott Forstall' (forstall@apple.com)..."),
@@ -56,7 +56,7 @@ final class InviteUserTests: ActionsTestCase {
               "firstName" : "Scott",
               "lastName" : "Forstall",
               "roles" : [
-                "READ_ONLY"
+                "DEVELOPER"
               ],
               "provisioningAllowed" : false,
               "allAppsVisible" : false
