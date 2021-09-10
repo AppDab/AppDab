@@ -8,6 +8,7 @@ class ActionsTestCase: XCTestCase {
     var mockBagbutikService: MockBagbutikService!
     var mockFileManager: MockFileManager!
     var mockInfoPlist: MockInfoPlist!
+    var mockKeychain: MockKeychain!
     var mockLogHandler: MockLogHandler!
     var mockShell: MockShell!
     var mockTerminal: MockTerminal!
@@ -20,6 +21,7 @@ class ActionsTestCase: XCTestCase {
         case bagbutikService
         case fileManager
         case infoPlist
+        case keychain
         case logHandler
         case shell
         case terminal
@@ -42,6 +44,8 @@ class ActionsTestCase: XCTestCase {
         ActionsEnvironment.fileManager = mockFileManager
         mockInfoPlist = MockInfoPlist()
         ActionsEnvironment.infoPlist = mockInfoPlist
+        mockKeychain = MockKeychain()
+        ActionsEnvironment.keychain = mockKeychain
         mockLogHandler = MockLogHandler()
         ActionsEnvironment.logger = Logger(label: "Mock logger", factory: { _ in self.mockLogHandler })
         mockShell = MockShell()
@@ -180,6 +184,14 @@ class MockInfoPlist: InfoPlistProtocol {
 
     func saveInfoPlist(_ infoPlist: NSDictionary, at path: String) throws {
         savedInfoPlist = infoPlist
+    }
+}
+
+class MockKeychain: KeychainProtocol {
+    var addedCertificate: (certificate: SecCertificate, name: String)?
+    
+    func addCertificate(certificate: SecCertificate, named name: String) throws {
+        addedCertificate = (certificate: certificate, name: name)
     }
 }
 
