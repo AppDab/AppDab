@@ -1,7 +1,8 @@
+import CoreFoundation
 public enum CertificateError: ActionError, Equatable {
     case certificateWithSerialNumberNotFound(String)
     case certificateWithNameNotFound(String)
-    
+
     case errorReadingFromKeychain
     case privateKeyForCertificateNotFound
     case errorAddingCertificateToKeychain
@@ -36,6 +37,20 @@ public enum CertificateError: ActionError, Equatable {
             return "Could not create public key"
         case .errorCreatingSigningRequest:
             return "Could not create signing request"
+        }
+    }
+}
+
+public enum AddCertificateToKeychainError: ActionError, Equatable {
+    case invalidOnlineCertificateData
+    case errorAddingCertificateToKeychain(status: OSStatus)
+    
+    public var description: String {
+        switch self {
+        case .invalidOnlineCertificateData:
+            return "The certificate fetched from App Store Connect is incomplete"
+        case .errorAddingCertificateToKeychain(let status):
+            return "Unknown error occurred when adding certificate to Keychain (OSStatus: \(status))"
         }
     }
 }
