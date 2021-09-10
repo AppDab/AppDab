@@ -35,6 +35,7 @@ public enum ActionsEnvironment {
     internal static var fileManager: FileManagerProtocol = FileManager.default
     #if os(macOS)
     internal static var infoPlist: InfoPlistProtocol = InfoPlist()
+    internal static var keychain: KeychainProtocol = Keychain()
     internal static var shell: ShellProtocol = Shell()
     internal static var terminal: TerminalProtocol = Terminal()
     internal static var xcodebuild: XcodebuildProtocol = Xcodebuild()

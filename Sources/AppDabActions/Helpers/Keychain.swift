@@ -1,13 +1,29 @@
 import Foundation
 import Security
 
-internal struct Keychain {
+internal protocol KeychainProtocol {
+    func addCertificate(certificate: SecCertificate, named name: String) throws
+}
+
+internal struct Keychain: KeychainProtocol {
+    func addCertificate(certificate: SecCertificate, named name: String) throws {
+        let addquery: [String: Any] = [kSecClass as String: kSecClassCertificate,
+                                       kSecValueRef as String: certificate,
+                                       kSecAttrLabel as String: name]
+        let addStatus = SecItemAdd(addquery as CFDictionary, nil)
+        guard addStatus == errSecSuccess || addStatus == errSecDuplicateItem else {
+            throw AddCertificateToKeychainError.errorAddingCertificateToKeychain(status: addStatus)
+        }
+    }
+    
+    // MARK: - The following should not be used anymore
+    
     internal var secItemCopyMatching = SecItemCopyMatching
     internal var secItemAdd = SecItemAdd
     internal var secItemUpdate = SecItemUpdate
     internal var secPKCS12Import = SecPKCS12Import
     internal var dataLoader = Data.init(contentsOf:options:)
-
+    
     private static func getService(forSerialNumber serialNumber: String) -> String {
         return "AppDab certificate \(serialNumber)"
     }
