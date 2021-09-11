@@ -3,6 +3,8 @@ import Security
 
 internal protocol KeychainProtocol {
     func addCertificate(certificate: SecCertificate, named name: String) throws
+    func createPrivateKey(labeled label: String) throws -> SecKey
+    func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data)
 }
 
 internal struct Keychain: KeychainProtocol {
@@ -10,20 +12,51 @@ internal struct Keychain: KeychainProtocol {
         let addquery: [String: Any] = [kSecClass as String: kSecClassCertificate,
                                        kSecValueRef as String: certificate,
                                        kSecAttrLabel as String: name]
-        let addStatus = SecItemAdd(addquery as CFDictionary, nil)
+        let addStatus = secItemAdd(addquery as CFDictionary, nil)
         guard addStatus == errSecSuccess || addStatus == errSecDuplicateItem else {
             throw AddCertificateToKeychainError.errorAddingCertificateToKeychain(status: addStatus)
         }
     }
-    
-    // MARK: - The following should not be used anymore
-    
+
+    func createPrivateKey(labeled label: String) throws -> SecKey {
+        let tag = label.data(using: .utf8)!
+        let parameters: [String: Any] =
+            [kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
+             kSecAttrKeySizeInBits as String: 2048,
+             kSecAttrLabel as String: label,
+             kSecPrivateKeyAttrs as String: [
+                 kSecAttrIsPermanent as String: true,
+                 kSecAttrApplicationTag as String: tag,
+             ]]
+        var error: Unmanaged<CFError>?
+        guard let privateKey = secKeyCreateRandomKey(parameters as CFDictionary, &error) else {
+            throw error!.takeRetainedValue() as Error
+        }
+        return privateKey
+    }
+
+    func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data) {
+        guard let publicKey = secKeyCopyPublicKey(privateKey) else {
+            throw CreateCertificateError.errorCreatingPublicKey
+        }
+        var error: Unmanaged<CFError>?
+        guard let publicKeyData = secKeyCopyExternalRepresentation(publicKey, &error) else {
+            throw error!.takeRetainedValue() as Error
+        }
+        return (key: publicKey, data: publicKeyData as Data)
+    }
+
     internal var secItemCopyMatching = SecItemCopyMatching
     internal var secItemAdd = SecItemAdd
     internal var secItemUpdate = SecItemUpdate
+    internal var secKeyCreateRandomKey = SecKeyCreateRandomKey
+    internal var secKeyCopyPublicKey = SecKeyCopyPublicKey
+    internal var secKeyCopyExternalRepresentation = SecKeyCopyExternalRepresentation
     internal var secPKCS12Import = SecPKCS12Import
     internal var dataLoader = Data.init(contentsOf:options:)
-    
+
+    // MARK: - The following should not be used anymore
+
     private static func getService(forSerialNumber serialNumber: String) -> String {
         return "AppDab certificate \(serialNumber)"
     }
