@@ -11,7 +11,6 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
     func testAddCertificateToKeychain() {
         let certificate = Certificate(id: "some-id", links: .init(self: ""), attributes: .init(certificateContent: base64Certificate, name: "AppDabTest"))
         XCTAssertNoThrow(try addCertificateToKeychain(certificate: certificate))
-        XCTAssertEqual(mockKeychain.addedCertificate?.name, "AppDabTest")
     }
 
     func testAddCertificateToKeychain_MissingName() {
@@ -19,7 +18,6 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
         XCTAssertThrowsError(try addCertificateToKeychain(certificate: certificate)) { error in
             XCTAssertEqual(error as! AddCertificateToKeychainError, .invalidOnlineCertificateData)
         }
-        XCTAssertNil(mockKeychain.addedCertificate)
     }
 
     func testAddCertificateToKeychain_InvalidData() {
@@ -27,6 +25,13 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
         XCTAssertThrowsError(try addCertificateToKeychain(certificate: certificate)) { error in
             XCTAssertEqual(error as! AddCertificateToKeychainError, .invalidOnlineCertificateData)
         }
-        XCTAssertNil(mockKeychain.addedCertificate)
+    }
+    
+    func testAddCertificateToKeychain_KeychainError() {
+        mockKeychain.returnStatusForAdd = errSecParam
+        let certificate = Certificate(id: "some-id", links: .init(self: ""), attributes: .init(certificateContent: base64Certificate, name: "AppDabTest"))
+        XCTAssertThrowsError(try addCertificateToKeychain(certificate: certificate)) { error in
+            XCTAssertEqual(error as! AddCertificateToKeychainError, .errorAddingCertificateToKeychain(status: errSecParam))
+        }
     }
 }

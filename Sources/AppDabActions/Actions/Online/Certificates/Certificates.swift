@@ -159,27 +159,10 @@ private func maybeCreateCertificate(type: ListCertificates.Filter.CertificateTyp
             throw CertificateError.typeCantBeCreated
         }
         let label = "AppDab \(Date().timeIntervalSince1970)"
-        let tag = label.data(using: .utf8)!
-        let parameters: [String: Any] =
-            [kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
-             kSecAttrKeySizeInBits as String: 2048,
-             kSecAttrLabel as String: label,
-             kSecPrivateKeyAttrs as String: [
-                 kSecAttrIsPermanent as String: true,
-                 kSecAttrApplicationTag as String: tag,
-             ]]
-        var error: Unmanaged<CFError>?
-        guard let privateKey = SecKeyCreateRandomKey(parameters as CFDictionary, &error) else {
-            throw error!.takeRetainedValue() as Error
-        }
-        guard let publicKey = SecKeyCopyPublicKey(privateKey) else {
-            throw CertificateError.errorCreatingPublicKey
-        }
-        guard let publicKeyData = SecKeyCopyExternalRepresentation(publicKey, &error) else {
-            throw error!.takeRetainedValue() as Error
-        }
+        let privateKey = try Keychain().createPrivateKey(labeled: label)
+        let publicKey = try Keychain().createPublicKey(from: privateKey)
         let csr = CertificateSigningRequest()
-        guard let csrString = csr.buildCSRAndReturnString(publicKeyData as Data, privateKey: privateKey) else {
+        guard let csrString = csr.buildCSRAndReturnString(publicKey.data as Data, privateKey: privateKey) else {
             throw CertificateError.errorCreatingSigningRequest
         }
         let requestBody = CertificateCreateRequest(data: .init(attributes: .init(

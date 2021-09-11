@@ -54,3 +54,17 @@ public enum AddCertificateToKeychainError: ActionError, Equatable {
         }
     }
 }
+
+public enum CreateCertificateError: ActionError, Equatable {
+    case errorCreatingPublicKey
+    case errorCreatingSigningRequest
+    
+    public var description: String {
+        switch self {
+        case .errorCreatingPublicKey:
+            return "Could not create public key"
+        case .errorCreatingSigningRequest:
+            return "Could not create signing request"
+        }
+    }
+}
