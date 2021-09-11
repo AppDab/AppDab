@@ -68,17 +68,17 @@ class ActionsTestCase: XCTestCase {
         dependenciesToCheck.forEach { dependency in
             switch dependency {
             case .bagbutikService:
-                XCTAssertTrue(mockBagbutikService.allEndpointsCalled)
+                XCTAssertTrue(mockBagbutikService.allEndpointsCalled, "Not all mocked endpoints were called. If this is expected, add a call to skipTearDownCheck(for: .bagbutikService)")
             case .fileManager:
-                XCTAssertTrue(mockFileManager.allContentsOfDirectoryCalled)
+                XCTAssertTrue(mockFileManager.allContentsOfDirectoryCalled, "Not all mocked directories were listed. If this is expected, add a call to skipTearDownCheck(for: .fileManager)")
             case .infoPlist:
-                XCTAssertTrue(mockInfoPlist.findInfoPlistCalledIfSpecified)
-                XCTAssertTrue(mockInfoPlist.loadInfoPlistCalledIfSpecified)
+                XCTAssertTrue(mockInfoPlist.findInfoPlistCalledIfSpecified, "Not all mocked lookups for info.plists were called. If this is expected, add a call to skipTearDownCheck(for: .infoPlist)")
+                XCTAssertTrue(mockInfoPlist.loadInfoPlistCalledIfSpecified, "Not all mocked loadings of info.plists were called. If this is expected, add a call to skipTearDownCheck(for: .infoPlist)")
             case .shell:
-                XCTAssertTrue(mockShell.allCommandsCalled)
+                XCTAssertTrue(mockShell.allCommandsCalled, "Not all mocked calls were called. If this is expected, add a call to skipTearDownCheck(for: .shell)")
             case .xcodebuild:
-                XCTAssertTrue(mockXcodebuild.allFindXcodeProjectCalled)
-                XCTAssertTrue(mockXcodebuild.allFindSchemeNameCalled)
+                XCTAssertTrue(mockXcodebuild.allFindXcodeProjectCalled, "Not all mocked lookups for Xcode projects were called. If this is expected, add a call to skipTearDownCheck(for: .xcodebuild)")
+                XCTAssertTrue(mockXcodebuild.allFindSchemeNameCalled, "Not all mocked lookups for scheme names were called. If this is expected, add a call to skipTearDownCheck(for: .xcodebuild)")
             default:
                 break
             }
