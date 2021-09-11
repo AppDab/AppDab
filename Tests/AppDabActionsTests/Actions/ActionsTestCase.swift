@@ -114,17 +114,17 @@ class MockBagbutikService: BagbutikServiceProtocol {
     func request<T>(_ request: Request<T, ErrorResponse>) async throws -> T where T: Decodable {
         return try decodeResponseData(for: request).get()
     }
-    
-    func requestAllPages<T>(_ request: Request<T, ErrorResponse>) async throws -> (responses: [T], data: [T.Data]) where T : PagedResponse, T : Decodable {
+
+    func requestAllPages<T>(_ request: Request<T, ErrorResponse>) async throws -> (responses: [T], data: [T.Data]) where T: PagedResponse, T: Decodable {
         let response = try decodeResponseData(for: request).get()
         return (responses: [response], data: response.data)
     }
-    
-    func requestNextPage<T>(for response: T) async throws -> T? where T : PagedResponse, T : Decodable {
+
+    func requestNextPage<T>(for response: T) async throws -> T? where T: PagedResponse, T: Decodable {
         return response
     }
-    
-    func requestAllPages<T>(for response: T) async throws -> (responses: [T], data: [T.Data]) where T : PagedResponse, T : Decodable {
+
+    func requestAllPages<T>(for response: T) async throws -> (responses: [T], data: [T.Data]) where T: PagedResponse, T: Decodable {
         return (responses: [response], data: response.data)
     }
 
@@ -188,10 +188,65 @@ class MockInfoPlist: InfoPlistProtocol {
 }
 
 class MockKeychain: KeychainProtocol {
-    var addedCertificate: (certificate: SecCertificate, name: String)?
-    
+    // MARK: SecItemAdd
+
+    private(set) var parametersForAdd: [[String: Any]] = []
+    var returnStatusForAdd: OSStatus = errSecSuccess
+
+    // MARK: SecKeyCreateRandomKey
+
+    private(set) var parametersForCreateRandomKey: [[String: Any]] = []
+    var createRandomKeyShouldSucceed = true
+
+    // MARK: SecKeyCopyPublicKey
+
+    var publicKeyToReturn: SecKey?
+    var copyPublicKeyShouldSucceed = true
+
+    // MARK: SecKeyCopyExternalRepresentation
+
+    var copyPublicKeyDataShouldSucceed = true
+
+    lazy var keychain: Keychain = {
+        Keychain(secItemAdd: { parameters, _ in
+            self.parametersForAdd.append(parameters as! [String: Any])
+            return self.returnStatusForAdd
+        }, secKeyCreateRandomKey: { parameters, errorPointer in
+            self.parametersForCreateRandomKey.append(parameters as! [String: Any])
+            guard self.createRandomKeyShouldSucceed else {
+                let error = CFErrorCreate(nil, "SecKeyCreateRandomKey" as CFString, -1, nil)!
+                errorPointer?.initialize(to: Unmanaged.passRetained(error))
+                return nil
+            }
+            return SecKeyCreateRandomKey(parameters, errorPointer)
+        }, secKeyCopyPublicKey: { privateKey in
+            guard self.copyPublicKeyShouldSucceed else {
+                return nil
+            }
+            if let publicKeyToReturn = self.publicKeyToReturn {
+                return publicKeyToReturn
+            }
+            return SecKeyCopyPublicKey(privateKey)
+        }, secKeyCopyExternalRepresentation: { publicKey, errorPointer in
+            guard self.copyPublicKeyDataShouldSucceed else {
+                let error = CFErrorCreate(nil, "SecKeyCopyExternalRepresentation" as CFString, -1, nil)!
+                errorPointer?.initialize(to: Unmanaged.passRetained(error))
+                return nil
+            }
+            return SecKeyCopyExternalRepresentation(publicKey, errorPointer)
+        })
+    }()
+
     func addCertificate(certificate: SecCertificate, named name: String) throws {
-        addedCertificate = (certificate: certificate, name: name)
+        try keychain.addCertificate(certificate: certificate, named: name)
+    }
+
+    func createPrivateKey(labeled label: String) throws -> SecKey {
+        return try keychain.createPrivateKey(labeled: label)
+    }
+
+    func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data) {
+        return try keychain.createPublicKey(from: privateKey)
     }
 }
 
