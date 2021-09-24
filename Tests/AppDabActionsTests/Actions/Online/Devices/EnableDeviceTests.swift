@@ -23,7 +23,7 @@ final class EnableDeviceTests: ActionsTestCase {
         ])
     }
     
-    func testEnalbeDevice_WithName_NotFound() async {
+    func testEnableDevice_WithName_NotFound() async {
         let fetchResponse = DevicesResponse(data: [], links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/devices", method: .get))
         await XCTAssertAsyncThrowsError(try await enableDevice(named: "Some name")) { error in

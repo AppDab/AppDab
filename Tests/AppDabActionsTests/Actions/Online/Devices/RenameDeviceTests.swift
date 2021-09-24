@@ -23,7 +23,7 @@ final class RenameDeviceTests: ActionsTestCase {
         ])
     }
     
-    func testEnalbeDevice_WithName_NotFound() async {
+    func testRenameDevice_WithName_NotFound() async {
         let fetchResponse = DevicesResponse(data: [], links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/devices", method: .get))
         await XCTAssertAsyncThrowsError(try await renameDevice(named: "Some name", newName: "Some new name")) { error in
