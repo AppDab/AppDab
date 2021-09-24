@@ -23,7 +23,7 @@ final class DisableDeviceTests: ActionsTestCase {
         ])
     }
     
-    func testEnalbeDevice_WithName_NotFound() async {
+    func testDisableDevice_WithName_NotFound() async {
         let fetchResponse = DevicesResponse(data: [], links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/devices", method: .get))
         await XCTAssertAsyncThrowsError(try await disableDevice(named: "Some name")) { error in
