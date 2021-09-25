@@ -4,12 +4,22 @@ import Foundation
 import XCTest
 
 final class RevokeCertificateTests: ActionsTestCase {
+    lazy var fetchResponse = CertificatesResponse(
+        data: [.init(id: "some-id", links: .init(self: ""), attributes: .init(expirationDate: mockDate, name: "Apple Distribution: Steve Jobs", serialNumber: "SOMESERIALNUMBER"))],
+        links: .init(self: "")
+    )
+    let deleteResponse = EmptyResponse()
+    
+    func testRevokeCertificate_WithId() async {
+        mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/certificates/some-id", method: .delete))
+        try! await revokeCertificate(withId: "some-id")
+        XCTAssertEqual(mockLogHandler.logs, [
+            Log(level: .info, message: "🚀 Revoking certificate 'some-id'..."),
+            Log(level: .info, message: "👍 Certificate revoked"),
+        ])
+    }
+
     func testRevokeCertificate_WithSerialNumber() async {
-        let fetchResponse = CertificatesResponse(
-            data: [.init(id: "some-id", links: .init(self: ""), attributes: .init(expirationDate: mockDate, name: "Apple Distribution: Steve Jobs", serialNumber: "SOMESERIALNUMBER"))],
-            links: .init(self: "")
-        )
-        let deleteResponse = EmptyResponse()
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/certificates", method: .get))
         mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/certificates/some-id", method: .delete))
         try! await revokeCertificate(withSerialNumber: "SOMESERIALNUMBER")
@@ -33,11 +43,6 @@ final class RevokeCertificateTests: ActionsTestCase {
     }
 
     func testRevokeCertificate_WithName() async {
-        let fetchResponse = CertificatesResponse(
-            data: [.init(id: "some-id", links: .init(self: ""), attributes: .init(expirationDate: mockDate, name: "Apple Distribution: Steve Jobs", serialNumber: "SOMESERIALNUMBER"))],
-            links: .init(self: "")
-        )
-        let deleteResponse = EmptyResponse()
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/certificates", method: .get))
         mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/certificates/some-id", method: .delete))
         try! await revokeCertificate(named: "Apple Distribution: Steve Jobs")

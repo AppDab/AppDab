@@ -4,12 +4,23 @@ import Foundation
 import XCTest
 
 final class DisableDeviceTests: ActionsTestCase {
-    func testDisableDevice() async {
+    let updateResponse = DeviceResponse(
+        data: .init(id: "some-id", links: .init(self: "")),
+        links: .init(self: ""))
+    
+    func testDisableDevice_WithId() async {
+        mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/devices/some-id", method: .patch))
+        let device = try! await disableDevice(withId: "some-id")
+        XCTAssertEqual(device, updateResponse.data)
+        XCTAssertEqual(mockLogHandler.logs, [
+            Log(level: .info, message: "🚀 Disabling device with id 'some-id'..."),
+            Log(level: .info, message: "👍 Device disabled")
+        ])
+    }
+    
+    func testDisableDevice_WithName() async {
         let fetchResponse = DevicesResponse(
             data: [.init(id: "some-id", links: .init(self: ""))],
-            links: .init(self: ""))
-        let updateResponse = DeviceResponse(
-            data: .init(id: "some-id", links: .init(self: "")),
             links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/devices", method: .get))
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/devices/some-id", method: .patch))

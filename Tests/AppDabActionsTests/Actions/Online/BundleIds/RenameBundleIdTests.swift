@@ -4,17 +4,28 @@ import Foundation
 import XCTest
 
 final class RenameBundleIdTests: ActionsTestCase {
+    let fetchResponse = BundleIdsResponse(
+        data: [.init(id: "some-id", links: .init(self: ""),
+                     attributes: .init(identifier: "com.example.Awesome", name: "Awesome", platform: .universal, seedId: "F65JDS54"),
+                     relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil))],
+        links: .init(self: ""))
+    let updateResponse = BundleIdResponse(
+        data: .init(id: "some-id", links: .init(self: ""),
+                    attributes: .init(identifier: "com.example.Awesome", name: "MoreAwesome", platform: .universal, seedId: "F65JDS54"),
+                    relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil)),
+        links: .init(self: ""))
+    
+    func testRenameBundleId_WithId() async {
+        mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .patch))
+        let bundleId = try! await renameBundleId(withId: "some-id", newName: "MoreAwesome")
+        XCTAssertEqual(bundleId, updateResponse.data)
+        XCTAssertEqual(mockLogHandler.logs, [
+            Log(level: .info, message: "🚀 Renaming bundle ID 'some-id' to 'MoreAwesome'..."),
+            Log(level: .info, message: "👍 Bundle ID renamed"),
+        ])
+    }
+    
     func testRenameBundleId_WithIdentifier() async {
-        let fetchResponse = BundleIdsResponse(
-            data: [.init(id: "some-id", links: .init(self: ""),
-                         attributes: .init(identifier: "com.example.Awesome", name: "Awesome", platform: .universal, seedId: "F65JDS54"),
-                         relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil))],
-            links: .init(self: ""))
-        let updateResponse = BundleIdResponse(
-            data: .init(id: "some-id", links: .init(self: ""),
-                        attributes: .init(identifier: "com.example.Awesome", name: "MoreAwesome", platform: .universal, seedId: "F65JDS54"),
-                        relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil)),
-            links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .patch))
         let bundleId = try! await renameBundleId(withIdentifier: "com.example.Awesome", newName: "MoreAwesome")
@@ -39,16 +50,6 @@ final class RenameBundleIdTests: ActionsTestCase {
     }
     
     func testRenameBundleId_WithName() async {
-        let fetchResponse = BundleIdsResponse(
-            data: [.init(id: "some-id", links: .init(self: ""),
-                         attributes: .init(identifier: "com.example.Awesome", name: "Awesome", platform: .universal, seedId: "F65JDS54"),
-                         relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil))],
-            links: .init(self: ""))
-        let updateResponse = BundleIdResponse(
-            data: .init(id: "some-id", links: .init(self: ""),
-                        attributes: .init(identifier: "com.example.Awesome", name: "MoreAwesome", platform: .universal, seedId: "F65JDS54"),
-                        relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil)),
-            links: .init(self: ""))
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .patch))
         let bundleId = try! await renameBundleId(named: "Awesome", newName: "MoreAwesome")
