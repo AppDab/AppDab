@@ -4,13 +4,23 @@ import Foundation
 import XCTest
 
 final class DeleteBundleIdTests: ActionsTestCase {
+    let fetchResponse = BundleIdsResponse(
+        data: [.init(id: "some-id", links: .init(self: ""),
+                     attributes: .init(identifier: "com.example.Awesome", name: "Awesome", platform: .universal, seedId: "F65JDS54"),
+                     relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil))],
+        links: .init(self: ""))
+    let deleteResponse = EmptyResponse()
+    
+    func testDeleteBundleId_WithId() async {
+        mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .delete))
+        try! await deleteBundleId(withId: "some-id")
+        XCTAssertEqual(mockLogHandler.logs, [
+            Log(level: .info, message: "🚀 Deleting bundle ID 'some-id'..."),
+            Log(level: .info, message: "👍 Bundle ID deleted"),
+        ])
+    }
+    
     func testDeleteBundleId_WithIdentifier() async {
-        let fetchResponse = BundleIdsResponse(
-            data: [.init(id: "some-id", links: .init(self: ""),
-                         attributes: .init(identifier: "com.example.Awesome", name: "Awesome", platform: .universal, seedId: "F65JDS54"),
-                         relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil))],
-            links: .init(self: ""))
-        let deleteResponse = EmptyResponse()
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .delete))
         try! await deleteBundleId(withIdentifier: "com.example.Awesome")
@@ -34,12 +44,6 @@ final class DeleteBundleIdTests: ActionsTestCase {
     }
 
     func testDeleteBundleId_WithName() async {
-        let fetchResponse = BundleIdsResponse(
-            data: [.init(id: "some-id", links: .init(self: ""),
-                         attributes: .init(identifier: "com.example.Awesome", name: "Awesome", platform: .universal, seedId: "F65JDS54"),
-                         relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil))],
-            links: .init(self: ""))
-        let deleteResponse = EmptyResponse()
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .delete))
         try! await deleteBundleId(named: "Awesome")
