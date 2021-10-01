@@ -14,13 +14,14 @@ final class ListCertificatesTests: ActionsTestCase {
             links: .init(self: "")
         )
         mockBagbutikService.setResponse(response, for: Endpoint(path: "/v1/certificates", method: .get))
-        let certificates = try! await listCertificates()
-        XCTAssertEqual(certificates, response.data)
+        mockKeychain.serialNumbersForCertificatesInKeychain = ["SOMESERIALNUMBER"]
+        let certificatesAndStatus = try! await listCertificates()
+        XCTAssertEqual(certificatesAndStatus.map(\.certificate), response.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching list of certificates..."),
             Log(level: .info, message: "👍 Certificates fetched"),
-            Log(level: .info, message: " ◦ 🟢 Apple Distribution: Steve Jobs (SOMESERIALNUMBER) expires \(expirationDateInFutureString)"),
-            Log(level: .info, message: " ◦ 🔴 Apple Developer: Scott Forstall (ANOTHERSERIALNUMBER) expired \(expirationDateInPastString)"),
+            Log(level: .info, message: " ◦ 🟢 Apple Distribution: Steve Jobs (SOMESERIALNUMBER) in local Keychain, expires \(expirationDateInFutureString)"),
+            Log(level: .info, message: " ◦ 🔴 Apple Developer: Scott Forstall (ANOTHERSERIALNUMBER) NOT in local Keychain, expired \(expirationDateInPastString)"),
         ])
     }
 }
