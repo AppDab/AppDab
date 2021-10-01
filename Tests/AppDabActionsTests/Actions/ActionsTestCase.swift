@@ -206,6 +206,10 @@ class MockKeychain: KeychainProtocol {
     // MARK: SecKeyCopyExternalRepresentation
 
     var copyPublicKeyDataShouldSucceed = true
+    
+    // MARK: Certificates in Keychain
+    
+    var serialNumbersForCertificatesInKeychain: [String] = []
 
     lazy var keychain: Keychain = {
         Keychain(secItemAdd: { parameters, _ in
@@ -239,6 +243,12 @@ class MockKeychain: KeychainProtocol {
 
     func addCertificate(certificate: SecCertificate, named name: String) throws {
         try keychain.addCertificate(certificate: certificate, named: name)
+    }
+    
+    func hasCertificates(serialNumbers: [String]) throws -> [String : Bool] {
+        return serialNumbers.reduce(into: [:]) { result, serialNumber in
+            result[serialNumber] = serialNumbersForCertificatesInKeychain.contains(serialNumber)
+        }
     }
 
     func createPrivateKey(labeled label: String) throws -> SecKey {
