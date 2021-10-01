@@ -3,33 +3,57 @@ import Security
 
 internal protocol KeychainProtocol {
     func addCertificate(certificate: SecCertificate, named name: String) throws
+    func hasCertificates(serialNumbers: [String]) throws -> [String: Bool]
     func createPrivateKey(labeled label: String) throws -> SecKey
     func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data)
 }
 
 internal struct Keychain: KeychainProtocol {
     func addCertificate(certificate: SecCertificate, named name: String) throws {
-        let addquery: [String: Any] = [kSecClass as String: kSecClassCertificate,
-                                       kSecValueRef as String: certificate,
-                                       kSecAttrLabel as String: name]
-        let addStatus = secItemAdd(addquery as CFDictionary, nil)
+        let addquery: NSDictionary = [kSecClass: kSecClassCertificate,
+                                      kSecValueRef: certificate,
+                                      kSecAttrLabel: name]
+        let addStatus = secItemAdd(addquery, nil)
         guard addStatus == errSecSuccess || addStatus == errSecDuplicateItem else {
             throw AddCertificateToKeychainError.errorAddingCertificateToKeychain(status: addStatus)
         }
     }
 
+    func hasCertificates(serialNumbers: [String]) throws -> [String: Bool] {
+        var copyResult: CFTypeRef?
+        let statusCopyingIdentities = secItemCopyMatching([
+            kSecClass: kSecClassIdentity,
+            kSecMatchLimit: kSecMatchLimitAll,
+            kSecReturnRef: true,
+        ] as NSDictionary, &copyResult)
+        guard statusCopyingIdentities == errSecSuccess, let identities = copyResult as? [SecIdentity] else {
+            throw CertificateError.errorReadingFromKeychain
+        }
+        let serialNumbersInKeychain: [String] = try identities.compactMap { identity in
+            var certificate: SecCertificate?
+            let statusCopyingCertificate = secIdentityCopyCertificate(identity, &certificate)
+            guard statusCopyingCertificate == errSecSuccess, let certificate = certificate else {
+                throw KeychainError.errorReadingFromKeychain
+            }
+            return (secCertificateCopySerialNumberData(certificate, nil)! as Data).hexadecimalString.lowercased()
+        }
+        return serialNumbers.reduce(into: [:]) { result, serialNumber in
+            result[serialNumber] = serialNumbersInKeychain.contains(serialNumber.lowercased())
+        }
+    }
+
     func createPrivateKey(labeled label: String) throws -> SecKey {
         let tag = label.data(using: .utf8)!
-        let parameters: [String: Any] =
-            [kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
-             kSecAttrKeySizeInBits as String: 2048,
-             kSecAttrLabel as String: label,
-             kSecPrivateKeyAttrs as String: [
-                 kSecAttrIsPermanent as String: true,
-                 kSecAttrApplicationTag as String: tag,
+        let parameters: NSDictionary =
+            [kSecAttrKeyType: kSecAttrKeyTypeRSA,
+             kSecAttrKeySizeInBits: 2048,
+             kSecAttrLabel: label,
+             kSecPrivateKeyAttrs: [
+                 kSecAttrIsPermanent: true,
+                 kSecAttrApplicationTag: tag,
              ]]
         var error: Unmanaged<CFError>?
-        guard let privateKey = secKeyCreateRandomKey(parameters as CFDictionary, &error) else {
+        guard let privateKey = secKeyCreateRandomKey(parameters, &error) else {
             throw error!.takeRetainedValue() as Error
         }
         return privateKey
@@ -49,6 +73,8 @@ internal struct Keychain: KeychainProtocol {
     internal var secItemCopyMatching = SecItemCopyMatching
     internal var secItemAdd = SecItemAdd
     internal var secItemUpdate = SecItemUpdate
+    internal var secIdentityCopyCertificate = SecIdentityCopyCertificate
+    internal var secCertificateCopySerialNumberData = SecCertificateCopySerialNumberData
     internal var secKeyCreateRandomKey = SecKeyCreateRandomKey
     internal var secKeyCopyPublicKey = SecKeyCopyPublicKey
     internal var secKeyCopyExternalRepresentation = SecKeyCopyExternalRepresentation
@@ -62,17 +88,17 @@ internal struct Keychain: KeychainProtocol {
     }
 
     internal func readP12Passphrase(certificateSerialNumber serialNumber: String) throws -> String {
-        let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
-                                    kSecAttrService as String: Keychain.getService(forSerialNumber: serialNumber),
-                                    kSecMatchLimit as String: kSecMatchLimitOne,
-                                    kSecReturnAttributes as String: true,
-                                    kSecReturnData as String: true]
+        let query: NSDictionary = [kSecClass: kSecClassGenericPassword,
+                                   kSecAttrService: Keychain.getService(forSerialNumber: serialNumber),
+                                   kSecMatchLimit: kSecMatchLimitOne,
+                                   kSecReturnAttributes: true,
+                                   kSecReturnData: true]
         var item: CFTypeRef?
-        let status = secItemCopyMatching(query as CFDictionary, &item)
+        let status = secItemCopyMatching(query, &item)
         guard status != errSecItemNotFound else { throw KeychainError.noPasswordFound }
         guard status == errSecSuccess,
-              let item = item as? [String: Any],
-              let passwordData = item[kSecValueData as String] as? Data,
+              let item = item as? NSDictionary,
+              let passwordData = item[kSecValueData] as? Data,
               let password = String(data: passwordData, encoding: String.Encoding.utf8)
         else {
             throw KeychainError.unknown(status: status)
@@ -82,15 +108,15 @@ internal struct Keychain: KeychainProtocol {
 
     internal func saveP12Passphrase(_ password: String, certificateSerialNumber serialNumber: String) throws {
         let passwordData = password.data(using: String.Encoding.utf8)!
-        let addAttributes: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
-                                            kSecAttrService as String: Keychain.getService(forSerialNumber: serialNumber),
-                                            kSecValueData as String: passwordData]
-        let addStatus = secItemAdd(addAttributes as CFDictionary, nil)
+        let addAttributes: NSDictionary = [kSecClass: kSecClassGenericPassword,
+                                           kSecAttrService: Keychain.getService(forSerialNumber: serialNumber),
+                                           kSecValueData: passwordData]
+        let addStatus = secItemAdd(addAttributes, nil)
         guard addStatus != errSecDuplicateItem else {
-            let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
-                                        kSecAttrService as String: Keychain.getService(forSerialNumber: serialNumber)]
-            let attributesToUpdate: [String: Any] = [kSecValueData as String: passwordData]
-            let updateStatus = secItemUpdate(query as CFDictionary, attributesToUpdate as CFDictionary)
+            let query: NSDictionary = [kSecClass: kSecClassGenericPassword,
+                                       kSecAttrService: Keychain.getService(forSerialNumber: serialNumber)]
+            let attributesToUpdate: NSDictionary = [kSecValueData: passwordData]
+            let updateStatus = secItemUpdate(query, attributesToUpdate as CFDictionary)
             guard updateStatus == errSecSuccess else { throw KeychainError.failedAddingPassword }
             return
         }
@@ -108,6 +134,7 @@ internal struct Keychain: KeychainProtocol {
 }
 
 internal enum KeychainError: ActionError, Equatable {
+    case errorReadingFromKeychain
     case noPasswordFound
     case failedAddingPassword
     case wrongPassphraseForP12
@@ -116,6 +143,8 @@ internal enum KeychainError: ActionError, Equatable {
 
     internal var description: String {
         switch self {
+        case .errorReadingFromKeychain:
+            return "Could not read from Keychain"
         case .noPasswordFound:
             return "No password found in Keychain"
         case .failedAddingPassword:
