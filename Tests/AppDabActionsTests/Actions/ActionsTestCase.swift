@@ -131,7 +131,7 @@ class MockBagbutikService: BagbutikServiceProtocol {
     private func decodeResponseData<T>(for request: Request<T, ErrorResponse>) -> Result<T, Error> where T: Decodable {
         if let jsonData = request.requestBody?.jsonData,
            let json = try? JSONSerialization.jsonObject(with: jsonData, options: []),
-           let prettyJsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted),
+           let prettyJsonData = try? JSONSerialization.data(withJSONObject: json, options: [.sortedKeys, .prettyPrinted]),
            let requestBodyJson = String(data: prettyJsonData, encoding: .utf8)
         {
             requestBodyJsons.append(requestBodyJson)

@@ -19,17 +19,17 @@ final class InviteUserTests: ActionsTestCase {
         XCTAssertEqual(mockBagbutikService.requestBodyJsons[0], """
         {
           "data" : {
-            "type" : "userInvitations",
             "attributes" : {
+              "allAppsVisible" : true,
               "email" : "sjobs@apple.com",
               "firstName" : "Steve",
               "lastName" : "Jobs",
+              "provisioningAllowed" : true,
               "roles" : [
                 "ADMIN"
-              ],
-              "provisioningAllowed" : true,
-              "allAppsVisible" : true
-            }
+              ]
+            },
+            "type" : "userInvitations"
           }
         }
         """)
@@ -50,16 +50,15 @@ final class InviteUserTests: ActionsTestCase {
         XCTAssertEqual(mockBagbutikService.requestBodyJsons[0], """
         {
           "data" : {
-            "type" : "userInvitations",
             "attributes" : {
+              "allAppsVisible" : false,
               "email" : "forstall@apple.com",
               "firstName" : "Scott",
               "lastName" : "Forstall",
+              "provisioningAllowed" : false,
               "roles" : [
                 "DEVELOPER"
-              ],
-              "provisioningAllowed" : false,
-              "allAppsVisible" : false
+              ]
             },
             "relationships" : {
               "visibleApps" : {
@@ -70,7 +69,8 @@ final class InviteUserTests: ActionsTestCase {
                   }
                 ]
               }
-            }
+            },
+            "type" : "userInvitations"
           }
         }
         """)
