@@ -17,13 +17,13 @@ public enum ActionsEnvironment {
     public static var service: BagbutikServiceProtocol {
         guard let service = _service
         else {
-            fatalError("Service not configured. Call \(String(describing: ActionsEnvironment.configureService(authConfig:)))")
+            fatalError("Service not configured. Call \(String(describing: ActionsEnvironment.configureService(jwt:)))")
         }
         return service
     }
 
-    public static func configureService(authConfig: AuthConfig) throws {
-        _service = try BagbutikService(keyId: authConfig.keyId, issuerId: authConfig.issuerId, privateKey: authConfig.privateKey)
+    public static func configureService(jwt: JWT) {
+        _service = BagbutikService(jwt: jwt)
     }
 
     // MARK: - Shared values
@@ -52,16 +52,4 @@ public enum ActionsEnvironment {
         Summary(resultPaths: [xcresultPath], renderingMode: .inline).generatedHtmlReport()
     }
     #endif
-}
-
-public struct AuthConfig {
-    public let keyId: String
-    public let issuerId: String
-    public let privateKey: String
-
-    public init(keyId: String, issuerId: String, privateKey: String) {
-        self.keyId = keyId
-        self.issuerId = issuerId
-        self.privateKey = privateKey
-    }
 }

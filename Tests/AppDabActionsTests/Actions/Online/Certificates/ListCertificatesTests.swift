@@ -6,8 +6,8 @@ import XCTest
 final class ListCertificatesTests: ActionsTestCase {
     func testListCertificates() async {
         let expirationDateInFuture = Date.now.addingTimeInterval(10000)
-        let expirationDateInFutureString = expirationDateInFuture.formatted(date: .abbreviated, time: .shortened)
-        let expirationDateInPastString = mockDate.formatted(date: .abbreviated, time: .shortened)
+        let expirationDateInFutureString = expirationDateInFuture.formatted(date: .abbreviated, time: .omitted)
+        let expirationDateInPastString = mockDate.formatted(date: .abbreviated, time: .omitted)
         let response = CertificatesResponse(
             data: [.init(id: "certificate-1", links: .init(self: ""), attributes: .init(expirationDate: expirationDateInFuture, name: "Apple Distribution: Steve Jobs", serialNumber: "SOMESERIALNUMBER")),
                    .init(id: "certificate-2", links: .init(self: ""), attributes: .init(expirationDate: mockDate, name: "Apple Developer: Scott Forstall", serialNumber: "ANOTHERSERIALNUMBER"))],

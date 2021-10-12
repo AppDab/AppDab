@@ -19,25 +19,22 @@ final class CreateProfileTests: ActionsTestCase {
         XCTAssertEqual(mockBagbutikService.requestBodyJsons[0], """
         {
           "data" : {
-            "type" : "profiles",
             "attributes" : {
               "name" : "Calculator Development",
               "profileType" : "IOS_APP_DEVELOPMENT"
             },
             "relationships" : {
               "bundleId" : {
-                "data" : [
-                  {
-                    "id" : "com.apple.Calculator",
-                    "type" : "bundleId"
-                  }
-                ]
+                "data" : {
+                  "id" : "com.apple.Calculator",
+                  "type" : "bundleIds"
+                }
               },
               "certificates" : {
                 "data" : [
                   {
                     "id" : "cert-1",
-                    "type" : "certificate"
+                    "type" : "certificates"
                   }
                 ]
               },
@@ -45,15 +42,16 @@ final class CreateProfileTests: ActionsTestCase {
                 "data" : [
                   {
                     "id" : "device-1",
-                    "type" : "device"
+                    "type" : "devices"
                   },
                   {
                     "id" : "device-2",
-                    "type" : "device"
+                    "type" : "devices"
                   }
                 ]
               }
-            }
+            },
+            "type" : "profiles"
           }
         }
         """)
