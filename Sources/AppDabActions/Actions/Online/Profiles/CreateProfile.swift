@@ -2,9 +2,6 @@ import Bagbutik
 
 @discardableResult
 public func createProfile(named name: String, profileType: Profile.Attributes.ProfileType, bundleIdId: String, certificateIds: [String], deviceIds: [String]) async throws -> Profile {
-    guard let profileType = ProfileCreateRequest.Data.Attributes.ProfileType(rawValue: profileType.rawValue) else {
-        throw ProfileError.profileTypeCantBeCreated(profileType) // This will only happen if the enums don't match someday
-    }
     let requestBody = ProfileCreateRequest(
         data: .init(
             attributes: .init(name: name, profileType: profileType),
