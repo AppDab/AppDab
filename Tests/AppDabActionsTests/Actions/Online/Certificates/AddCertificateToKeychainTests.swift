@@ -12,6 +12,10 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
         let certificate = Certificate(id: "some-id", links: .init(self: ""), attributes: .init(certificateContent: base64Certificate, name: "AppDabTest"))
         XCTAssertNoThrow(try addCertificateToKeychain(certificate: certificate))
     }
+    
+    func testAddCertificateToKeychain_OnlyValues() {
+        XCTAssertNoThrow(try addCertificateToKeychain(named: "AppDabTest", certificateContent: base64Certificate))
+    }
 
     func testAddCertificateToKeychain_MissingName() {
         let certificate = Certificate(id: "some-id", links: .init(self: ""), attributes: .init(certificateContent: base64Certificate))
