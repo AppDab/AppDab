@@ -3,10 +3,27 @@ import Foundation
 import Security
 
 public func addCertificateToKeychain(certificate: Certificate) throws {
-    ActionsEnvironment.logger.info("💾 Adding certificate to Keychain...")
+    logStartInfo()
     guard
         let name = certificate.attributes?.name,
-        let certificateContent = certificate.attributes?.certificateContent,
+        let certificateContent = certificate.attributes?.certificateContent
+    else {
+        throw AddCertificateToKeychainError.invalidOnlineCertificateData
+    }
+    try _addCertificateToKeychain(named: name, certificateContent: certificateContent)
+}
+
+public func addCertificateToKeychain(named name: String, certificateContent: String) throws {
+    logStartInfo()
+    try _addCertificateToKeychain(named: name, certificateContent: certificateContent)
+}
+
+private func logStartInfo() {
+    ActionsEnvironment.logger.info("💾 Adding certificate to Keychain...")
+}
+
+private func _addCertificateToKeychain(named name: String, certificateContent: String) throws {
+    guard
         let certificateData = Data(base64Encoded: certificateContent),
         let secCertificate = SecCertificateCreateWithData(nil, certificateData as CFData)
     else {
