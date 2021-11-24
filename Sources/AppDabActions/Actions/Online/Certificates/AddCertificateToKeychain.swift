@@ -3,7 +3,7 @@ import Foundation
 import Security
 
 public func addCertificateToKeychain(certificate: Certificate) throws {
-    ActionsEnvironment.logger.info("💾 Adding certificate to Keychain...")
+    logStartInfo()
     guard
         let name = certificate.attributes?.name,
         let certificateContent = certificate.attributes?.certificateContent
@@ -14,8 +14,12 @@ public func addCertificateToKeychain(certificate: Certificate) throws {
 }
 
 public func addCertificateToKeychain(named name: String, certificateContent: String) throws {
-    ActionsEnvironment.logger.info("💾 Adding certificate to Keychain...")
+    logStartInfo()
     try _addCertificateToKeychain(named: name, certificateContent: certificateContent)
+}
+
+private func logStartInfo() {
+    ActionsEnvironment.logger.info("💾 Adding certificate to Keychain...")
 }
 
 private func _addCertificateToKeychain(named name: String, certificateContent: String) throws {
