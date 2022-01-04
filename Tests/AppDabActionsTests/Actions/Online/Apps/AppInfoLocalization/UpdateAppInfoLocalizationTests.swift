@@ -25,7 +25,7 @@ final class UpdateAppInfoLocalizationTests: ActionsTestCase {
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Fetching app info localization by locale 'en-US' for app id '123456789'..."),
             Log(level: .info, message: "👍 Found app info localization for locale 'en-US' (localization-id)"),
-            Log(level: .info, message: "🚀 Update localization with id 'localization-id' with \(ListFormatter.localizedString(byJoining: logValues))..."),
+            Log(level: .info, message: "🚀 Updating localization with id 'localization-id' with \(ListFormatter.localizedString(byJoining: logValues))..."),
             Log(level: .info, message: "👍 Localization updated"),
         ])
     }

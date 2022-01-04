@@ -17,7 +17,7 @@ public func updateAppInfoLocalization(withId id: String, newName: String? = nil,
     if let newPrivacyPolicyUrl = newPrivacyPolicyUrl {
         logValues.append("new privacy policy URL '\(newPrivacyPolicyUrl)'")
     }
-    ActionsEnvironment.logger.info("🚀 Update localization with id '\(id)' with \(ListFormatter.localizedString(byJoining: logValues))...")
+    ActionsEnvironment.logger.info("🚀 Updating localization with id '\(id)' with \(ListFormatter.localizedString(byJoining: logValues))...")
     let appInfoLocalizationResponse = try await ActionsEnvironment.service.request(.updateAppInfoLocalization(id: id, requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Localization updated")
     return appInfoLocalizationResponse.data
