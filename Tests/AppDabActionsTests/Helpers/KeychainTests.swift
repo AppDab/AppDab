@@ -144,7 +144,7 @@ final class KeychainTests: XCTestCase {
 
     func testKeychainErrorDescription() {
         XCTAssertEqual(KeychainError.noPasswordFound.description, "No password found in Keychain")
-        XCTAssertEqual(KeychainError.failedAddingPassword.description, "Could not add passphrase to Keychain")
+        XCTAssertEqual(KeychainError.failedAddingPassword.description, "Could not add password to Keychain")
         XCTAssertEqual(KeychainError.wrongPassphraseForP12.description, "Wrong passphrase for encrypted certificate and private key")
         XCTAssertEqual(KeychainError.errorImportingP12.description, "Could not import certificate and private key")
         XCTAssertEqual(KeychainError.unknown(status: errSecNoSuchAttr).description, "Unknown error occurred when interacting with Keychain (OSStatus: \(errSecNoSuchAttr))")
