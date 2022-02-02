@@ -19,7 +19,7 @@ public func addCertificateToKeychain(named name: String, certificateContent: Str
 }
 
 private func logStartInfo() {
-    ActionsEnvironment.logger.info("💾 Adding certificate to Keychain...")
+    ActionsEnvironment.logger.info("🔐 Adding certificate to Keychain...")
 }
 
 private func _addCertificateToKeychain(named name: String, certificateContent: String) throws {
