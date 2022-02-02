@@ -112,7 +112,7 @@ class MockBagbutikService: BagbutikServiceProtocol {
     }
 
     func request<T>(_ request: Request<T, ErrorResponse>) async throws -> T where T: Decodable {
-        return try decodeResponseData(for: request).get()
+        try decodeResponseData(for: request).get()
     }
 
     func requestAllPages<T>(_ request: Request<T, ErrorResponse>) async throws -> (responses: [T], data: [T.Data]) where T: PagedResponse, T: Decodable {
@@ -121,19 +121,18 @@ class MockBagbutikService: BagbutikServiceProtocol {
     }
 
     func requestNextPage<T>(for response: T) async throws -> T? where T: PagedResponse, T: Decodable {
-        return response
+        response
     }
 
     func requestAllPages<T>(for response: T) async throws -> (responses: [T], data: [T.Data]) where T: PagedResponse, T: Decodable {
-        return (responses: [response], data: response.data)
+        (responses: [response], data: response.data)
     }
 
     private func decodeResponseData<T>(for request: Request<T, ErrorResponse>) -> Result<T, Error> where T: Decodable {
         if let jsonData = request.requestBody?.jsonData,
            let json = try? JSONSerialization.jsonObject(with: jsonData, options: []),
            let prettyJsonData = try? JSONSerialization.data(withJSONObject: json, options: [.sortedKeys, .prettyPrinted]),
-           let requestBodyJson = String(data: prettyJsonData, encoding: .utf8)
-        {
+           let requestBodyJson = String(data: prettyJsonData, encoding: .utf8) {
             requestBodyJsons.append(requestBodyJson)
         }
         endpointsCalled += 1
@@ -206,9 +205,9 @@ class MockKeychain: KeychainProtocol {
     // MARK: SecKeyCopyExternalRepresentation
 
     var copyPublicKeyDataShouldSucceed = true
-    
+
     // MARK: Certificates in Keychain
-    
+
     var serialNumbersForCertificatesInKeychain: [String] = []
 
     lazy var keychain: Keychain = {
@@ -244,19 +243,35 @@ class MockKeychain: KeychainProtocol {
     func addCertificate(certificate: SecCertificate, named name: String) throws {
         try keychain.addCertificate(certificate: certificate, named: name)
     }
-    
-    func hasCertificates(serialNumbers: [String]) throws -> [String : Bool] {
-        return serialNumbers.reduce(into: [:]) { result, serialNumber in
+
+    func hasCertificates(serialNumbers: [String]) throws -> [String: Bool] {
+        serialNumbers.reduce(into: [:]) { result, serialNumber in
             result[serialNumber] = serialNumbersForCertificatesInKeychain.contains(serialNumber)
         }
     }
 
     func createPrivateKey(labeled label: String) throws -> SecKey {
-        return try keychain.createPrivateKey(labeled: label)
+        try keychain.createPrivateKey(labeled: label)
     }
 
     func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data) {
         return try keychain.createPublicKey(from: privateKey)
+    }
+
+    func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
+        try keychain.listGenericPasswords(forService: service)
+    }
+
+    func addGenericPassword(forService service: String, password: GenericPassword) throws {
+        try keychain.addGenericPassword(forService: service, password: password)
+    }
+
+    func updateGenericPassword(forService service: String, account: String, password: GenericPassword) throws {
+        try keychain.updateGenericPassword(forService: service, account: account, password: password)
+    }
+
+    func deleteGenericPassword(forService service: String, password: GenericPassword) throws {
+        try keychain.deleteGenericPassword(forService: service, password: password)
     }
 }
 
@@ -266,7 +281,7 @@ class MockLogHandler: LogHandler {
     var logs: [Log] = []
 
     subscript(metadataKey key: String) -> Logger.Metadata.Value? {
-        get { return metadata[key] }
+        get { metadata[key] }
         set(newValue) { metadata[key] = newValue }
     }
 
@@ -315,11 +330,11 @@ class MockTerminal: TerminalProtocol {
     }
 
     func getInput(secret: Bool) -> String {
-        return ""
+        ""
     }
 
     func getBoolInput(question: String) -> Bool {
-        return true
+        true
     }
 }
 

@@ -33,12 +33,12 @@ final class KeychainTests: XCTestCase {
             XCTAssertEqual(service, "AppDab certificate some-serial")
             return errSecSuccess
         })
-        XCTAssertNoThrow(try keychain.saveP12Passphrase("my-passphrase", certificateSerialNumber: "some-serial"))
+        XCTAssertNoThrow(try keychain.saveP12Password("my-passphrase", certificateSerialNumber: "some-serial"))
     }
 
     func testSaveP12Passphrase_Fail() {
         let keychain = Keychain(secItemAdd: { _, _ in errSecNoSuchAttr })
-        XCTAssertThrowsError(try keychain.saveP12Passphrase("my-passphrase", certificateSerialNumber: "some-serial")) { error in
+        XCTAssertThrowsError(try keychain.saveP12Password("my-passphrase", certificateSerialNumber: "some-serial")) { error in
             XCTAssertEqual(error as! KeychainError, .failedAddingPassword)
         }
     }
@@ -55,7 +55,7 @@ final class KeychainTests: XCTestCase {
                 updateExpectation.fulfill()
                 return errSecSuccess
             })
-        XCTAssertNoThrow(try keychain.saveP12Passphrase("my-passphrase", certificateSerialNumber: "some-serial"))
+        XCTAssertNoThrow(try keychain.saveP12Password("my-passphrase", certificateSerialNumber: "some-serial"))
         wait(for: [updateExpectation], timeout: 5)
     }
 
@@ -67,7 +67,7 @@ final class KeychainTests: XCTestCase {
                 updateExpectation.fulfill()
                 return errSecNoSuchAttr
             })
-        XCTAssertThrowsError(try keychain.saveP12Passphrase("my-passphrase", certificateSerialNumber: "some-serial")) { error in
+        XCTAssertThrowsError(try keychain.saveP12Password("my-passphrase", certificateSerialNumber: "some-serial")) { error in
             XCTAssertEqual(error as! KeychainError, .failedAddingPassword)
         }
         wait(for: [updateExpectation], timeout: 5)

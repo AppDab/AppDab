@@ -6,6 +6,17 @@ internal protocol KeychainProtocol {
     func hasCertificates(serialNumbers: [String]) throws -> [String: Bool]
     func createPrivateKey(labeled label: String) throws -> SecKey
     func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data)
+    func listGenericPasswords(forService service: String) throws -> [GenericPassword]
+    func addGenericPassword(forService service: String, password: GenericPassword) throws
+    func updateGenericPassword(forService service: String, account: String, password: GenericPassword) throws
+    func deleteGenericPassword(forService service: String, password: GenericPassword) throws
+}
+
+internal struct GenericPassword {
+    let account: String
+    let label: String
+    let generic: Data
+    let value: Data
 }
 
 internal struct Keychain: KeychainProtocol {
@@ -70,9 +81,90 @@ internal struct Keychain: KeychainProtocol {
         return (key: publicKey, data: publicKeyData as Data)
     }
 
+    func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
+        let query: NSDictionary = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecMatchLimit: kSecMatchLimitAll,
+            kSecReturnRef: true,
+        ]
+        var itemRefs: CFTypeRef?
+        let status = secItemCopyMatching(query, &itemRefs)
+        guard status != errSecItemNotFound else { return [] }
+        guard status == errSecSuccess, let itemRefs = itemRefs as? [SecKeychainItem] else {
+            throw KeychainError.errorReadingFromKeychain
+        }
+        return try itemRefs.map { itemRef -> GenericPassword in
+            let itemQuery: NSDictionary = [
+                kSecValueRef: itemRef,
+                kSecReturnAttributes: true,
+                kSecReturnData: true,
+            ]
+            var item: CFTypeRef?
+            let itemStatus = secItemCopyMatching(itemQuery, &item)
+            guard itemStatus == errSecSuccess,
+                  let item = item as? [String: Any],
+                  let label = item[kSecAttrLabel as String] as? String,
+                  let account = item[kSecAttrAccount as String] as? String,
+                  let generic = item[kSecAttrGeneric as String] as? Data,
+                  let value = item[kSecValueData as String] as? Data else {
+                throw KeychainError.errorReadingFromKeychain
+            }
+            return GenericPassword(account: account, label: label, generic: generic, value: value)
+        }
+    }
+
+    func addGenericPassword(forService service: String, password: GenericPassword) throws {
+        let query: NSDictionary = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: password.account,
+            kSecAttrLabel: password.label,
+            kSecAttrService: service,
+            kSecAttrGeneric: password.generic,
+            kSecValueData: password.value,
+        ]
+        let status = secItemAdd(query, nil)
+        guard status != errSecDuplicateItem else {
+            throw KeychainError.duplicatePassword
+        }
+        guard status == errSecSuccess else {
+            throw KeychainError.failedAddingPassword
+        }
+    }
+
+    func updateGenericPassword(forService service: String, account: String, password: GenericPassword) throws {
+        let query: NSDictionary = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: password.account,
+            kSecAttrService: service,
+        ]
+        let attributesToUpdate: NSDictionary = [
+            kSecAttrLabel: password.label,
+            kSecAttrGeneric: password.generic,
+            kSecValueData: password.value,
+        ]
+        let status = secItemUpdate(query, attributesToUpdate)
+        guard status == errSecSuccess else {
+            throw KeychainError.failedUpdatingPassword
+        }
+    }
+
+    func deleteGenericPassword(forService service: String, password: GenericPassword) throws {
+        let query: NSDictionary = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: password.account,
+            kSecAttrService: service,
+        ]
+        let status = secItemDelete(query)
+        guard status == errSecSuccess else {
+            throw KeychainError.failedDeletingPassword
+        }
+    }
+
     internal var secItemCopyMatching = SecItemCopyMatching
     internal var secItemAdd = SecItemAdd
     internal var secItemUpdate = SecItemUpdate
+    internal var secItemDelete = SecItemDelete
     internal var secIdentityCopyCertificate = SecIdentityCopyCertificate
     internal var secCertificateCopySerialNumberData = SecCertificateCopySerialNumberData
     internal var secKeyCreateRandomKey = SecKeyCreateRandomKey
@@ -84,7 +176,7 @@ internal struct Keychain: KeychainProtocol {
     // MARK: - The following should not be used anymore
 
     private static func getService(forSerialNumber serialNumber: String) -> String {
-        return "AppDab certificate \(serialNumber)"
+        "AppDab certificate \(serialNumber)"
     }
 
     internal func readP12Passphrase(certificateSerialNumber serialNumber: String) throws -> String {
@@ -106,7 +198,7 @@ internal struct Keychain: KeychainProtocol {
         return password
     }
 
-    internal func saveP12Passphrase(_ password: String, certificateSerialNumber serialNumber: String) throws {
+    internal func saveP12Password(_ password: String, certificateSerialNumber serialNumber: String) throws {
         let passwordData = password.data(using: String.Encoding.utf8)!
         let addAttributes: NSDictionary = [kSecClass: kSecClassGenericPassword,
                                            kSecAttrService: Keychain.getService(forSerialNumber: serialNumber),
@@ -137,6 +229,9 @@ internal enum KeychainError: ActionError, Equatable {
     case errorReadingFromKeychain
     case noPasswordFound
     case failedAddingPassword
+    case duplicatePassword
+    case failedUpdatingPassword
+    case failedDeletingPassword
     case wrongPassphraseForP12
     case errorImportingP12
     case unknown(status: OSStatus)
@@ -148,7 +243,13 @@ internal enum KeychainError: ActionError, Equatable {
         case .noPasswordFound:
             return "No password found in Keychain"
         case .failedAddingPassword:
-            return "Could not add passphrase to Keychain"
+            return "Could not add password to Keychain"
+        case .duplicatePassword:
+            return "Password already in Keychain"
+        case .failedUpdatingPassword:
+            return "Could not update password in Keychain"
+        case .failedDeletingPassword:
+            return "Could not delete password from Keychain"
         case .wrongPassphraseForP12:
             return "Wrong passphrase for encrypted certificate and private key"
         case .errorImportingP12:
