@@ -91,7 +91,7 @@ internal struct Keychain: KeychainProtocol {
         var itemRefs: CFTypeRef?
         let status = secItemCopyMatching(query, &itemRefs)
         guard status != errSecItemNotFound else { return [] }
-        guard status == errSecSuccess, let itemRefs = itemRefs as? [SecKeychainItem] else {
+        guard status == errSecSuccess, let itemRefs = itemRefs as? [Any] else {
             throw KeychainError.errorReadingFromKeychain
         }
         return try itemRefs.map { itemRef -> GenericPassword in
@@ -128,7 +128,7 @@ internal struct Keychain: KeychainProtocol {
             throw KeychainError.duplicatePassword
         }
         guard status == errSecSuccess else {
-            throw KeychainError.failedAddingPassword
+            throw KeychainError.failedAddingPassword(status)
         }
     }
 
@@ -209,10 +209,10 @@ internal struct Keychain: KeychainProtocol {
                                        kSecAttrService: Keychain.getService(forSerialNumber: serialNumber)]
             let attributesToUpdate: NSDictionary = [kSecValueData: passwordData]
             let updateStatus = secItemUpdate(query, attributesToUpdate as CFDictionary)
-            guard updateStatus == errSecSuccess else { throw KeychainError.failedAddingPassword }
+            guard updateStatus == errSecSuccess else { throw KeychainError.failedAddingPassword(updateStatus) }
             return
         }
-        guard addStatus == errSecSuccess else { throw KeychainError.failedAddingPassword }
+        guard addStatus == errSecSuccess else { throw KeychainError.failedAddingPassword(addStatus) }
     }
 
     internal func importPCKS12(atPath p12Path: String, passphrase: String) throws {
@@ -228,7 +228,7 @@ internal struct Keychain: KeychainProtocol {
 internal enum KeychainError: ActionError, Equatable {
     case errorReadingFromKeychain
     case noPasswordFound
-    case failedAddingPassword
+    case failedAddingPassword(OSStatus)
     case duplicatePassword
     case failedUpdatingPassword
     case failedDeletingPassword
@@ -242,7 +242,7 @@ internal enum KeychainError: ActionError, Equatable {
             return "Could not read from Keychain"
         case .noPasswordFound:
             return "No password found in Keychain"
-        case .failedAddingPassword:
+        case .failedAddingPassword(_):
             return "Could not add password to Keychain"
         case .duplicatePassword:
             return "Password already in Keychain"

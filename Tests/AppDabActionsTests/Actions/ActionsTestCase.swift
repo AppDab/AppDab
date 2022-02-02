@@ -187,10 +187,24 @@ class MockInfoPlist: InfoPlistProtocol {
 }
 
 class MockKeychain: KeychainProtocol {
+    // MARK: SecItemCopyMatching
+
+    var keychainLookup: (_ query: CFDictionary, _ result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus = { _, _ in errSecSuccess }
+
     // MARK: SecItemAdd
 
     private(set) var parametersForAdd: [[String: Any]] = []
     var returnStatusForAdd: OSStatus = errSecSuccess
+
+    // MARK: SecItemUpdate
+
+    private(set) var parametersForUpdate: [[String: Any]] = []
+    var returnStatusForUpdate: OSStatus = errSecSuccess
+
+    // MARK: SecItemDelete
+
+    private(set) var parametersForDelete: [[String: Any]] = []
+    var returnStatusForDelete: OSStatus = errSecSuccess
 
     // MARK: SecKeyCreateRandomKey
 
@@ -210,10 +224,20 @@ class MockKeychain: KeychainProtocol {
 
     var serialNumbersForCertificatesInKeychain: [String] = []
 
+    // MARK: Generic passwords in Keychain
+
+    var genericPasswordsInKeychain: [GenericPassword] = []
+
     lazy var keychain: Keychain = {
-        Keychain(secItemAdd: { parameters, _ in
+        Keychain(secItemCopyMatching: keychainLookup, secItemAdd: { parameters, _ in
             self.parametersForAdd.append(parameters as! [String: Any])
             return self.returnStatusForAdd
+        }, secItemUpdate: { parameters, _ in
+            self.parametersForUpdate.append(parameters as! [String: Any])
+            return self.returnStatusForUpdate
+        }, secItemDelete: { parameters in
+            self.parametersForDelete.append(parameters as! [String: Any])
+            return self.returnStatusForDelete
         }, secKeyCreateRandomKey: { parameters, errorPointer in
             self.parametersForCreateRandomKey.append(parameters as! [String: Any])
             guard self.createRandomKeyShouldSucceed else {
@@ -259,7 +283,7 @@ class MockKeychain: KeychainProtocol {
     }
 
     func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
-        try keychain.listGenericPasswords(forService: service)
+        genericPasswordsInKeychain
     }
 
     func addGenericPassword(forService service: String, password: GenericPassword) throws {

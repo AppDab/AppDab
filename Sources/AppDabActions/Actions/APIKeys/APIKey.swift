@@ -1,4 +1,5 @@
 import Bagbutik
+import Foundation
 
 public struct APIKey: Identifiable, Hashable {
     public var id: String { keyId }
@@ -15,7 +16,7 @@ public struct APIKey: Identifiable, Hashable {
         self.privateKey = privateKey
         self.jwt = try .init(keyId: keyId, issuerId: issuerId, privateKey: privateKey)
     }
-    
+
     internal init(password: GenericPassword) throws {
         guard let issuerId = String(data: password.generic, encoding: .utf8),
               let privateKey = String(data: password.value, encoding: .utf8) else {
@@ -28,11 +29,10 @@ public struct APIKey: Identifiable, Hashable {
     }
 
     internal func getGenericPassword() throws -> GenericPassword {
-        guard let generic = issuerId.data(using: .utf8),
-              let value = privateKey.data(using: .utf8) else {
-            throw APIKeyError.invalidAPIKeyFormat
-        }
-        return .init(account: keyId, label: name, generic: generic, value: value)
+        .init(account: keyId,
+              label: name,
+              generic: Data(issuerId.utf8),
+              value: Data(privateKey.utf8))
     }
 
     public static func == (lhs: APIKey, rhs: APIKey) -> Bool {
