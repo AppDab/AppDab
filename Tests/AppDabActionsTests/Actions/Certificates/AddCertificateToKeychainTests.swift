@@ -12,7 +12,7 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
         let certificate = Certificate(id: "some-id", links: .init(self: ""), attributes: .init(certificateContent: base64Certificate, name: "AppDabTest"))
         XCTAssertNoThrow(try addCertificateToKeychain(certificate: certificate))
         XCTAssertEqual(mockLogHandler.logs, [
-            Log(level: .info, message: "💾 Adding certificate to Keychain..."),
+            Log(level: .info, message: "🔐 Adding certificate to Keychain..."),
             Log(level: .info, message: "👍 Certificate added to Keychain"),
         ])
     }
@@ -20,7 +20,7 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
     func testAddCertificateToKeychain_OnlyValues() {
         XCTAssertNoThrow(try addCertificateToKeychain(named: "AppDabTest", certificateContent: base64Certificate))
         XCTAssertEqual(mockLogHandler.logs, [
-            Log(level: .info, message: "💾 Adding certificate to Keychain..."),
+            Log(level: .info, message: "🔐 Adding certificate to Keychain..."),
             Log(level: .info, message: "👍 Certificate added to Keychain"),
         ])
     }
@@ -30,7 +30,7 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
         XCTAssertThrowsError(try addCertificateToKeychain(certificate: certificate)) { error in
             XCTAssertEqual(error as! AddCertificateToKeychainError, .invalidOnlineCertificateData)
         }
-        XCTAssertEqual(mockLogHandler.logs, [Log(level: .info, message: "💾 Adding certificate to Keychain...")])
+        XCTAssertEqual(mockLogHandler.logs, [Log(level: .info, message: "🔐 Adding certificate to Keychain...")])
     }
 
     func testAddCertificateToKeychain_InvalidData() {
@@ -38,7 +38,7 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
         XCTAssertThrowsError(try addCertificateToKeychain(certificate: certificate)) { error in
             XCTAssertEqual(error as! AddCertificateToKeychainError, .invalidOnlineCertificateData)
         }
-        XCTAssertEqual(mockLogHandler.logs, [Log(level: .info, message: "💾 Adding certificate to Keychain...")])
+        XCTAssertEqual(mockLogHandler.logs, [Log(level: .info, message: "🔐 Adding certificate to Keychain...")])
     }
 
     func testAddCertificateToKeychain_KeychainError() {
@@ -47,6 +47,6 @@ final class AddCertificateToKeychainTests: ActionsTestCase {
         XCTAssertThrowsError(try addCertificateToKeychain(certificate: certificate)) { error in
             XCTAssertEqual(error as! AddCertificateToKeychainError, .errorAddingCertificateToKeychain(status: errSecParam))
         }
-        XCTAssertEqual(mockLogHandler.logs, [Log(level: .info, message: "💾 Adding certificate to Keychain...")])
+        XCTAssertEqual(mockLogHandler.logs, [Log(level: .info, message: "🔐 Adding certificate to Keychain...")])
     }
 }

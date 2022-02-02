@@ -249,7 +249,7 @@ private func exportIdentity(certificateSerialNumber: String, identity: SecIdenti
 
 private func savePassphraseInKeychain(_ passphrase: String, certificateSerialNumber: String) throws {
     ActionsEnvironment.logger.info("💾 Saving passphrase in Keychain...")
-    try Keychain().saveP12Passphrase(passphrase, certificateSerialNumber: certificateSerialNumber)
+    try Keychain().saveP12Password(passphrase, certificateSerialNumber: certificateSerialNumber)
     ActionsEnvironment.logger.info("👍 Passphrase saved in Keychain")
 }
 
