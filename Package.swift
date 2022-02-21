@@ -32,5 +32,6 @@ let package = Package(
             ]),
         .testTarget(
             name: "AppDabActionsTests",
-            dependencies: ["AppDabActions"]),
+            dependencies: ["AppDabActions"],
+            resources: [.copy("Actions/Apps/AppStoreVersion/Localization/screenshot1.png")]),
     ])

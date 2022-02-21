@@ -12,6 +12,7 @@ class ActionsTestCase: XCTestCase {
     var mockLogHandler: MockLogHandler!
     var mockShell: MockShell!
     var mockTerminal: MockTerminal!
+    var mockURLSession: MockURLSession!
     var mockXcodebuild: MockXcodebuild!
 
     var mockDate = Date(timeIntervalSince1970: 1623360721)
@@ -25,6 +26,7 @@ class ActionsTestCase: XCTestCase {
         case logHandler
         case shell
         case terminal
+        case urlSession
         case xcodebuild
     }
 
@@ -52,6 +54,8 @@ class ActionsTestCase: XCTestCase {
         ActionsEnvironment.shell = mockShell
         mockTerminal = MockTerminal()
         ActionsEnvironment.terminal = mockTerminal
+        mockURLSession = MockURLSession()
+        ActionsEnvironment.urlSession = mockURLSession
         mockXcodebuild = MockXcodebuild()
         ActionsEnvironment.xcodebuild = mockXcodebuild
 
@@ -359,6 +363,17 @@ class MockTerminal: TerminalProtocol {
 
     func getBoolInput(question: String) -> Bool {
         true
+    }
+}
+
+class MockURLSession: URLSessionProtocol {
+    var uploadResult: [URL: (Data, URLResponse)] = [:]
+
+    func upload(for request: URLRequest, from bodyData: Data, delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse) {
+        guard let url = request.url, let uploadResult = uploadResult[url] else {
+            throw MockError.missingResponseData
+        }
+        return uploadResult
     }
 }
 
