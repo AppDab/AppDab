@@ -1,6 +1,10 @@
+/// Error happening when manipulating app categories.
 public enum AppCategoryError: ActionError, Equatable {
+    /// The category id is invalid.
     case invalidCategoryId(String)
+    /// The subcategory id is invalid.
     case invalidSubcategoryId(String)
+    /// The parent category for the supplied subcategory id has no subcategories.
     case noSubcategories(String)
 
     public var description: String {
