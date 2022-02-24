@@ -6,14 +6,15 @@ import XcbeautifyLib
 import XCTestHTMLReportCore
 #endif
 
+/// The environment for actions. Through the `ActionsEnvironment` actions has access to shared tools and values.
 public enum ActionsEnvironment {
-    // MARK: - Logger
-
+    /// The logger, which through all logs should be sent
     public static var logger = Logger(label: "AppDabActions")
 
     // MARK: - Service
 
     internal static var _service: BagbutikServiceProtocol?
+    /// The service for interacting with the App Store Connect API
     public static var service: BagbutikServiceProtocol {
         guard let service = _service
         else {
@@ -22,12 +23,21 @@ public enum ActionsEnvironment {
         return service
     }
 
+    /**
+     Configuring the service for interacting with the App Store Connect API
+     
+     See the documentation for JWT, for how to obtain the correct keys.
+     
+     - Parameters:
+        - jwt: The JWT used to authorize API requests.
+     */
     public static func configureService(jwt: JWT) {
         _service = BagbutikService(jwt: jwt)
     }
 
     // MARK: - Shared values
 
+    /// Values shared between actions. Actions can add values to this, which other actions can use.
     public static var values = Values()
 
     // MARK: - Internal
