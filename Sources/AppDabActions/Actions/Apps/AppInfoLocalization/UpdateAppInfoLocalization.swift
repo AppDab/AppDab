@@ -1,6 +1,18 @@
 import Bagbutik
 import Foundation
 
+/**
+ Update an app info localization.
+
+ An app info localization is the localized parts of the App Store listing which isn't tied to a specific version.
+
+ - Parameters:
+    - id: The id of the `AppInfoLocalization` to be updated.
+    - newName: The new name for the app.
+    - newSubtitle: The new subtitle for the app.
+    - newPrivacyPolicyUrl: The new URL for the privacy policy.
+ - Returns: The updated `AppInfoLocalization`.
+ */
 @discardableResult
 public func updateAppInfoLocalization(withId id: String, newName: String? = nil, newSubtitle: String? = nil, newPrivacyPolicyUrl: String? = nil) async throws -> AppInfoLocalization {
     guard newName != nil || newSubtitle != nil || newPrivacyPolicyUrl != nil else {
@@ -23,6 +35,22 @@ public func updateAppInfoLocalization(withId id: String, newName: String? = nil,
     return appInfoLocalizationResponse.data
 }
 
+/**
+ Update an app info localization.
+
+ An app info localization is the localized parts of the App Store listing which isn't tied to a specific version.
+ 
+ This will first fetch the app info localizations, and try to figure out the right app info localization id.
+ If the app info localization id is already known, use the other overload of this action.
+
+ - Parameters:
+    - locale: The locale for which the localization should be updated.
+    - appId: The id of the `App` to which this localization is related.
+    - newName: The new name for the app.
+    - newSubtitle: The new subtitle for the app.
+    - newPrivacyPolicyUrl: The new URL for the privacy policy.
+ - Returns: The updated `AppInfoLocalization`.
+ */
 @discardableResult
 public func updateAppInfoLocalization(forLocale locale: String, forAppId appId: String, newName: String? = nil, newSubtitle: String? = nil, newPrivacyPolicyUrl: String? = nil) async throws -> AppInfoLocalization {
     ActionsEnvironment.logger.info("🚀 Fetching app info localization by locale '\(locale)' for app id '\(appId)'...")
