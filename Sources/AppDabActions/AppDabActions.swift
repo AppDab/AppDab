@@ -16,7 +16,7 @@ public func runActions(_ actions: () throws -> Void) {
 }
 
 public func mapErrorToAppDabError(error: Error) -> AppDabError {
-    if let error = error as? BagbutikService.ServiceError, let description = error.description {
+    if let error = error as? ServiceError, let description = error.description {
         return .simpleError(message: description)
     } else if let error = error as? ActionError {
         return .simpleError(message: error.description)
