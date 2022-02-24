@@ -41,8 +41,11 @@ internal struct InfoPlist: InfoPlistProtocol {
     }
 }
 
+/// Error happening when manipulating Info.plists.
 public enum InfoPlistError: ActionError, Equatable {
+    /// The Info.plist could not be found.
     case infoPlistNotFound
+    /// No value with type found for the key.
     case wrongTypeForKey(key: String, path: String)
 
     public var description: String {
