@@ -2,6 +2,13 @@ import Bagbutik
 import CertificateSigningRequest
 import Foundation
 
+/**
+ Create a new certificate of a specific type.
+
+ - Parameters:
+    - type: The type of certificate to create.
+ - Returns: The newly created `Certificate`.
+ */
 @discardableResult
 public func createCertificate(type: CertificateType) async throws -> Certificate {
     let label = "AppDab \(Date().timeIntervalSince1970)"

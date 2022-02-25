@@ -3,14 +3,35 @@ import Bagbutik
 import CertificateSigningRequest
 import Foundation
 
-public func ensureCertificate(type: ListCertificates.Filter.CertificateType = .distribution, policy: EnsureCertificatePolicy = .readOnly, encryptedCertificatesFolderPath: String? = nil, certificateSerialNumber requestedCertificateSerialNumber: String? = nil) async throws {
+/// Policy for ensuring certificate.
+public enum EnsureCertificatePolicy {
+    /// Read only. No new certificates will be created.
+    case readOnly
+    /// Create a new certificate if none is found.
+    case createNewIfMissing
+}
+
+/**
+ Ensure that a certificate is present.
+ 
+ The policy decides if a new certificate is created, if none is found on the system.
+ 
+ The certificate is read from/written to an encrypted file at the path specified.
+ 
+ - Parameters:
+    - type: The type of certificate to use.
+    - policy: The policy which decides if a new certificate should be created, if none is found on the system.
+    - encryptedCertificatesFolderPath: The path to read/write the certificate from/to. Default is "Signing".
+    - certificateSerialNumber: The serial number of the certificate to use.
+ - Postcondition: A valid certificate is present in Keychain.
+ */
+public func ensureCertificate(type: ListCertificates.Filter.CertificateType = .distribution, policy: EnsureCertificatePolicy = .readOnly, encryptedCertificatesFolderPath: String = "Signing", certificateSerialNumber requestedCertificateSerialNumber: String? = nil) async throws {
     ActionsEnvironment.logger.info("⏬ Fetching list of available certificates...")
     var filters: [ListCertificates.Filter] = [.certificateType([type])]
     if let requestedCertificateSerialNumber = requestedCertificateSerialNumber {
         filters.append(.serialNumber([requestedCertificateSerialNumber]))
     }
     let certificates = try await ActionsEnvironment.service.request(.listCertificates(filters: filters)).data
-    let encryptedCertificatesFolderPath = encryptedCertificatesFolderPath ?? "Signing"
     guard certificates.count > 0 else {
         ActionsEnvironment.logger.info("🤷🏼 No certificates found online")
         if ActionsEnvironment.terminal.getBoolInput(question: "Should we create a new certificate?") {
@@ -177,9 +198,9 @@ private func maybeCreateCertificate(type: ListCertificates.Filter.CertificateTyp
         case .success:
             break
         case .privateKeyForCertificateNotFound:
-            ActionsEnvironment.logger.info("🤷🏼 The private key for the certificate was not found in Keychain. This should never happen. Please report it as an issue on Github 🥰")
+            ActionsEnvironment.logger.info("🤷🏼 The private key for the certificate was not found in Keychain. This should never happen. Please report it as an issue on GitHub 🥰")
         case .unknown(let status):
-            ActionsEnvironment.logger.info("🤷🏼 An unknown error occurred when adding certificate to Keychain. Please report it as an issue on Github 🥰 and include the error status: \(status)")
+            ActionsEnvironment.logger.info("🤷🏼 An unknown error occurred when adding certificate to Keychain. Please report it as an issue on GitHub 🥰 and include the error status: \(status)")
         }
     }
 }
@@ -252,11 +273,5 @@ private func savePassphraseInKeychain(_ passphrase: String, certificateSerialNum
     try Keychain().saveP12Password(passphrase, certificateSerialNumber: certificateSerialNumber)
     ActionsEnvironment.logger.info("👍 Passphrase saved in Keychain")
 }
-
-public enum EnsureCertificatePolicy {
-    case readOnly
-    case createNewIfMissing
-}
-
 
 #endif

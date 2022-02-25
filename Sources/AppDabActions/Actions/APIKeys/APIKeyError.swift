@@ -6,7 +6,7 @@ public enum APIKeyError: ActionError, Equatable {
     case invalidAPIKeyFormat
     /// The API Key is already in Keychain.
     case duplicateAPIKey
-    ///The API Key could not be added to Keychain. Lookup the status on <https://osstatus.com>
+    /// The API Key could not be added to Keychain. Lookup the status on <https://osstatus.com>.
     case failedAddingAPIKey(OSStatus)
 
     public var description: String {

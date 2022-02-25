@@ -1,6 +1,11 @@
 import Bagbutik
 import Foundation
 
+/**
+ List all certificates.
+
+ - Returns: An array of all the certificates and an indication of if the certificate is present in Keychain.
+ */
 @discardableResult
 public func listCertificates() async throws -> [(certificate: Certificate, inKeychain: Bool)] {
     ActionsEnvironment.logger.info("🚀 Fetching list of certificates...")
