@@ -15,7 +15,7 @@ class ActionsTestCase: XCTestCase {
     var mockURLSession: MockURLSession!
     var mockXcodebuild: MockXcodebuild!
 
-    var mockDate = Date(timeIntervalSince1970: 1623360721)
+    var mockDate = Date(timeIntervalSince1970: 1_623_360_721)
     var writtenFiles = [WrittenFile]()
 
     enum EnvironmentDependency: CaseIterable {
@@ -366,14 +366,17 @@ class MockTerminal: TerminalProtocol {
     }
 }
 
-class MockURLSession: URLSessionProtocol {
-    var uploadResult: [URL: (Data, URLResponse)] = [:]
+class MockURLSession: AppDabURLSessionProtocol {
+    var uploadResult: [URL: (data: Data, response: URLResponse, delay: Int)] = [:]
 
     func upload(for request: URLRequest, from bodyData: Data, delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse) {
         guard let url = request.url, let uploadResult = uploadResult[url] else {
             throw MockError.missingResponseData
         }
-        return uploadResult
+        if uploadResult.delay > 0 {
+            try await Task.sleep(nanoseconds: UInt64(uploadResult.delay * 1_000_000_000))
+        }
+        return (uploadResult.data, uploadResult.response)
     }
 }
 

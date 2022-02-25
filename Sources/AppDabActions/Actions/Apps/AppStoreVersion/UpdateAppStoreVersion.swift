@@ -17,23 +17,23 @@ import Foundation
 public func updateAppStoreVersion(withId id: String,
                                   newVersion: String? = nil,
                                   newCopyright: String? = nil) async throws -> AppStoreVersion {
-    guard version != nil || copyright != nil else {
+    guard newVersion != nil || newCopyright != nil else {
         throw AppStoreVersionError.noNewValuesSpecified
     }
     var attributes = AppStoreVersionUpdateRequest.Data.Attributes()
     var logValues = [String]()
-    if let version = version {
-        attributes.versionString = version
-        logValues.append("version '\(version)'")
+    if let newVersion = newVersion {
+        attributes.versionString = newVersion
+        logValues.append("version '\(newVersion)'")
     }
-    if let copyright = copyright {
-        attributes.copyright = copyright
-        logValues.append("copyright '\(copyright)'")
+    if let newCopyright = newCopyright {
+        attributes.copyright = newCopyright
+        logValues.append("copyright '\(newCopyright)'")
     }
     let requestBody = AppStoreVersionUpdateRequest(data: .init(id: id, attributes: attributes))
-    ActionsEnvironment.logger.info("🚀 Updating App Store version with id '\(appStoreVersionId)' with \(ListFormatter.localizedString(byJoining: logValues))...")
+    ActionsEnvironment.logger.info("🚀 Updating App Store version with id '\(id)' with \(ListFormatter.localizedString(byJoining: logValues))...")
     let appStoreVersionResponse = try await ActionsEnvironment.service.request(
-        .updateAppStoreVersion(id: appStoreVersionId, requestBody: requestBody))
+        .updateAppStoreVersion(id: id, requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 App Store version updated")
     return appStoreVersionResponse.data
 }

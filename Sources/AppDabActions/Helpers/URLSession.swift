@@ -1,7 +1,7 @@
 import Foundation
 
-internal protocol URLSessionProtocol {
+internal protocol AppDabURLSessionProtocol {
     func upload(for request: URLRequest, from bodyData: Data, delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse)
 }
 
-extension URLSession: URLSessionProtocol {}
+extension URLSession: AppDabURLSessionProtocol {}

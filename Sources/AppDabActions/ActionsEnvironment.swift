@@ -43,7 +43,7 @@ public enum ActionsEnvironment {
     // MARK: - Internal
 
     internal static var fileManager: FileManagerProtocol = FileManager.default
-    internal static var urlSession: URLSessionProtocol = URLSession.shared
+    internal static var urlSession: AppDabURLSessionProtocol = URLSession.shared
     #if os(macOS)
     internal static var infoPlist: InfoPlistProtocol = InfoPlist()
     internal static var keychain: KeychainProtocol = Keychain()
