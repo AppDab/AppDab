@@ -1,6 +1,11 @@
 import Bagbutik
 import Foundation
 
+/**
+ List all profiles.
+
+ - Returns: An array of all the profiles.
+ */
 @discardableResult
 public func listProfiles() async throws -> [Profile] {
     ActionsEnvironment.logger.info("🚀 Fetching list of profiles...")

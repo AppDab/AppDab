@@ -1,5 +1,16 @@
 import Bagbutik
 
+/**
+ Create a profile.
+
+ - Parameters:
+    - name: The name of the profile.
+    - profileType: The type of the profile.
+    - bundleIdId: The id of the related `BundleId`.
+    - certificateIds: The ids of the related `Certificate`s.
+    - deviceIds: The ids of the related `Device`s.
+ - Returns: The newly created `Profile`.
+ */
 @discardableResult
 public func createProfile(named name: String, profileType: Profile.Attributes.ProfileType, bundleIdId: String, certificateIds: [String], deviceIds: [String]) async throws -> Profile {
     let requestBody = ProfileCreateRequest(
