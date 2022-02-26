@@ -1,5 +1,10 @@
 import Bagbutik
 
+/**
+ List all user invitations.
+
+ - Returns: An array of all the user invitations.
+ */
 @discardableResult
 public func listUserInvitations() async throws -> [UserInvitation] {
     ActionsEnvironment.logger.info("🚀 Fetching list of user invitations...")

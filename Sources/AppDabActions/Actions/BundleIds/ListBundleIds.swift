@@ -1,5 +1,10 @@
 import Bagbutik
 
+/**
+ List all bundle ids.
+
+ - Returns: An array of all the bundle ids.
+ */
 @discardableResult
 public func listBundleIds() async throws -> [BundleId] {
     ActionsEnvironment.logger.info("🚀 Fetching list of bundle IDs...")

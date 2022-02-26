@@ -1,5 +1,8 @@
+/// Error happening when manipulating app info localizations.
 public enum AppInfoLocalizationError: ActionError {
+    /// No new values specified.
     case noNewValuesSpecified
+    /// App info localization for locale not found.
     case appInfoLocalizationForLocaleNotFound
     
     public var description: String {

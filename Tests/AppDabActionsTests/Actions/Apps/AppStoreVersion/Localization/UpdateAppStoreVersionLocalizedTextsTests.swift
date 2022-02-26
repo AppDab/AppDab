@@ -10,12 +10,12 @@ final class UpdateAppStoreVersionLocalizedTextsTests: ActionsTestCase {
         )
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/appStoreVersionLocalizations/some-id", method: .patch))
         let appStoreVersionLocalization = try! await updateAppStoreVersionLocalizedTexts(forAppStoreVersionLocalizationId: "some-id",
-                                                                                         description: "some description",
-                                                                                         keywords: "some keywords",
-                                                                                         whatsNew: "some what's new",
-                                                                                         promotionalText: "some promotional text",
-                                                                                         marketingUrl: "some marketing url",
-                                                                                         supportUrl: "some support url")
+                                                                                         newDescription: "some description",
+                                                                                         newKeywords: "some keywords",
+                                                                                         newWhatsNew: "some what's new",
+                                                                                         newPromotionalText: "some promotional text",
+                                                                                         newMarketingUrl: "some marketing url",
+                                                                                         newSupportUrl: "some support url")
         XCTAssertEqual(appStoreVersionLocalization, updateResponse.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Updating App Store version localization texts with id 'some-id' with description, keywords, what's new, promotional text, marketing URL, and support URL..."),
@@ -30,7 +30,7 @@ final class UpdateAppStoreVersionLocalizedTextsTests: ActionsTestCase {
         )
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/appStoreVersionLocalizations/some-id", method: .patch))
         let appStoreVersionLocalization = try! await updateAppStoreVersionLocalizedTexts(forAppStoreVersionLocalizationId: "some-id",
-                                                                                         description: "some description")
+                                                                                         newDescription: "some description")
         XCTAssertEqual(appStoreVersionLocalization, updateResponse.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Updating App Store version localization texts with id 'some-id' with description..."),

@@ -1,5 +1,10 @@
 import Bagbutik
 
+/**
+ List all apps.
+
+ - Returns: An array of all the apps.
+ */
 @discardableResult
 public func listApps() async throws -> [App] {
     ActionsEnvironment.logger.info("🚀 Fetching list of apps...")

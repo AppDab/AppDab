@@ -81,7 +81,7 @@ final class XcodebuildTests: ActionsTestCase {
     
     func testXcodebuildErrorDescription() {
         XCTAssertEqual(XcodebuildError.xcodeProjNotFound.description, "Xcode project could not be found")
-        XCTAssertEqual(XcodebuildError.unkownSchemesListOutput("some-output").description, "Unexpected schemes list. Please report it as an issue on Github 🥰\nAttach the following output if possible and the version of Xcode used:\nsome-output")
+        XCTAssertEqual(XcodebuildError.unkownSchemesListOutput("some-output").description, "Unexpected format of schemes list. Please report it as an issue on GitHub 🥰\nAttach the following output if possible and the version of Xcode used:\nsome-output")
         XCTAssertEqual(XcodebuildError.archivePathMissing.description, "Archive path is not specified")
         XCTAssertEqual(XcodebuildError.exportedArchiveNotFound.description, "Could not find exported archive")
         XCTAssertEqual(XcodebuildError.testResultNotFound.description, "Could not find test results")

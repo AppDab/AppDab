@@ -1,6 +1,11 @@
 import Foundation
 import Security
 
+/**
+ List all API Key in Keychain.
+
+ - Returns: An array of the API Keys in Keychain.
+ */
 @discardableResult
 public func listAPIKeys() throws -> [APIKey] {
     ActionsEnvironment.logger.info("🔐 Loading list of API Keys from Keychain...")

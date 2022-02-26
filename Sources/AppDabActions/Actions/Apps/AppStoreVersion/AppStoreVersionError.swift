@@ -1,4 +1,6 @@
+/// Error happening when manipulating App Store versions.
 public enum AppStoreVersionError: ActionError {
+    /// No new values specified.
     case noNewValuesSpecified
 
     public var description: String {

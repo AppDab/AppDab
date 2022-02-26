@@ -2,6 +2,12 @@ import Bagbutik
 import Foundation
 import Security
 
+/**
+ Add a certificate to Keychain.
+ 
+ - Parameters:
+    - certificate: The `Certificate` to add to Keychain.
+ */
 public func addCertificateToKeychain(certificate: Certificate) throws {
     logStartInfo()
     guard
@@ -13,6 +19,13 @@ public func addCertificateToKeychain(certificate: Certificate) throws {
     try _addCertificateToKeychain(named: name, certificateContent: certificateContent)
 }
 
+/**
+ Add a certificate to Keychain and label it.
+ 
+ - Parameters:
+    - name: The name to label the certificate with in Keychain.
+    - certificateContent: The content of a certificate to add to Keychain.
+ */
 public func addCertificateToKeychain(named name: String, certificateContent: String) throws {
     logStartInfo()
     try _addCertificateToKeychain(named: name, certificateContent: certificateContent)

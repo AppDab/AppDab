@@ -34,11 +34,17 @@ internal struct Xcodebuild: XcodebuildProtocol {
     }
 }
 
+/// Error happening when executing commands with `xcodebuild`.
 public enum XcodebuildError: ActionError, Equatable {
+    /// The Xcode project could not be found.
     case xcodeProjNotFound
+    /// Unexpected format of schemes list.
     case unkownSchemesListOutput(String)
+    /// Archive path is not specified.
     case archivePathMissing
+    /// Could not find exported archive.
     case exportedArchiveNotFound
+    /// Could not find test results.
     case testResultNotFound
 
     public var description: String {
@@ -46,7 +52,7 @@ public enum XcodebuildError: ActionError, Equatable {
         case .xcodeProjNotFound:
             return "Xcode project could not be found"
         case .unkownSchemesListOutput(let output):
-            return "Unexpected schemes list. Please report it as an issue on Github 🥰\nAttach the following output if possible and the version of Xcode used:\n\(output)"
+            return "Unexpected format of schemes list. Please report it as an issue on GitHub 🥰\nAttach the following output if possible and the version of Xcode used:\n\(output)"
         case .archivePathMissing:
             return "Archive path is not specified"
         case .exportedArchiveNotFound:

@@ -9,7 +9,7 @@ final class UpdateAppStoreVersionTests: ActionsTestCase {
             links: .init(self: "")
         )
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/appStoreVersions/some-id", method: .patch))
-        let app = try! await updateAppStoreVersion(forAppStoreVersionId: "some-id", version: "1.3.37", copyright: "2022")
+        let app = try! await updateAppStoreVersion(withId: "some-id", newVersion: "1.3.37", newCopyright: "2022")
         XCTAssertEqual(app, updateResponse.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Updating App Store version with id 'some-id' with version '1.3.37' and copyright '2022'..."),
@@ -23,7 +23,7 @@ final class UpdateAppStoreVersionTests: ActionsTestCase {
             links: .init(self: "")
         )
         mockBagbutikService.setResponse(updateResponse, for: Endpoint(path: "/v1/appStoreVersions/some-id", method: .patch))
-        let app = try! await updateAppStoreVersion(forAppStoreVersionId: "some-id", copyright: "2022")
+        let app = try! await updateAppStoreVersion(withId: "some-id", newCopyright: "2022")
         XCTAssertEqual(app, updateResponse.data)
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🚀 Updating App Store version with id 'some-id' with copyright '2022'..."),
@@ -32,7 +32,7 @@ final class UpdateAppStoreVersionTests: ActionsTestCase {
     }
 
     func testUpdateAppStoreVersion_NoValues() async {
-        await XCTAssertAsyncThrowsError(try await updateAppStoreVersion(forAppStoreVersionId: "some-id")) { error in
+        await XCTAssertAsyncThrowsError(try await updateAppStoreVersion(withId: "some-id")) { error in
             XCTAssertEqual(error as! AppStoreVersionError, .noNewValuesSpecified)
         }
     }

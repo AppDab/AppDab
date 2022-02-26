@@ -1,5 +1,12 @@
 import Bagbutik
 
+/**
+ Enable a device by its resource id.
+
+ - Parameters:
+    - id: The id of the `Device` to enable.
+ - Returns: The enabled `Device`.
+ */
 @discardableResult
 public func enableDevice(withId id: String) async throws -> Device {
     let requestBody = DeviceUpdateRequest(data: .init(id: id, attributes: .init(status: .enabled)))
@@ -9,6 +16,13 @@ public func enableDevice(withId id: String) async throws -> Device {
     return deviceResponse.data
 }
 
+/**
+ Enable a device by its name.
+
+ - Parameters:
+    - name: The name of the `Device` to enable.
+ - Returns: The enabled `Device`.
+ */
 @discardableResult
 public func enableDevice(named name: String) async throws -> Device {
     ActionsEnvironment.logger.info("🚀 Fetching device by name '\(name)'...")

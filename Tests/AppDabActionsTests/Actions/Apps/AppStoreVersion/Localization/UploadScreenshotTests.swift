@@ -15,7 +15,9 @@ final class UploadScreenshotTests: ActionsTestCase {
         mockBagbutikService.setResponse(reserveResponse, for: Endpoint(path: "/v1/appScreenshots", method: .post))
         reserveResponse.data.attributes!.uploadOperations?.forEach { uploadOperation in
             let url = URL(string: uploadOperation.url!)!
-            mockURLSession.uploadResult[url] = (Data(), HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+            let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            let delay = uploadOperation.offset ?? 0 > 0 ? 1 : 0
+            mockURLSession.uploadResult[url] = (data: Data(), response: response, delay: delay)
         }
         let commitResponse = AppScreenshotResponse(
             data: .init(id: id, links: .init(self: ""), attributes: .init(
@@ -28,19 +30,14 @@ final class UploadScreenshotTests: ActionsTestCase {
         let didCreateExpectation = XCTestExpectation(description: "didCreate")
         let progressChangedExpectation = XCTestExpectation(description: "progressChanged")
         progressChangedExpectation.expectedFulfillmentCount = 2
-        var numberOfProgressChangedCalls = 0
+        var numberOfProgressChangedCalls = [Int]()
         let screenshot = try! await uploadScreenshot(toScreenshotSetWithId: "set-id", screenshotFileURL: screenshotFileURL, didCreateScreenshotReservation: { screnshot, totalSize in
             XCTAssertEqual(screnshot.id, id)
             XCTAssertEqual(totalSize, 2770139)
             didCreateExpectation.fulfill()
         }, progressChanged: { screenshotId, value, totalSize in
             XCTAssertEqual(screenshotId, id)
-            if numberOfProgressChangedCalls == 0 {
-                XCTAssertEqual(value, 2000000)
-                numberOfProgressChangedCalls += 1
-            } else {
-                XCTAssertEqual(value, 2770139)
-            }
+            numberOfProgressChangedCalls.append(value)
             XCTAssertEqual(totalSize, 2770139)
             progressChangedExpectation.fulfill()
         })
@@ -57,6 +54,7 @@ final class UploadScreenshotTests: ActionsTestCase {
             Log(level: .info, message: "👍 Screenshot uploaded and will now be processed"),
         ])
         wait(for: [didCreateExpectation, progressChangedExpectation], timeout: 1)
+        XCTAssertEqual(numberOfProgressChangedCalls.sorted(), [2000000, 2770139])
     }
 }
 

@@ -1,5 +1,10 @@
 import Bagbutik
 
+/**
+ List all users.
+
+ - Returns: An array of all the users.
+ */
 @discardableResult
 public func listUsers() async throws -> [User] {
     ActionsEnvironment.logger.info("🚀 Fetching list of users...")

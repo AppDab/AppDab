@@ -1,5 +1,13 @@
 import Bagbutik
 
+/**
+ Rename a bundle id by its resource id.
+
+ - Parameters:
+    - id: The id of the `BundleId` to be updated.
+    - newName: The new name for the bundle id.
+ - Returns: The updated `BundleId`.
+ */
 @discardableResult
 public func renameBundleId(withId id: String, newName: String) async throws -> BundleId {
     let requestBody = BundleIdUpdateRequest(data: .init(id: id, attributes: .init(name: newName)))
@@ -9,6 +17,16 @@ public func renameBundleId(withId id: String, newName: String) async throws -> B
     return bundleIdResponse.data
 }
 
+/**
+ Rename a bundle id by its identifier.
+ 
+ The identifier is the reverse-DNS identifier, like `com.apple.Calculator`.
+
+ - Parameters:
+    - identifier: The identifier of the `BundleId` to be updated.
+    - newName: The new name for the bundle id.
+ - Returns: The updated `BundleId`.
+ */
 @discardableResult
 public func renameBundleId(withIdentifier identifier: String, newName: String) async throws -> BundleId {
     ActionsEnvironment.logger.info("🚀 Fetching bundle ID by identifier '\(identifier)'...")
@@ -19,6 +37,14 @@ public func renameBundleId(withIdentifier identifier: String, newName: String) a
     return try await renameBundleId(withId: bundleId.id, newName: newName)
 }
 
+/**
+ Rename a bundle id by its current name.
+ 
+ - Parameters:
+    - name: The name of the `BundleId` to be updated.
+    - newName: The new name for the bundle id.
+ - Returns: The updated `BundleId`.
+ */
 @discardableResult
 public func renameBundleId(named name: String, newName: String) async throws -> BundleId {
     ActionsEnvironment.logger.info("🚀 Fetching bundle ID by name '\(name)'...")

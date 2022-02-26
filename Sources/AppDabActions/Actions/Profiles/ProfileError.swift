@@ -1,6 +1,6 @@
-import Bagbutik
-
+/// Error happening when manipulating profiles.
 public enum ProfileError: ActionError, Equatable {
+    /// The device with name not found.
     case profileWithNameNotFound(String)
 
     public var description: String {

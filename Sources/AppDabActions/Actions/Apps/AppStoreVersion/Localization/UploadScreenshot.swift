@@ -6,6 +6,21 @@ extension URL: Sendable {}
 
 // TODO: Try to remove @_predatesConcurrency and Sendable extension on Data and URL when Xcode 13.3 is out of beta
 
+/**
+ Upload a screenshot to a `AppScreenshotSet`.
+ 
+ This action loads the screenshot at the specified file URL, reserves space for the screenshot, uploads it
+ and tells the App Store Connect API, that the upload is complete.
+ The validation of the screenshot happens on Apple's servers.
+
+ - Parameters:
+    - screenshotSetId: The id of the `AppScreenshotSet` the screenshot should be related to.
+    - screenshotFileURL: The file URL for the screenshot to upload.
+    - didCreateScreenshotReservation: A callback for when space for the screenshot has been reserved.
+    - progressChanged: A callback for when the actual upload of the screenshot happens.
+ - Returns: The uploaded `AppScreenshot`.
+ */
+@discardableResult
 public func uploadScreenshot(toScreenshotSetWithId screenshotSetId: String,
                              screenshotFileURL: URL,
                              didCreateScreenshotReservation: (AppScreenshot, _ totalSize: Int) -> Void,

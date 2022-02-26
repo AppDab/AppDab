@@ -1,5 +1,13 @@
 import Bagbutik
 
+/**
+ Rename a device by its resource id.
+
+ - Parameters:
+    - id: The id of the `Device` to be updated.
+    - newName: The new name for the device.
+ - Returns: The updated `Device`.
+ */
 @discardableResult
 public func renameDevice(withId id: String, newName: String) async throws -> Device {
     let requestBody = DeviceUpdateRequest(data: .init(id: id, attributes: .init(name: newName)))
@@ -9,6 +17,14 @@ public func renameDevice(withId id: String, newName: String) async throws -> Dev
     return deviceResponse.data
 }
 
+/**
+ Rename a device by its current name.
+ 
+ - Parameters:
+    - name: The name of the `Device` to be updated.
+    - newName: The new name for the device.
+ - Returns: The updated `Device`.
+ */
 @discardableResult
 public func renameDevice(named name: String, newName: String) async throws -> Device {
     ActionsEnvironment.logger.info("🚀 Fetching device by name '\(name)'...")

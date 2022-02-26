@@ -1,14 +1,33 @@
 import Bagbutik
 import Foundation
 
+/// A collection of the required keys and values for an API Key from App Store Connect.
 public struct APIKey: Identifiable, Hashable {
     public var id: String { keyId }
+    /// The user specified name of the API Key.
     public let name: String
+    /// The private key ID from App Store Connect; for example 2X9R4HXF34.
     public let keyId: String
+    /// The issuer ID from the API Keys page in App Store Connect; for example, 57246542-96fe-1a63-e053-0824d011072a.
     public let issuerId: String
+    /// The contents of the private key from App Store Connect. Starting with `-----BEGIN PRIVATE KEY-----`.
     public let privateKey: String
+    /// The generated JWT from the keys.
     public let jwt: JWT
 
+    /**
+     Create a new API Key.
+     
+     Full documentation for how to get the required keys.
+     <https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api>
+     
+     - Parameters:
+        - name: The user specified name of the API Key.
+        - keyId: The private key ID from App Store Connect; for example 2X9R4HXF34.
+        - issuerId: The issuer ID from the API Keys page in App Store Connect; for example, 57246542-96fe-1a63-e053-0824d011072a.
+        - privateKey: The contents of the private key from App Store Connect. Starting with `-----BEGIN PRIVATE KEY-----`.
+     - Throws: An error if the private key is invalid.
+     */
     public init(name: String, keyId: String, issuerId: String, privateKey: String) throws {
         self.name = name
         self.keyId = keyId

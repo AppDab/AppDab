@@ -1,4 +1,6 @@
+/// Error happening when manipulating devices.
 public enum DeviceError: ActionError {
+    /// The device with name not found.
     case deviceWitNameNotFound
     
     public var description: String {
