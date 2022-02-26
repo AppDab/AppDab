@@ -2,7 +2,7 @@
 public enum BundleIdError: ActionError, Equatable {
     /// The bundle id with identifier not found.
     case bundleIdWithIdentifierNotFound(String)
-    /// THe bundle id with name not found.
+    /// The bundle id with name not found.
     case bundleIdWithNameNotFound(String)
     
     public var description: String {

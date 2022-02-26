@@ -1,5 +1,10 @@
 import Bagbutik
 
+/**
+ List all devices.
+
+ - Returns: An array of all the devices.
+ */
 @discardableResult
 public func listDevices() async throws -> [Device] {
     ActionsEnvironment.logger.info("🚀 Fetching list of devices...")
