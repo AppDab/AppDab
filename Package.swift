@@ -14,7 +14,7 @@ let package = Package(
             targets: ["AppDabActions"])
     ],
     dependencies: [
-        .package(url: "https://github.com/MortenGregersen/Bagbutik", .branch("main")),
+        .package(url: "https://github.com/MortenGregersen/Bagbutik", from: "1.0.1"),
         .package(url: "https://github.com/cbaker6/CertificateSigningRequest", from: "1.27.0"),
         .package(url: "https://github.com/apple/swift-log", from: "1.0.0"),
         .package(url: "https://github.com/thii/xcbeautify", from: "0.9.1"),
