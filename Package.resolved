@@ -5,9 +5,9 @@
         "package": "Bagbutik",
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
-          "branch": "main",
-          "revision": "4fe5249b27099f1781989ba4f5a49329ebf55a5e",
-          "version": null
+          "branch": null,
+          "revision": "3a5bbdc2f2bf18ad77e73cf5d46a87d99404afd2",
+          "version": "1.0.1"
         }
       },
       {
@@ -105,8 +105,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "6b2aa2748a7881eebb9f84fb10c01293e15b52ca",
-          "version": "0.5.0"
+          "revision": "82905286cc3f0fa8adc4674bf49437cab65a8373",
+          "version": "1.1.1"
         }
       },
       {
@@ -114,8 +114,8 @@
         "repositoryURL": "https://github.com/apple/swift-crypto",
         "state": {
           "branch": null,
-          "revision": "ddb07e896a2a8af79512543b1c7eb9797f8898a5",
-          "version": "1.1.7"
+          "revision": "a8911e0fadc25aef1071d582355bd1037a176060",
+          "version": "2.0.4"
         }
       },
       {
@@ -132,8 +132,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "f14f4f717e7e1d275acd7557d64c94cfef5723e6",
-          "version": "0.49.4"
+          "revision": "6f6860f43e9fb8179dd963fe627ce67e0fc8aedf",
+          "version": "0.49.6"
         }
       },
       {
@@ -141,8 +141,8 @@
         "repositoryURL": "https://github.com/thii/xcbeautify",
         "state": {
           "branch": null,
-          "revision": "21c64495bb3eb9a46ecc9b5eea056d06383eb17c",
-          "version": "0.9.1"
+          "revision": "66c5e32dacca5f07c26c0c6cbe01c6796fcc6149",
+          "version": "0.12.0"
         }
       },
       {
@@ -161,6 +161,24 @@
           "branch": "develop",
           "revision": "5bd986c247fd84f98db1f3313601e7f24baeeb61",
           "version": null
+        }
+      },
+      {
+        "package": "XMLCoder",
+        "repositoryURL": "https://github.com/MaxDesiatov/XMLCoder.git",
+        "state": {
+          "branch": null,
+          "revision": "f30119af03996939cc4f54e0bf0dda9f88a84da5",
+          "version": "0.13.1"
+        }
+      },
+      {
+        "package": "Zip",
+        "repositoryURL": "https://github.com/marmelroy/Zip.git",
+        "state": {
+          "branch": null,
+          "revision": "67fa55813b9e7b3b9acee9c0ae501def28746d76",
+          "version": "2.1.2"
         }
       }
     ]

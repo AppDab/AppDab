@@ -6,6 +6,15 @@ import XcbeautifyLib
 import XCTestHTMLReportCore
 #endif
 
+public protocol BagbutikServiceProtocol {
+    func request<T: Decodable>(_ request: Request<T, ErrorResponse>) async throws -> T
+    func requestAllPages<T: Decodable & PagedResponse>(_ request: Request<T, ErrorResponse>) async throws -> (responses: [T], data: [T.Data])
+    func requestNextPage<T: Decodable & PagedResponse>(for response: T) async throws -> T?
+    func requestAllPages<T: Decodable & PagedResponse>(for response: T) async throws -> (responses: [T], data: [T.Data])
+}
+
+extension BagbutikService: BagbutikServiceProtocol {}
+
 /// The environment for actions. Through the `ActionsEnvironment` actions has access to shared tools and values.
 public enum ActionsEnvironment {
     /// The logger, which through all logs should be sent
@@ -25,9 +34,9 @@ public enum ActionsEnvironment {
 
     /**
      Configuring the service for interacting with the App Store Connect API
-     
+
      See the documentation for JWT, for how to obtain the correct keys.
-     
+
      - Parameters:
         - jwt: The JWT used to authorize API requests.
      */
@@ -53,7 +62,7 @@ public enum ActionsEnvironment {
     #endif
 
     internal static var getCurrentDate: () -> Date = { Date() }
-    internal static var parseXcodebuildOutput: (String, Bool) -> String? = Parser().parse(line:colored:)
+    internal static var parseXcodebuildOutput: (String) -> String? = Parser(additionalLines: { nil }).parse(line:)
     internal static var writeStringFile: (_ contents: String, _ path: String) throws -> Void = { contents, path in
         try contents.write(toFile: path, atomically: true, encoding: .utf8)
     }

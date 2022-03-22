@@ -15,7 +15,7 @@ public func exportArchive(archivePath: String? = ActionsEnvironment.values.xcarc
         throw XcodebuildError.archivePathMissing
     }
     try ActionsEnvironment.shell.run("xcodebuild -exportArchive -archivePath '\(archivePath)' -exportPath '\(exportPath)' -exportOptionsPlist '\(exportOptionsPlist)'", outputCallback: {
-        guard let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0, true), parsedLine != "" else { return }
+        guard let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0), parsedLine != "" else { return }
         ActionsEnvironment.logger.info("\(parsedLine)")
     })
     ActionsEnvironment.logger.info("🎉 Archive exported")

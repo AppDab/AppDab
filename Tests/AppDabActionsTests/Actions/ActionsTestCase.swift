@@ -60,7 +60,7 @@ class ActionsTestCase: XCTestCase {
         ActionsEnvironment.xcodebuild = mockXcodebuild
 
         ActionsEnvironment.getCurrentDate = { self.mockDate }
-        ActionsEnvironment.parseXcodebuildOutput = { line, _ in "Parsed: \(line)" }
+        ActionsEnvironment.parseXcodebuildOutput = { line in "Parsed: \(line)" }
         ActionsEnvironment.writeStringFile = { contents, path in self.writtenFiles.append(WrittenFile(contents: contents, path: path)) }
         writtenFiles.removeAll()
         ActionsEnvironment.generateTestResultHtmlReport = { path in "Generated HTML report for path: \(path)" }

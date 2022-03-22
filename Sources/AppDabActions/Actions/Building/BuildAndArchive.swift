@@ -13,7 +13,7 @@ public func buildAndArchive(xcodeProjPath: String? = nil, schemeName: String? = 
     let dateTime = Formatters.archiveDateTimeFormatter.string(from: ActionsEnvironment.getCurrentDate())
     let archiveFileName = "\(scheme) \(dateTime).xcarchive"
     try ActionsEnvironment.shell.run("xcodebuild archive -scheme '\(scheme)' -archivePath '\(archiveFileName)'", outputCallback: {
-        guard let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0, true), parsedLine != "" else { return }
+        guard let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0), parsedLine != "" else { return }
         ActionsEnvironment.logger.info("\(parsedLine)")
     })
     ActionsEnvironment.logger.info("🚚 Moving archive to Xcode's Archives folder...")

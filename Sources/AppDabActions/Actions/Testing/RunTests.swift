@@ -11,7 +11,7 @@ public func runTests(xcodeProjPath: String? = nil, schemeName: String? = nil) th
     let scheme = try schemeName ?? ActionsEnvironment.xcodebuild.findSchemeName(at: path)
     let output = try ActionsEnvironment.shell.run("xcodebuild test -scheme '\(scheme)' -destination 'platform=iOS Simulator,name=iPhone 12 Pro'", outputCallback: {
         if $0 == "" { ActionsEnvironment.logger.info("\($0)") }
-        else if let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0, true) { ActionsEnvironment.logger.info("\(parsedLine)") }
+        else if let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0) { ActionsEnvironment.logger.info("\(parsedLine)") }
     })
     guard let xcresultPath = output.split(separator: "\n").last(where: { $0.hasSuffix(".xcresult") })?
         .trimmingCharacters(in: .whitespaces)
