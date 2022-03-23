@@ -5,6 +5,8 @@ internal struct Formatters {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .long
         dateFormatter.timeStyle = .medium
+        dateFormatter.locale = ActionsEnvironment.locale
+        dateFormatter.timeZone = ActionsEnvironment.timeZone
         return dateFormatter
     }()
 
@@ -17,12 +19,14 @@ internal struct Formatters {
     static let dateFolderFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = ActionsEnvironment.timeZone
         return dateFormatter
     }()
     
     static let archiveDateTimeFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd-MM-yyyy, HH.mm"
+        dateFormatter.timeZone = ActionsEnvironment.timeZone
         return dateFormatter
     }()
 

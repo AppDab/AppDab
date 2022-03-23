@@ -39,6 +39,8 @@ class ActionsTestCase: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        ActionsEnvironment.locale = Locale(identifier: "en_US")
+        ActionsEnvironment.timeZone = TimeZone(secondsFromGMT: 0)!
         ActionsEnvironment.values = Values()
         mockBagbutikService = MockBagbutikService()
         ActionsEnvironment._service = mockBagbutikService

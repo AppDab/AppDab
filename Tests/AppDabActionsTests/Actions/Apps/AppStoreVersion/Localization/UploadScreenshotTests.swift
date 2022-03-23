@@ -42,14 +42,18 @@ final class UploadScreenshotTests: ActionsTestCase {
             progressChangedExpectation.fulfill()
         })
         XCTAssertEqual(screenshot, commitResponse.data)
+        let byteCountFormatter = ByteCountFormatter()
+        byteCountFormatter.includesActualByteCount = true
+        let twoMegaBytesFormatted = byteCountFormatter.string(from: .init(value: 2000000, unit: .bytes))
+        let totalSizeFormatted = byteCountFormatter.string(from: .init(value: 2770139, unit: .bytes))
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "🔍 Reading screenshot at \(screenshotFileURL.path)..."),
-            Log(level: .info, message: "👍 Read screnshot. Size 2,8 MB (2.770.139 bytes)"),
+            Log(level: .info, message: "👍 Read screnshot. Size \(totalSizeFormatted)"),
             Log(level: .info, message: "🚀 Reserving space for screenshot..."),
             Log(level: .info, message: "👍 Space for screenshot reserved"),
             Log(level: .info, message: "🚀 Uploading screenshot data..."),
-            Log(level: .info, message: "• 2 MB (2.000.000 bytes) of 2,8 MB (2.770.139 bytes)"),
-            Log(level: .info, message: "• 2,8 MB (2.770.139 bytes) of 2,8 MB (2.770.139 bytes)"),
+            Log(level: .info, message: "• \(twoMegaBytesFormatted) of \(totalSizeFormatted)"),
+            Log(level: .info, message: "• \(totalSizeFormatted) of \(totalSizeFormatted)"),
             Log(level: .info, message: "🚀 Committing screenshot..."),
             Log(level: .info, message: "👍 Screenshot uploaded and will now be processed"),
         ])
