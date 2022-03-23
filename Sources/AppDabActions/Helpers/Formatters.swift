@@ -5,6 +5,7 @@ internal struct Formatters {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .long
         dateFormatter.timeStyle = .medium
+        dateFormatter.locale = ActionsEnvironment.locale
         dateFormatter.timeZone = ActionsEnvironment.timeZone
         return dateFormatter
     }()

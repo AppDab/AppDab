@@ -52,6 +52,7 @@ public enum ActionsEnvironment {
     // MARK: - Internal
 
     internal static var fileManager: FileManagerProtocol = FileManager.default
+    internal static var locale: Locale = .current
     internal static var timeZone: TimeZone = .current
     internal static var urlSession: AppDabURLSessionProtocol = URLSession.shared
     #if os(macOS)
