@@ -39,6 +39,7 @@ class ActionsTestCase: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        ActionsEnvironment.timeZone = TimeZone(secondsFromGMT: 0)!
         ActionsEnvironment.values = Values()
         mockBagbutikService = MockBagbutikService()
         ActionsEnvironment._service = mockBagbutikService

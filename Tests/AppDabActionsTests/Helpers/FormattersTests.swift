@@ -3,7 +3,7 @@ import XCTest
 
 final class FormattersTests: ActionsTestCase {
     func testDateTimeFormatter() {
-        XCTAssertEqual(Formatters.dateTimeFormatter.string(from: mockDate), "10 June 2021 at 23.32.01")
+        XCTAssertEqual(Formatters.dateTimeFormatter.string(from: mockDate), "10 June 2021 at 21.32.01")
     }
     
     func testRelativeDateTimeFormatter() {
@@ -16,6 +16,6 @@ final class FormattersTests: ActionsTestCase {
     }
     
     func testArchiveDateTimeFormatter() {
-        XCTAssertEqual(Formatters.archiveDateTimeFormatter.string(from: mockDate), "10-06-2021, 23.32")
+        XCTAssertEqual(Formatters.archiveDateTimeFormatter.string(from: mockDate), "10-06-2021, 21.32")
     }
 }
