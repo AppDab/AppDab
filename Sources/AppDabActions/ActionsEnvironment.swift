@@ -43,7 +43,16 @@ public enum ActionsEnvironment {
             case .fromKeychain(let keyId):
                 return try! getAPIKey(withId: keyId, logLevel: .debug)
             case .fromEnvironmentVariables:
-                fatalError("Resolving API Key from environment variables is not implemeted yet.")
+                let envVars = ProcessInfo.processInfo.environment
+                guard let keyId = envVars["APPDAB_KEY_ID"],
+                      let issuerId = envVars["APPDAB_ISSUER_ID"],
+                      let privateKeyPath = envVars["APPDAB_PRIVATE_KEY_PATH"] else {
+                    fatalError("The required environment variables for setting up API Key was not found.")
+                }
+                guard let privateKey = try? String(contentsOfFile: privateKeyPath) else {
+                    fatalError("The private key could not be read from the specified path: \(privateKeyPath)")
+                }
+                return try! APIKey(name: "Unknown", keyId: keyId, issuerId: issuerId, privateKey: privateKey)
             }
         }
         set {
