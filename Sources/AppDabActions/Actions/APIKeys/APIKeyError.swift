@@ -8,6 +8,8 @@ public enum APIKeyError: ActionError, Equatable {
     case duplicateAPIKey
     /// The API Key could not be added to Keychain. Lookup the status on <https://osstatus.com>.
     case failedAddingAPIKey(OSStatus)
+    /// The API Key with the key ID was not found in Keychain.
+    case apiKeyNotInKeychain(String)
 
     public var description: String {
         switch self {
@@ -16,7 +18,9 @@ public enum APIKeyError: ActionError, Equatable {
         case .duplicateAPIKey:
             return "The API Key is already in Keychain"
         case .failedAddingAPIKey(let status):
-            return "The API Key could not be added to Keychain (OSStatus \(status)"
+            return "The API Key could not be added to Keychain (OSStatus: \(status)"
+        case .apiKeyNotInKeychain(let keyId):
+            return "The API Key with the key ID '\(keyId)' was not found in Keychain."
         }
     }
 }

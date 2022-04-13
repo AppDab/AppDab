@@ -43,6 +43,14 @@ class ActionsTestCase: XCTestCase {
         ActionsEnvironment.timeZone = TimeZone(secondsFromGMT: 0)!
         ActionsEnvironment.values = Values()
         mockBagbutikService = MockBagbutikService()
+        let privateKey = """
+        -----BEGIN PRIVATE KEY-----
+        MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgevZzL1gdAFr88hb2
+        OF/2NxApJCzGCEDdfSp6VQO30hyhRANCAAQRWz+jn65BtOMvdyHKcvjBeBSDZH2r
+        1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G
+        -----END PRIVATE KEY-----
+        """
+        ActionsEnvironment.apiKey = try! APIKey(name: "Test-key", keyId: "P9M252746H", issuerId: "82067982-6b3b-4a48-be4f-5b10b373c5f2", privateKey: privateKey)
         ActionsEnvironment._service = mockBagbutikService
         mockFileManager = MockFileManager()
         ActionsEnvironment.fileManager = mockFileManager
@@ -288,6 +296,10 @@ class MockKeychain: KeychainProtocol {
         return try keychain.createPublicKey(from: privateKey)
     }
 
+    func getGenericPassword(forService service: String, account: String) throws -> GenericPassword? {
+        genericPasswordsInKeychain.first { $0.account == account }
+    }
+
     func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
         genericPasswordsInKeychain
     }
@@ -296,8 +308,8 @@ class MockKeychain: KeychainProtocol {
         try keychain.addGenericPassword(forService: service, password: password)
     }
 
-    func updateGenericPassword(forService service: String, account: String, password: GenericPassword) throws {
-        try keychain.updateGenericPassword(forService: service, account: account, password: password)
+    func updateGenericPassword(forService service: String, password: GenericPassword) throws {
+        try keychain.updateGenericPassword(forService: service, password: password)
     }
 
     func deleteGenericPassword(forService service: String, password: GenericPassword) throws {
@@ -328,10 +340,17 @@ struct Log: Equatable {
 class MockShell: ShellProtocol {
     var runs: [ShellRun] = []
     var mockOutputsByCommand = [String: String]()
+    var failsWhenRunning = false
     private var commandsCalled = 0
     fileprivate var allCommandsCalled: Bool { commandsCalled == mockOutputsByCommand.count }
 
     func run(_ command: String, at path: String, outputCallback: ((String) -> Void)?) throws -> String {
+        guard !failsWhenRunning else {
+            throw ShellError(terminationStatus: 42,
+                             logFileUrl: URL(fileURLWithPath: "some.log"),
+                             outputData: Data(),
+                             errorData: Data())
+        }
         commandsCalled += 1
         runs.append(ShellRun(command: command, path: path))
         guard let output = mockOutputsByCommand[command] else {

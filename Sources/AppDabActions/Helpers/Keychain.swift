@@ -6,9 +6,10 @@ internal protocol KeychainProtocol {
     func hasCertificates(serialNumbers: [String]) throws -> [String: Bool]
     func createPrivateKey(labeled label: String) throws -> SecKey
     func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data)
+    func getGenericPassword(forService service: String, account: String) throws -> GenericPassword?
     func listGenericPasswords(forService service: String) throws -> [GenericPassword]
     func addGenericPassword(forService service: String, password: GenericPassword) throws
-    func updateGenericPassword(forService service: String, account: String, password: GenericPassword) throws
+    func updateGenericPassword(forService service: String, password: GenericPassword) throws
     func deleteGenericPassword(forService service: String, password: GenericPassword) throws
 }
 
@@ -38,13 +39,13 @@ internal struct Keychain: KeychainProtocol {
             kSecReturnRef: true,
         ] as NSDictionary, &copyResult)
         guard statusCopyingIdentities == errSecSuccess, let identities = copyResult as? [SecIdentity] else {
-            throw CertificateError.errorReadingFromKeychain
+            throw CertificateError.errorReadingFromKeychain(statusCopyingIdentities)
         }
         let serialNumbersInKeychain: [String] = try identities.compactMap { identity in
             var certificate: SecCertificate?
             let statusCopyingCertificate = secIdentityCopyCertificate(identity, &certificate)
             guard statusCopyingCertificate == errSecSuccess, let certificate = certificate else {
-                throw KeychainError.errorReadingFromKeychain
+                throw KeychainError.errorReadingFromKeychain(statusCopyingCertificate)
             }
             return (secCertificateCopySerialNumberData(certificate, nil)! as Data).hexadecimalString.lowercased()
         }
@@ -80,19 +81,30 @@ internal struct Keychain: KeychainProtocol {
         }
         return (key: publicKey, data: publicKeyData as Data)
     }
+    
+    func getGenericPassword(forService service: String, account: String) throws -> GenericPassword? {
+        return try listGenericPasswords(forService: service, account: account).first
+    }
 
     func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
-        let query: NSDictionary = [
+        return try listGenericPasswords(forService: service, account: nil)
+    }
+    
+    private func listGenericPasswords(forService service: String, account: String? = nil) throws -> [GenericPassword] {
+        let query: NSMutableDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
             kSecMatchLimit: kSecMatchLimitAll,
             kSecReturnRef: true,
         ]
+        if let account = account {
+            query[kSecAttrAccount] = account
+        }
         var itemRefs: CFTypeRef?
         let status = secItemCopyMatching(query, &itemRefs)
         guard status != errSecItemNotFound else { return [] }
         guard status == errSecSuccess, let itemRefs = itemRefs as? [Any] else {
-            throw KeychainError.errorReadingFromKeychain
+            throw KeychainError.errorReadingFromKeychain(status)
         }
         return try itemRefs.map { itemRef -> GenericPassword in
             let itemQuery: NSDictionary = [
@@ -108,7 +120,7 @@ internal struct Keychain: KeychainProtocol {
                   let account = item[kSecAttrAccount as String] as? String,
                   let generic = item[kSecAttrGeneric as String] as? Data,
                   let value = item[kSecValueData as String] as? Data else {
-                throw KeychainError.errorReadingFromKeychain
+                throw KeychainError.errorReadingFromKeychain(itemStatus)
             }
             return GenericPassword(account: account, label: label, generic: generic, value: value)
         }
@@ -132,7 +144,7 @@ internal struct Keychain: KeychainProtocol {
         }
     }
 
-    func updateGenericPassword(forService service: String, account: String, password: GenericPassword) throws {
+    func updateGenericPassword(forService service: String, password: GenericPassword) throws {
         let query: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: password.account,
@@ -226,7 +238,7 @@ internal struct Keychain: KeychainProtocol {
 }
 
 internal enum KeychainError: ActionError, Equatable {
-    case errorReadingFromKeychain
+    case errorReadingFromKeychain(OSStatus)
     case noPasswordFound
     case failedAddingPassword(OSStatus)
     case duplicatePassword
@@ -238,11 +250,11 @@ internal enum KeychainError: ActionError, Equatable {
 
     internal var description: String {
         switch self {
-        case .errorReadingFromKeychain:
-            return "Could not read from Keychain"
+        case .errorReadingFromKeychain(let status):
+            return "Could not read from Keychain (OSStatus: \(status))"
         case .noPasswordFound:
             return "No password found in Keychain"
-        case .failedAddingPassword(_):
+        case .failedAddingPassword:
             return "Could not add password to Keychain"
         case .duplicatePassword:
             return "Password already in Keychain"

@@ -8,7 +8,7 @@ public enum CertificateError: ActionError, Equatable {
     case certificateWithNameNotFound(String)
 
     /// Error occurred when reading from Keychain.
-    case errorReadingFromKeychain
+    case errorReadingFromKeychain(OSStatus)
     /// The private key for the certificate was not found.
     case privateKeyForCertificateNotFound
     /// An error occurred when adding certificate to Keychain.
@@ -32,8 +32,8 @@ public enum CertificateError: ActionError, Equatable {
             return "Certificate '\(serialNumber)' not found"
         case .certificateWithNameNotFound(let name):
             return "Certificate named '\(name)' not found"
-        case .errorReadingFromKeychain:
-            return "An error occurred when reading from Keychain"
+        case .errorReadingFromKeychain(let status):
+            return "An error occurred when reading from Keychain (OSStatus: \(status))"
         case .privateKeyForCertificateNotFound:
             return "The private key for the certificate was not found"
         case .errorAddingCertificateToKeychain:
