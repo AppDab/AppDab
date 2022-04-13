@@ -43,7 +43,7 @@ final class KeychainTests: XCTestCase {
     func testListGenericPasswords_Unknown() {
         let keychain = Keychain(secItemCopyMatching: { _, _ in errSecParam })
         XCTAssertThrowsError(try keychain.listGenericPasswords(forService: "AppDab")) { error in
-            XCTAssertEqual(error as! KeychainError, .errorReadingFromKeychain)
+            XCTAssertEqual(error as! KeychainError, .errorReadingFromKeychain(errSecParam))
         }
     }
 
@@ -58,7 +58,7 @@ final class KeychainTests: XCTestCase {
             return errSecSuccess
         })
         XCTAssertThrowsError(try keychain.listGenericPasswords(forService: "AppDab")) { error in
-            XCTAssertEqual(error as! KeychainError, .errorReadingFromKeychain)
+            XCTAssertEqual(error as! KeychainError, .errorReadingFromKeychain(errSecSuccess))
         }
     }
     
@@ -92,13 +92,13 @@ final class KeychainTests: XCTestCase {
     func testUpdateGenericPassword() {
         let keychain = Keychain(secItemUpdate: { _, _ in errSecSuccess })
         let genericPassword = GenericPassword(account: "", label: "", generic: Data(), value: Data())
-        XCTAssertNoThrow(try keychain.updateGenericPassword(forService: "AppDab", account: "", password: genericPassword))
+        XCTAssertNoThrow(try keychain.updateGenericPassword(forService: "AppDab", password: genericPassword))
     }
 
     func testUpdateGenericPassword_Unknown() {
         let keychain = Keychain(secItemUpdate: { _, _ in errSecParam })
         let genericPassword = GenericPassword(account: "", label: "", generic: Data(), value: Data())
-        XCTAssertThrowsError(try keychain.updateGenericPassword(forService: "AppDab", account: "", password: genericPassword)) { error in
+        XCTAssertThrowsError(try keychain.updateGenericPassword(forService: "AppDab", password: genericPassword)) { error in
             XCTAssertEqual(error as! KeychainError, .failedUpdatingPassword)
         }
     }

@@ -12,7 +12,7 @@ public func addAPIKey(_ apiKey: APIKey) throws {
         try ActionsEnvironment.keychain.addGenericPassword(forService: "AppDab", password: apiKey.getGenericPassword())
     } catch KeychainError.duplicatePassword {
         throw APIKeyError.duplicateAPIKey
-    } catch KeychainError.failedAddingPassword(let status) {
+    } catch let KeychainError.failedAddingPassword(status) {
         throw APIKeyError.failedAddingAPIKey(status)
     }
     ActionsEnvironment.logger.info("👍 API Key added to Keychain")

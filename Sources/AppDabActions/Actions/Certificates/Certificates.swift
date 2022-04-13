@@ -214,7 +214,7 @@ private func findFirstMatchingCertificateInKeychain(certificates: [Certificate])
         kSecReturnRef: true,
     ] as NSDictionary, &copyResult)
     guard statusCopyingIdentities == errSecSuccess, let identities = copyResult as? [SecIdentity] else {
-        throw CertificateError.errorReadingFromKeychain
+        throw CertificateError.errorReadingFromKeychain(statusCopyingIdentities)
     }
     let certificatesBySerialNumber = certificates.reduce(into: [String: Certificate]()) { result, certificate in
         if let serialNumber = certificate.attributes?.serialNumber?.lowercased() {
@@ -225,7 +225,7 @@ private func findFirstMatchingCertificateInKeychain(certificates: [Certificate])
         var certificate: SecCertificate?
         let statusCopyingCertificate = SecIdentityCopyCertificate(identity, &certificate)
         guard statusCopyingCertificate == errSecSuccess, let certificate = certificate else {
-            throw CertificateError.errorReadingFromKeychain
+            throw CertificateError.errorReadingFromKeychain(statusCopyingCertificate)
         }
         let serialNumber = (SecCertificateCopySerialNumberData(certificate, nil)! as Data).hexadecimalString
         if let certificate = certificatesBySerialNumber[serialNumber] {

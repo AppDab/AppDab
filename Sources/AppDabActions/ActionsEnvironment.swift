@@ -25,23 +25,31 @@ public enum ActionsEnvironment {
     internal static var _service: BagbutikServiceProtocol?
     /// The service for interacting with the App Store Connect API
     public static var service: BagbutikServiceProtocol {
-        guard let service = _service
-        else {
-            fatalError("Service not configured. Call \(String(describing: ActionsEnvironment.configureService(jwt:)))")
+        if let _service = _service {
+            return _service
         }
+        let service = BagbutikService(jwt: apiKey.jwt)
+        _service = service
         return service
     }
 
+    private static var _apiKey: APIKey?
     /**
-     Configuring the service for interacting with the App Store Connect API
-
-     See the documentation for JWT, for how to obtain the correct keys.
-
-     - Parameters:
-        - jwt: The JWT used to authorize API requests.
+     The API key for interacting with Apples services (App Store Connect API and altool)
+     
+     - Note: Setting this will reset the ``service``.
      */
-    public static func configureService(jwt: JWT) {
-        _service = BagbutikService(jwt: jwt)
+    public static var apiKey: APIKey {
+        get {
+            guard let _apiKey = _apiKey else {
+                fatalError("API Key not set. Set the desired API Key on \(String(describing: ActionsEnvironment.self)).")
+            }
+            return _apiKey
+        }
+        set {
+            _apiKey = newValue
+            _service = nil
+        }
     }
 
     // MARK: - Shared values
@@ -56,6 +64,7 @@ public enum ActionsEnvironment {
     internal static var timeZone: TimeZone = .current
     internal static var urlSession: AppDabURLSessionProtocol = URLSession.shared
     #if os(macOS)
+    internal static var altool: AltoolProtocol = Altool()
     internal static var infoPlist: InfoPlistProtocol = InfoPlist()
     internal static var keychain: KeychainProtocol = Keychain()
     internal static var shell: ShellProtocol = Shell()

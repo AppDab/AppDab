@@ -76,7 +76,7 @@ internal struct Shell: ShellProtocol {
                              outputData: outputData,
                              errorData: errorData)
         }
-        return String(data: outputData, encoding: .utf8) ?? ""
+        return String(data: outputData, encoding: .utf8)?.trimmingCharacters(in: .newlines) ?? ""
     }
 }
 #endif

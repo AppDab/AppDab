@@ -12,6 +12,9 @@ public func buildAndArchive(xcodeProjPath: String? = nil, schemeName: String? = 
     let scheme = try schemeName ?? ActionsEnvironment.xcodebuild.findSchemeName(at: path)
     let dateTime = Formatters.archiveDateTimeFormatter.string(from: ActionsEnvironment.getCurrentDate())
     let archiveFileName = "\(scheme) \(dateTime).xcarchive"
+    if schemeName == nil {
+        ActionsEnvironment.logger.info("🔍 No scheme specified. Found '\(scheme)'.")
+    }
     try ActionsEnvironment.shell.run("xcodebuild archive -scheme '\(scheme)' -archivePath '\(archiveFileName)'", outputCallback: {
         guard let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0), parsedLine != "" else { return }
         ActionsEnvironment.logger.info("\(parsedLine)")
