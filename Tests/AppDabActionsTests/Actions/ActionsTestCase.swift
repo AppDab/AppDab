@@ -7,6 +7,7 @@ import XCTest
 class ActionsTestCase: XCTestCase {
     var mockBagbutikService: MockBagbutikService!
     var mockFileManager: MockFileManager!
+    var mockAltool: MockAltool!
     var mockInfoPlist: MockInfoPlist!
     var mockKeychain: MockKeychain!
     var mockLogHandler: MockLogHandler!
@@ -54,6 +55,8 @@ class ActionsTestCase: XCTestCase {
         ActionsEnvironment._service = mockBagbutikService
         mockFileManager = MockFileManager()
         ActionsEnvironment.fileManager = mockFileManager
+        mockAltool = MockAltool()
+        ActionsEnvironment.altool = mockAltool
         mockInfoPlist = MockInfoPlist()
         ActionsEnvironment.infoPlist = mockInfoPlist
         mockKeychain = MockKeychain()
@@ -163,14 +166,48 @@ class MockBagbutikService: BagbutikServiceProtocol {
 }
 
 class MockFileManager: FileManagerProtocol {
+    var temporaryDirectory = URL(fileURLWithPath: "./test")
     var contentsOfDirectoryByPath = [String: [String]]()
     private var contentsOfDirectoryCalled = 0
     fileprivate var allContentsOfDirectoryCalled: Bool { contentsOfDirectoryCalled == contentsOfDirectoryByPath.count }
+    private(set) var directoriesCreated = [String]()
+    var failWhenCreatingFiles = false
+    private(set) var filesCreated = [String]()
+    var failsWhenRemovingItems = false
+    private(set) var itemsRemoved = [String]()
 
     func contentsOfDirectory(atPath path: String) throws -> [String] {
         contentsOfDirectoryCalled += 1
         guard let contentsOfDirectory = contentsOfDirectoryByPath[path] else { throw MockError.missingContentsOfDirectoryByPath }
         return contentsOfDirectory
+    }
+
+    func createDirectory(atPath path: String, withIntermediateDirectories createIntermediates: Bool, attributes: [FileAttributeKey: Any]?) throws {
+        directoriesCreated.append(path)
+    }
+
+    func createFile(atPath path: String, contents data: Data?, attributes attr: [FileAttributeKey: Any]?) -> Bool {
+        guard !failWhenCreatingFiles else { return false }
+        filesCreated.append(path)
+        return true
+    }
+
+    func removeItem(atPath: String) throws {
+        guard !failsWhenRemovingItems else { throw NSError(domain: "NSCocoaErrorDomain", code: 4) }
+        itemsRemoved.append(atPath)
+    }
+}
+
+class MockAltool: AltoolProtocol {
+    var validatedExportedArchivePaths = [String]()
+    var uploadedExportedArchivePaths = [(path: String, appAppleId: String)]()
+
+    func validate(exportedArchivePath: String) throws {
+        validatedExportedArchivePaths.append(exportedArchivePath)
+    }
+
+    func upload(exportedArchivePath: String, appAppleId: String) throws {
+        uploadedExportedArchivePaths.append((path: exportedArchivePath, appAppleId: appAppleId))
     }
 }
 

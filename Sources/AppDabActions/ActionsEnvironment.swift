@@ -64,6 +64,7 @@ public enum ActionsEnvironment {
     internal static var timeZone: TimeZone = .current
     internal static var urlSession: AppDabURLSessionProtocol = URLSession.shared
     #if os(macOS)
+    internal static var altool: AltoolProtocol = Altool()
     internal static var infoPlist: InfoPlistProtocol = InfoPlist()
     internal static var keychain: KeychainProtocol = Keychain()
     internal static var shell: ShellProtocol = Shell()
