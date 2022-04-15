@@ -5,8 +5,11 @@
  - Parameter xcodeProjPath: The path to a specific Xcode project. If this is not specified, it will look in the current directory.
  - Parameter schemeName: The name of the scheme to build and archive. If this is not specified, it will look for a scheme matching the name of the project or let the user select from a list.
  - Postcondition: If the build and archive is successful, the path to the .xcarchive is saved in the shared ``Values/xcarchivePath``.
+ - Returns: The path to the .xcarchive
  */
-public func buildAndArchive(xcodeProjPath: String? = nil, schemeName: String? = nil) throws {
+@discardableResult
+public func buildAndArchive(xcodeProjPath: String? = ActionsEnvironment.settings.xcodeProjPath,
+                            schemeName: String? = ActionsEnvironment.settings.schemeName) throws -> String {
     ActionsEnvironment.logger.info("📦 Building and archiving...")
     let path = getPathContainingXcodeProj(xcodeProjPath)
     let scheme = try schemeName ?? ActionsEnvironment.xcodebuild.findSchemeName(at: path)
@@ -27,5 +30,6 @@ public func buildAndArchive(xcodeProjPath: String? = nil, schemeName: String? = 
     ActionsEnvironment.logger.info("🎉 Project built and archived. The archive is available in Xcode's Organizer")
     ActionsEnvironment.logger.trace("The archive is here: \(archivePath)")
     ActionsEnvironment.values.xcarchivePath = archivePath
+    return archivePath
 }
 #endif

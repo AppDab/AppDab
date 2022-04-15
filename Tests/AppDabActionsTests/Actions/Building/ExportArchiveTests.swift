@@ -27,7 +27,7 @@ final class ExportArchiveTests: ActionsTestCase {
         let expectedCommand = "xcodebuild -exportArchive -archivePath './MoreAwesome.xcarchive' -exportPath 'build' -exportOptionsPlist 'OtherExportOptions.plist'"
         mockShell.mockOutputsByCommand = [expectedCommand: ""]
         mockFileManager.contentsOfDirectoryByPath["build"] = ["MoreAwesome.ipa"]
-        try! exportArchive(archivePath: "./MoreAwesome.xcarchive", exportPath: "build", exportOptionsPlist: "OtherExportOptions.plist")
+        try! exportArchive(archivePath: "./MoreAwesome.xcarchive", exportPath: "build", exportOptionsPlistPath: "OtherExportOptions.plist")
         XCTAssertEqual(mockShell.runs, [ShellRun(command: expectedCommand, path: ".")])
     }
 

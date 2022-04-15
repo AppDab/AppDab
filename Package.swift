@@ -11,11 +11,15 @@ let package = Package(
     products: [
         .library(
             name: "AppDabActions",
-            targets: ["AppDabActions"])
+            targets: ["AppDabActions"]),
+        .library(
+            name: "AppDabRunner",
+            targets: ["AppDabRunner"]),
     ],
     dependencies: [
         .package(url: "https://github.com/MortenGregersen/Bagbutik", from: "1.0.1"),
         .package(url: "https://github.com/cbaker6/CertificateSigningRequest", from: "1.27.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log", from: "1.0.0"),
         .package(url: "https://github.com/thii/xcbeautify", from: "0.9.1"),
         .package(url: "https://github.com/TitouanVanBelle/XCTestHTMLReport", .branch("develop")),
@@ -34,4 +38,10 @@ let package = Package(
             name: "AppDabActionsTests",
             dependencies: ["AppDabActions"],
             resources: [.copy("Actions/Apps/AppStoreVersion/Localization/screenshot1.png")]),
+        .target(
+            name: "AppDabRunner",
+            dependencies: [
+                "AppDabActions",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ]),
     ])

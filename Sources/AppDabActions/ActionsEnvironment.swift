@@ -20,6 +20,50 @@ public enum ActionsEnvironment {
     /// The logger, which through all logs should be sent
     public static var logger = Logger(label: "AppDabActions")
 
+    // MARK: - Settings
+
+    public static var settings = Settings()
+
+    // MARK: - Shared values
+
+    /// Values shared between actions. Actions can add values to this, which other actions can use.
+    public static var values = Values()
+
+    // MARK: - API Key
+
+    private static var _apiKey: APIKey?
+    /**
+     The API key for interacting with Apples services (App Store Connect API and altool)
+
+     - Note: Setting this will reset the ``service``.
+     */
+    public static var apiKey: APIKey {
+        get {
+            if let _apiKey = _apiKey {
+                return _apiKey
+            }
+            switch settings.apiKey {
+            case .fromKeychain(let keyId):
+                return try! getAPIKey(withId: keyId, logLevel: .debug)
+            case .fromEnvironmentVariables:
+                let envVars = ProcessInfo.processInfo.environment
+                guard let keyId = envVars["APPDAB_KEY_ID"],
+                      let issuerId = envVars["APPDAB_ISSUER_ID"],
+                      let privateKeyPath = envVars["APPDAB_PRIVATE_KEY_PATH"] else {
+                    fatalError("The required environment variables for setting up API Key was not found.")
+                }
+                guard let privateKey = try? String(contentsOfFile: privateKeyPath) else {
+                    fatalError("The private key could not be read from the specified path: \(privateKeyPath)")
+                }
+                return try! APIKey(name: "Unknown", keyId: keyId, issuerId: issuerId, privateKey: privateKey)
+            }
+        }
+        set {
+            _apiKey = newValue
+            _service = nil
+        }
+    }
+
     // MARK: - Service
 
     internal static var _service: BagbutikServiceProtocol?
@@ -32,30 +76,6 @@ public enum ActionsEnvironment {
         _service = service
         return service
     }
-
-    private static var _apiKey: APIKey?
-    /**
-     The API key for interacting with Apples services (App Store Connect API and altool)
-     
-     - Note: Setting this will reset the ``service``.
-     */
-    public static var apiKey: APIKey {
-        get {
-            guard let _apiKey = _apiKey else {
-                fatalError("API Key not set. Set the desired API Key on \(String(describing: ActionsEnvironment.self)).")
-            }
-            return _apiKey
-        }
-        set {
-            _apiKey = newValue
-            _service = nil
-        }
-    }
-
-    // MARK: - Shared values
-
-    /// Values shared between actions. Actions can add values to this, which other actions can use.
-    public static var values = Values()
 
     // MARK: - Internal
 
