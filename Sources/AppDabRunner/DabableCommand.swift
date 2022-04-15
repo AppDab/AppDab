@@ -2,9 +2,12 @@ import AppDabActions
 import ArgumentParser
 import Foundation
 
+/// A async command which has settings for AppDab actions and a function which calls actions.
 public protocol DabableCommand: AsyncParsableCommand {
+    /// The settings to apply to the ``ActionsEnvironment`` before running the actions.
     static var settings: Settings { get }
-    static var actions: () async throws -> Void { get }
+    /// The function which calls actions.
+    func runActions() async throws
 }
 
 public extension DabableCommand {
@@ -15,6 +18,12 @@ public extension DabableCommand {
             FileManager.default.changeCurrentDirectoryPath("..")
         }
         ActionsEnvironment.settings = Self.settings
-        await runActions(Self.actions)
+        do {
+            try await runActions()
+        } catch (let error) {
+            let runActionsError = mapErrorToAppDabError(error: error)
+            logAppDabError(runActionsError)
+            throw error
+        }
     }
 }
