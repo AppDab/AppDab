@@ -27,4 +27,11 @@ final class UploadExportedArchive: ActionsTestCase {
             XCTAssertEqual(error as! UploadError, .exportedArchivePathMissing)
         }
     }
+    
+    func testUploadExportedArchive_MissingAppAppleId() {
+        ActionsEnvironment.values.exportedArchivePath = exportedArchivePath
+        XCTAssertThrowsError(try uploadExportedArchive()) { error in
+            XCTAssertEqual(error as! UploadError, .appAppleIdMissing)
+        }
+    }
 }

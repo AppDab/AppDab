@@ -39,6 +39,9 @@ public enum ActionsEnvironment {
      */
     public static var apiKey: APIKey {
         get {
+            if let _apiKey = _apiKey {
+                return _apiKey
+            }
             switch settings.apiKey {
             case .fromKeychain(let keyId):
                 return try! getAPIKey(withId: keyId, logLevel: .debug)
