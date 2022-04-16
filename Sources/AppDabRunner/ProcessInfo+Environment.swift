@@ -6,6 +6,7 @@ public extension ProcessInfo {
         self.environment["__CFBundleIdentifier"] == "com.apple.dt.Xcode"
     }
 
+    /// Is this process running on CI
     var runOnCI: Bool {
         let knownCiEnvironmentVars = [
             "TF_BUILD", // Azure Pipelines
