@@ -42,7 +42,7 @@ public enum ActionsEnvironment {
             if let _apiKey = _apiKey {
                 return _apiKey
             }
-            switch settings.apiKey {
+            switch settings.apiKeyResolution {
             case .fromKeychain(let keyId):
                 return try! getAPIKey(withId: keyId, logLevel: .debug)
             case .fromEnvironmentVariables:
