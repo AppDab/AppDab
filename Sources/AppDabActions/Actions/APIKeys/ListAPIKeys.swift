@@ -15,6 +15,7 @@ public func listAPIKeys() throws -> [APIKey] {
             else { throw APIKeyError.invalidAPIKeyFormat }
             return apiKey
         }
+        .sorted { $0.name < $1.name }
     ActionsEnvironment.logger.info("👍 API Keys loaded")
     apiKeys.forEach { apiKey in
         ActionsEnvironment.logger.info(" ◦ \(apiKey.name) (\(apiKey.keyId))")
