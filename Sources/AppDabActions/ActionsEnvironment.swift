@@ -80,13 +80,13 @@ public enum ActionsEnvironment {
     // MARK: - Internal
 
     internal static var fileManager: FileManagerProtocol = FileManager.default
+    internal static var keychain: KeychainProtocol = Keychain()
     internal static var locale: Locale = .current
     internal static var timeZone: TimeZone = .current
     internal static var urlSession: AppDabURLSessionProtocol = URLSession.shared
     #if os(macOS)
     internal static var altool: AltoolProtocol = Altool()
     internal static var infoPlist: InfoPlistProtocol = InfoPlist()
-    internal static var keychain: KeychainProtocol = Keychain()
     internal static var shell: ShellProtocol = Shell()
     internal static var terminal: TerminalProtocol = Terminal()
     internal static var xcodebuild: XcodebuildProtocol = Xcodebuild()
