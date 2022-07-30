@@ -20,7 +20,7 @@ public func createCertificate(type: CertificateType) async throws -> Certificate
     }
     let requestBody = CertificateCreateRequest(data: .init(attributes: .init(certificateType: type, csrContent: csrString)))
     ActionsEnvironment.logger.info("🚀 Creating a '\(type.prettyName)' certificate...")
-    let certificateResponse = try await ActionsEnvironment.service.request(.createCertificate(requestBody: requestBody))
+    let certificateResponse = try await ActionsEnvironment.service.request(.createCertificateV1(requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Certificate created")
     return certificateResponse.data
 }

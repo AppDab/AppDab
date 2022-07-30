@@ -23,7 +23,7 @@ public func inviteUser(email: String, firstName: String, lastName: String, roles
         attributes: .init(allAppsVisible: allAppsVisible, email: email, firstName: firstName, lastName: lastName, provisioningAllowed: provisioningAllowed, roles: roles),
         relationships: relationships))
     ActionsEnvironment.logger.info("🚀 Inviting user '\(firstName) \(lastName)' (\(email))...")
-    let userInvitationResponse = try await ActionsEnvironment.service.request(.createUserInvitation(requestBody: requestBody))
+    let userInvitationResponse = try await ActionsEnvironment.service.request(.createUserInvitationV1(requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 User invited")
     return userInvitationResponse.data
 }

@@ -30,7 +30,7 @@ public func updateAppInfoLocalization(withId id: String, newName: String? = nil,
         logValues.append("new privacy policy URL '\(newPrivacyPolicyUrl)'")
     }
     ActionsEnvironment.logger.info("🚀 Updating localization with id '\(id)' with \(ListFormatter.localizedString(byJoining: logValues))...")
-    let appInfoLocalizationResponse = try await ActionsEnvironment.service.request(.updateAppInfoLocalization(id: id, requestBody: requestBody))
+    let appInfoLocalizationResponse = try await ActionsEnvironment.service.request(.updateAppInfoLocalizationV1(id: id, requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Localization updated")
     return appInfoLocalizationResponse.data
 }
@@ -55,7 +55,7 @@ public func updateAppInfoLocalization(withId id: String, newName: String? = nil,
 public func updateAppInfoLocalization(forLocale locale: String, forAppId appId: String, newName: String? = nil, newSubtitle: String? = nil, newPrivacyPolicyUrl: String? = nil) async throws -> AppInfoLocalization {
     ActionsEnvironment.logger.info("🚀 Fetching app info localization by locale '\(locale)' for app id '\(appId)'...")
     let appInfosResponse = try await ActionsEnvironment.service.request(
-        .listAppInfosForApp(id: appId,
+        .listAppInfosForAppV1(id: appId,
                             fields: [.appInfos([.appStoreState, .appInfoLocalizations]),
                                      .appInfoLocalizations([.locale])],
                             includes: [.appInfoLocalizations])

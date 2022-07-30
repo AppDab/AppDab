@@ -8,7 +8,7 @@ import Bagbutik
  */
 public func deleteProfile(withId id: String) async throws {
     ActionsEnvironment.logger.info("🚀 Deleting profile '\(id)'...")
-    _ = try await ActionsEnvironment.service.request(.deleteProfile(id: id))
+    _ = try await ActionsEnvironment.service.request(.deleteProfileV1(id: id))
     ActionsEnvironment.logger.info("👍 Profile deleted")
 }
 
@@ -20,7 +20,7 @@ public func deleteProfile(withId id: String) async throws {
  */
 public func deleteProfile(named name: String) async throws {
     ActionsEnvironment.logger.info("🚀 Fetching profile by name '\(name)'...")
-    guard let profile = try await ActionsEnvironment.service.request(.listProfiles(filters: [.name([name])])).data.first else {
+    guard let profile = try await ActionsEnvironment.service.request(.listProfilesV1(filters: [.name([name])])).data.first else {
         throw ProfileError.profileWithNameNotFound(name)
     }
     ActionsEnvironment.logger.info("👍 Found profile named '\(name)' (\(profile.id))")

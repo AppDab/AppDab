@@ -37,7 +37,7 @@ public func updateAppStoreVersionLocalizedTexts(forAppStoreVersionLocalizationId
     let requestBody = AppStoreVersionLocalizationUpdateRequest(data: .init(id: id, attributes: attributes))
     ActionsEnvironment.logger.info("🚀 Updating App Store version localization texts with id '\(id)' with \(ListFormatter.localizedString(byJoining: logValues))...")
     let appStoreVersionLocalizationResponse = try await ActionsEnvironment.service.request(
-        .updateAppStoreVersionLocalization(id: id, requestBody: requestBody))
+        .updateAppStoreVersionLocalizationV1(id: id, requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 App Store version localization texts updated")
     return appStoreVersionLocalizationResponse.data
 }

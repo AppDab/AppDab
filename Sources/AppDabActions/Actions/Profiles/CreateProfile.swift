@@ -24,7 +24,7 @@ public func createProfile(named name: String, profileType: Profile.Attributes.Pr
         )
     )
     ActionsEnvironment.logger.info("🚀 Creating a new profile called '\(name)'...")
-    let profileResponse = try await ActionsEnvironment.service.request(.createProfile(requestBody: requestBody))
+    let profileResponse = try await ActionsEnvironment.service.request(.createProfileV1(requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Profile created")
     return profileResponse.data
 }

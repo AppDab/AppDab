@@ -9,7 +9,7 @@ import Foundation
 @discardableResult
 public func listCertificates() async throws -> [(certificate: Certificate, inKeychain: Bool)] {
     ActionsEnvironment.logger.info("🚀 Fetching list of certificates...")
-    let response = try await ActionsEnvironment.service.requestAllPages(.listCertificates())
+    let response = try await ActionsEnvironment.service.requestAllPages(.listCertificatesV1())
     ActionsEnvironment.logger.info("👍 Certificates fetched")
     let serialNumbers = response.data.map { $0.attributes!.serialNumber! }
     let keychainStatuses = try ActionsEnvironment.keychain.hasCertificates(serialNumbers: serialNumbers)

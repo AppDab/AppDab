@@ -15,7 +15,7 @@ public func registerBundleId(identifier: String, name: String, seedId: String? =
     let requestBody = BundleIdCreateRequest(data: .init(attributes: .init(identifier: identifier, name: name, platform: .universal, seedId: seedId)))
     let fullIdentifier = BundleId.fullIdentifier(for: identifier, seedId: seedId)
     ActionsEnvironment.logger.info("🚀 Registering a new bundle ID '\(fullIdentifier)' called '\(name)'")
-    let bundleIdResponse = try await ActionsEnvironment.service.request(.createBundleId(requestBody: requestBody))
+    let bundleIdResponse = try await ActionsEnvironment.service.request(.createBundleIdV1(requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Bundle ID registered")
     return bundleIdResponse.data
 }

@@ -34,7 +34,7 @@ public func createAppInfoLocalization(forLocale locale: String, forAppInfoId app
         logValues.append("privacy policy URL '\(privacyPolicyUrl)'")
     }
     ActionsEnvironment.logger.info("🚀 Create localization with \(ListFormatter.localizedString(byJoining: logValues))...")
-    let appInfoLocalizationResponse = try await ActionsEnvironment.service.request(.createAppInfoLocalization(requestBody: requestBody))
+    let appInfoLocalizationResponse = try await ActionsEnvironment.service.request(.createAppInfoLocalizationV1(requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Localization created")
     return appInfoLocalizationResponse.data
 }
@@ -59,7 +59,7 @@ public func createAppInfoLocalization(forLocale locale: String, forAppInfoId app
 public func createAppInfoLocalization(forLocale locale: String, forAppId appId: String, name: String? = nil, subtitle: String? = nil, privacyPolicyUrl: String? = nil) async throws -> AppInfoLocalization {
     ActionsEnvironment.logger.info("🚀 Fetching app info for app id '\(appId)'...")
     let appInfosResponse = try await ActionsEnvironment.service.request(
-        .listAppInfosForApp(id: appId, fields: [.appInfos([.appStoreState])], includes: [.appInfoLocalizations])
+        .listAppInfosForAppV1(id: appId, fields: [.appInfos([.appStoreState])], includes: [.appInfoLocalizations])
     )
     let appInfo: AppInfo = appInfosResponse.data.first { appInfo in
         appInfo.attributes!.appStoreState != .readyForSale &&
