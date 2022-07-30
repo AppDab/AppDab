@@ -33,7 +33,7 @@ public func updateAppStoreVersion(withId id: String,
     let requestBody = AppStoreVersionUpdateRequest(data: .init(id: id, attributes: attributes))
     ActionsEnvironment.logger.info("🚀 Updating App Store version with id '\(id)' with \(ListFormatter.localizedString(byJoining: logValues))...")
     let appStoreVersionResponse = try await ActionsEnvironment.service.request(
-        .updateAppStoreVersion(id: id, requestBody: requestBody))
+        .updateAppStoreVersionV1(id: id, requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 App Store version updated")
     return appStoreVersionResponse.data
 }

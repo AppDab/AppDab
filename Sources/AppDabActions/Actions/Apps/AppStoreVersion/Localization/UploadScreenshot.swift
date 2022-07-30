@@ -29,7 +29,7 @@ public func uploadScreenshot(toScreenshotSetWithId screenshotSetId: String,
     ActionsEnvironment.logger.info("👍 Read screnshot. Size \(byteCountFormatter.string(from: .init(value: Double(totalSize), unit: .bytes)))")
     ActionsEnvironment.logger.info("🚀 Reserving space for screenshot...")
     let reserveResponse = try await ActionsEnvironment.service.request(
-        .createAppScreenshot(requestBody: .init(data: .init(
+        .createAppScreenshotV1(requestBody: .init(data: .init(
             attributes: .init(fileName: "AppDab-screenshot-\(UUID().uuidString).png", fileSize: totalSize),
             relationships: .init(appScreenshotSet: .init(data: .init(id: screenshotSetId)))
         )))
@@ -75,7 +75,7 @@ public func uploadScreenshot(toScreenshotSetWithId screenshotSetId: String,
         .map { String(format: "%02x", $0) }
         .joined()
     ActionsEnvironment.logger.info("🚀 Committing screenshot...")
-    let commitResponse = try await ActionsEnvironment.service.request(.updateAppScreenshot(
+    let commitResponse = try await ActionsEnvironment.service.request(.updateAppScreenshotV1(
         id: reserveResponse.data.id,
         requestBody: .init(data: .init(
             id: reserveResponse.data.id,

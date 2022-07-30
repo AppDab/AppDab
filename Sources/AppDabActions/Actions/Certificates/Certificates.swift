@@ -25,13 +25,13 @@ public enum EnsureCertificatePolicy {
     - certificateSerialNumber: The serial number of the certificate to use.
  - Postcondition: A valid certificate is present in Keychain.
  */
-public func ensureCertificate(type: ListCertificates.Filter.CertificateType = .distribution, policy: EnsureCertificatePolicy = .readOnly, encryptedCertificatesFolderPath: String = "Signing", certificateSerialNumber requestedCertificateSerialNumber: String? = nil) async throws {
+public func ensureCertificate(type: ListCertificatesV1.Filter.CertificateType = .distribution, policy: EnsureCertificatePolicy = .readOnly, encryptedCertificatesFolderPath: String = "Signing", certificateSerialNumber requestedCertificateSerialNumber: String? = nil) async throws {
     ActionsEnvironment.logger.info("⏬ Fetching list of available certificates...")
-    var filters: [ListCertificates.Filter] = [.certificateType([type])]
+    var filters: [ListCertificatesV1.Filter] = [.certificateType([type])]
     if let requestedCertificateSerialNumber = requestedCertificateSerialNumber {
         filters.append(.serialNumber([requestedCertificateSerialNumber]))
     }
-    let certificates = try await ActionsEnvironment.service.request(.listCertificates(filters: filters)).data
+    let certificates = try await ActionsEnvironment.service.request(.listCertificatesV1(filters: filters)).data
     guard certificates.count > 0 else {
         ActionsEnvironment.logger.info("🤷🏼 No certificates found online")
         if ActionsEnvironment.terminal.getBoolInput(question: "Should we create a new certificate?") {
@@ -172,7 +172,7 @@ private func saveCertificateInKeychain(certificate: Certificate, encryptedCertif
     }
 }
 
-private func maybeCreateCertificate(type: ListCertificates.Filter.CertificateType, policy: EnsureCertificatePolicy, encryptedCertificatesFolderPath: String) async throws {
+private func maybeCreateCertificate(type: ListCertificatesV1.Filter.CertificateType, policy: EnsureCertificatePolicy, encryptedCertificatesFolderPath: String) async throws {
     if policy == .readOnly {
         ActionsEnvironment.logger.error("🚫 In read-only mode, so no new certificate is created")
     } else {
@@ -191,7 +191,7 @@ private func maybeCreateCertificate(type: ListCertificates.Filter.CertificateTyp
             csrContent: csrString
         )))
         ActionsEnvironment.logger.info("🚀 Creating certificate online...")
-        let certificate = try await ActionsEnvironment.service.request(.createCertificate(requestBody: requestBody)).data
+        let certificate = try await ActionsEnvironment.service.request(.createCertificateV1(requestBody: requestBody)).data
         ActionsEnvironment.logger.info("👍 Certificate created online")
         let saveCertificateResult = try saveCertificateInKeychain(certificate: certificate, encryptedCertificatesFolderPath: encryptedCertificatesFolderPath)
         switch saveCertificateResult {

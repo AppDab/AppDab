@@ -16,7 +16,7 @@ public func updatePromotionalText(
         data: .init(id: id, attributes: .init(promotionalText: newPromotionalText)))
     ActionsEnvironment.logger.info("🚀 Updating promotional text for App Store version localization with id '\(id)'...")
     let appStoreVersionLocalizationResponse = try await ActionsEnvironment.service.request(
-        .updateAppStoreVersionLocalization(id: id, requestBody: requestBody))
+        .updateAppStoreVersionLocalizationV1(id: id, requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Promotional text updated")
     return appStoreVersionLocalizationResponse.data
 }

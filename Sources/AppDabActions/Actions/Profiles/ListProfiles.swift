@@ -9,7 +9,7 @@ import Foundation
 @discardableResult
 public func listProfiles() async throws -> [Profile] {
     ActionsEnvironment.logger.info("🚀 Fetching list of profiles...")
-    let response = try await ActionsEnvironment.service.requestAllPages(.listProfiles())
+    let response = try await ActionsEnvironment.service.requestAllPages(.listProfilesV1())
     ActionsEnvironment.logger.info("👍 Profiles fetched")
     response.data.map(\.attributes).forEach { profileAttributes in
         let expired = profileAttributes!.expirationDate! < Date.now
