@@ -1,4 +1,5 @@
-import Bagbutik
+import Bagbutik_AppStore
+import Bagbutik_Models
 import Foundation
 
 /**
@@ -39,7 +40,7 @@ public func updateAppInfoLocalization(withId id: String, newName: String? = nil,
  Update an app info localization.
 
  An app info localization is the localized parts of the App Store listing which isn't tied to a specific version.
- 
+
  This will first fetch the app info localizations, and try to figure out the right app info localization id.
  If the app info localization id is already known, use the other overload of this action.
 
@@ -56,9 +57,9 @@ public func updateAppInfoLocalization(forLocale locale: String, forAppId appId: 
     ActionsEnvironment.logger.info("🚀 Fetching app info localization by locale '\(locale)' for app id '\(appId)'...")
     let appInfosResponse = try await ActionsEnvironment.service.request(
         .listAppInfosForAppV1(id: appId,
-                            fields: [.appInfos([.appStoreState, .appInfoLocalizations]),
-                                     .appInfoLocalizations([.locale])],
-                            includes: [.appInfoLocalizations])
+                              fields: [.appInfos([.appStoreState, .appInfoLocalizations]),
+                                       .appInfoLocalizations([.locale])],
+                              includes: [.appInfoLocalizations])
     )
     let appInfoLocalization: AppInfoLocalization? = appInfosResponse.data.compactMap { appInfo -> AppInfoLocalization? in
         guard appInfo.attributes!.appStoreState != .readyForSale,

@@ -1,4 +1,5 @@
-import Bagbutik
+import Bagbutik_Models
+import Bagbutik_Provisioning
 
 /**
  Rename a device by its resource id.
@@ -19,7 +20,7 @@ public func renameDevice(withId id: String, newName: String) async throws -> Dev
 
 /**
  Rename a device by its current name.
- 
+
  - Parameters:
     - name: The name of the `Device` to be updated.
     - newName: The new name for the device.

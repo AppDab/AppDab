@@ -1,4 +1,4 @@
-import Bagbutik
+import Bagbutik_Models
 
 internal extension BundleId {
     static func fullIdentifier(for identifier: String, seedId: String?) -> String {

@@ -1,4 +1,5 @@
-import Bagbutik
+import Bagbutik_AppStore
+import Bagbutik_Models
 import Foundation
 
 /**

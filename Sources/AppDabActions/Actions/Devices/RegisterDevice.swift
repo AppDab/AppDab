@@ -1,4 +1,5 @@
-import Bagbutik
+import Bagbutik_Models
+import Bagbutik_Provisioning
 
 /**
  Register a device for testing.

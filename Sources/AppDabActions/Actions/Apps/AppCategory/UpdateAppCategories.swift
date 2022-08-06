@@ -1,4 +1,5 @@
-import Bagbutik
+import Bagbutik_AppStore
+import Bagbutik_Models
 
 /// Parameter for updating categories for an app. The category can be set or cleared.
 public enum UpdateCategoryParameter {
@@ -10,11 +11,11 @@ public enum UpdateCategoryParameter {
 
 /**
  Update categories and subcategories for an app.
- 
+
  An app can have a primary category and a secondary category. Both categories can have two subcategories.
- 
+
  The categories and subcategories can be set to new values or cleared. If `nil` is given for one of the categories or subcategories, it won't be updated.
- 
+
  - Parameters:
     - appInfoId: The id of the `AppInfo` for which the categories should be updated.
     - primaryCategoryId: The new primary category id

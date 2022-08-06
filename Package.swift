@@ -17,7 +17,7 @@ let package = Package(
             targets: ["AppDabRunner"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/MortenGregersen/Bagbutik", from: "2.1.1"),
+        .package(url: "https://github.com/MortenGregersen/Bagbutik", .branch("main")),
         .package(url: "https://github.com/cbaker6/CertificateSigningRequest", from: "1.27.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log", from: "1.0.0"),
@@ -28,7 +28,7 @@ let package = Package(
         .target(
             name: "AppDabActions",
             dependencies: [
-                "Bagbutik",
+                .product(name: "Bagbutik", package: "Bagbutik"),
                 "CertificateSigningRequest",
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "XcbeautifyLib", package: "xcbeautify"),

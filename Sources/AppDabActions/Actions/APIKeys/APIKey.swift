@@ -1,4 +1,4 @@
-import Bagbutik
+import Bagbutik_Core
 import Foundation
 
 /// A collection of the required keys and values for an API Key from App Store Connect.
@@ -17,10 +17,10 @@ public struct APIKey: Identifiable, Hashable {
 
     /**
      Create a new API Key.
-     
+
      Full documentation for how to get the required keys.
      <https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api>
-     
+
      - Parameters:
         - name: The user specified name of the API Key.
         - keyId: The private key ID from App Store Connect; for example 2X9R4HXF34.

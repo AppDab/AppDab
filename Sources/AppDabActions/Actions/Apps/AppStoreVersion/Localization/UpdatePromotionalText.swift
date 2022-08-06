@@ -1,4 +1,5 @@
-import Bagbutik
+import Bagbutik_AppStore
+import Bagbutik_Models
 
 /**
  Update the localized promotional text for an App Store version localization.

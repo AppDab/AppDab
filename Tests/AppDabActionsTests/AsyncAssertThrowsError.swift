@@ -1,4 +1,3 @@
-import Bagbutik
 import XCTest
 
 // This is temporary until Apple releases support for async/await in XCTAssertThrowsError

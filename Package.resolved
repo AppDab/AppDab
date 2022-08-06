@@ -5,9 +5,9 @@
         "package": "Bagbutik",
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
-          "branch": null,
-          "revision": "f95070e05281dc6aa33f9227b89b366d0bffbe9c",
-          "version": "2.1.1"
+          "branch": "main",
+          "revision": "13d8a70a9d5ab94d642ddeaaf89dfd1119c5162c",
+          "version": null
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/cbaker6/CertificateSigningRequest",
         "state": {
           "branch": null,
-          "revision": "6619c489019ad32d0cfb2cbf30ceb87bfe153050",
-          "version": "1.28.0"
+          "revision": "9fdbfeea4b53323c8710859c4373923c737aeaa7",
+          "version": "1.29.0"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "f3c9084a71ef4376f2fabbdf1d3d90a49f1fabdb",
-          "version": "1.1.2"
+          "revision": "df9ee6676cd5b3bf5b330ec7568a5644f547201b",
+          "version": "1.1.3"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "f8e35f6716c369c8412664052a0a7337da2ca0e3",
-          "version": "0.49.9"
+          "revision": "9a2fb9a9431e0ddea19dd6cb4395615129cf44cb",
+          "version": "0.49.14"
         }
       },
       {
@@ -105,8 +105,8 @@
         "repositoryURL": "https://github.com/MaxDesiatov/XMLCoder.git",
         "state": {
           "branch": null,
-          "revision": "f30119af03996939cc4f54e0bf0dda9f88a84da5",
-          "version": "0.13.1"
+          "revision": "ca932442d7481700f5434a7b138c47dd42d9902b",
+          "version": "0.14.0"
         }
       },
       {

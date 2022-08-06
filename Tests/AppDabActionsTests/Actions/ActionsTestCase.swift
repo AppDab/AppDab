@@ -1,5 +1,5 @@
 @testable import AppDabActions
-@testable import Bagbutik
+import Bagbutik_Core
 import Combine
 import Logging
 import XCTest

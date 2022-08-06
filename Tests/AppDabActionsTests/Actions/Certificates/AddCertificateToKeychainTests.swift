@@ -1,5 +1,5 @@
 import AppDabActions
-import Bagbutik
+import Bagbutik_Models
 import Foundation
 import XCTest
 

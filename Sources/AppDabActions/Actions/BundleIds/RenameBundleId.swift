@@ -1,4 +1,5 @@
-import Bagbutik
+import Bagbutik_Models
+import Bagbutik_Provisioning
 
 /**
  Rename a bundle id by its resource id.
@@ -19,7 +20,7 @@ public func renameBundleId(withId id: String, newName: String) async throws -> B
 
 /**
  Rename a bundle id by its identifier.
- 
+
  The identifier is the reverse-DNS identifier, like `com.apple.Calculator`.
 
  - Parameters:
@@ -39,7 +40,7 @@ public func renameBundleId(withIdentifier identifier: String, newName: String) a
 
 /**
  Rename a bundle id by its current name.
- 
+
  - Parameters:
     - name: The name of the `BundleId` to be updated.
     - newName: The new name for the bundle id.
