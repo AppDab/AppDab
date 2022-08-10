@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": "main",
-          "revision": "13d8a70a9d5ab94d642ddeaaf89dfd1119c5162c",
+          "revision": "a4cebdfb656ce4791a37f37570282a0133b598fa",
           "version": null
         }
       },
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
+          "revision": "8fc79cae9d03a5e623c52cc2dbd2df165a7832b0",
+          "version": "1.4.3"
         }
       },
       {
