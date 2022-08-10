@@ -1,5 +1,6 @@
 import AppDabActions
-import Bagbutik
+import Bagbutik_Core
+import Bagbutik_Models
 import Foundation
 import XCTest
 
@@ -10,7 +11,7 @@ final class DeleteBundleIdTests: ActionsTestCase {
                      relationships: .init(app: nil, bundleIdCapabilities: nil, profiles: nil))],
         links: .init(self: ""))
     let deleteResponse = EmptyResponse()
-    
+
     func testDeleteBundleId_WithId() async {
         mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .delete))
         try! await deleteBundleId(withId: "some-id")
@@ -19,7 +20,7 @@ final class DeleteBundleIdTests: ActionsTestCase {
             Log(level: .info, message: "👍 Bundle ID deleted"),
         ])
     }
-    
+
     func testDeleteBundleId_WithIdentifier() async {
         mockBagbutikService.setResponse(fetchResponse, for: Endpoint(path: "/v1/bundleIds", method: .get))
         mockBagbutikService.setResponse(deleteResponse, for: Endpoint(path: "/v1/bundleIds/some-id", method: .delete))

@@ -1,5 +1,6 @@
 #if os(macOS)
-import Bagbutik
+import Bagbutik_Models
+import Bagbutik_Provisioning
 import CertificateSigningRequest
 import Foundation
 
@@ -13,11 +14,11 @@ public enum EnsureCertificatePolicy {
 
 /**
  Ensure that a certificate is present.
- 
+
  The policy decides if a new certificate is created, if none is found on the system.
- 
+
  The certificate is read from/written to an encrypted file at the path specified.
- 
+
  - Parameters:
     - type: The type of certificate to use.
     - policy: The policy which decides if a new certificate should be created, if none is found on the system.

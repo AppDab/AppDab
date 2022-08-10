@@ -1,5 +1,5 @@
 import AppDabActions
-import Bagbutik
+import Bagbutik_Core
 import XCTest
 
 final class DeleteAppInfoLocalizationTests: ActionsTestCase {

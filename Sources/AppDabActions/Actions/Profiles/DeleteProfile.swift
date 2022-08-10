@@ -1,4 +1,4 @@
-import Bagbutik
+import Bagbutik_Provisioning
 
 /**
  Delete a profile by its resource id.

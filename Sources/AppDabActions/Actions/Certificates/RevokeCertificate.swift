@@ -1,4 +1,4 @@
-import Bagbutik
+import Bagbutik_Provisioning
 
 /**
  Revoke a certificate by its resource id.

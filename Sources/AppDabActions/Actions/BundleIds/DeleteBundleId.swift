@@ -1,4 +1,4 @@
-import Bagbutik
+import Bagbutik_Provisioning
 
 /**
  Delete a bundle id by its resource id.

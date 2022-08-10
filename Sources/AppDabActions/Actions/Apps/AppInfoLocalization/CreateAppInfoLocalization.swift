@@ -1,4 +1,5 @@
-import Bagbutik
+import Bagbutik_AppStore
+import Bagbutik_Models
 import Foundation
 
 /**
@@ -43,7 +44,7 @@ public func createAppInfoLocalization(forLocale locale: String, forAppInfoId app
  Create an app info localization for locale.
 
  An app info localization is the localized parts of the App Store listing which isn't tied to a specific version.
- 
+
  This will first fetch the app infos, and try to figure out the right app info id.
  If the app info id is already known, use the other overload of this action.
 
