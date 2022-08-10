@@ -5,9 +5,9 @@
         "package": "Bagbutik",
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
-          "branch": "main",
+          "branch": null,
           "revision": "a4cebdfb656ce4791a37f37570282a0133b598fa",
-          "version": null
+          "version": "3.0.0"
         }
       },
       {
