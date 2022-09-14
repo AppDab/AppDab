@@ -40,7 +40,7 @@ final class BuildAndArchiveTests: ActionsTestCase {
     
     func testBuildAndArchive_WithScheme() {
         mockShell.mockOutputsByCommand = [
-            "xcodebuild archive -scheme 'Awesome' -archivePath 'Awesome 10-06-2021, 21.32.xcarchive'": #"""
+            "xcodebuild archive -scheme 'Awesome' -archivePath 'Awesome 10-06-2021, 21.32.xcarchive' -destination 'generic/platform=macOS'": #"""
             Command line invocation:
                 /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild archive -scheme 'Awesome' -archivePath 'Awesome 10-06-2021, 21.32.xcarchive'
 
@@ -55,7 +55,7 @@ final class BuildAndArchiveTests: ActionsTestCase {
             "mkdir -p ~/Library/Developer/Xcode/Archives/2021-06-10": "",
             "mv 'Awesome 10-06-2021, 21.32.xcarchive' ~/Library/Developer/Xcode/Archives/2021-06-10": "",
         ]
-        try! buildAndArchive(schemeName: "Awesome")
+        try! buildAndArchive(schemeName: "Awesome", additionalFlags: "-destination 'generic/platform=macOS'")
         XCTAssertEqual(mockLogHandler.logs, [
             Log(level: .info, message: "📦 Building and archiving..."),
             Log(level: .info, message: "Parsed: Command line invocation:"),
