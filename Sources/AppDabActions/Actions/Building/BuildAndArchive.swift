@@ -1,7 +1,7 @@
 #if os(macOS)
 /**
  Build and archive (.xcarchive) a scheme in a project
- 
+
  - Parameter xcodeProjPath: The path to a specific Xcode project. If this is not specified, it will look in the current directory.
  - Parameter schemeName: The name of the scheme to build and archive. If this is not specified, it will look for a scheme matching the name of the project or let the user select from a list.
  - Postcondition: If the build and archive is successful, the path to the .xcarchive is saved in the shared ``Values/xcarchivePath``.
@@ -9,7 +9,8 @@
  */
 @discardableResult
 public func buildAndArchive(xcodeProjPath: String? = ActionsEnvironment.settings.xcodeProjPath,
-                            schemeName: String? = ActionsEnvironment.settings.schemeName) throws -> String {
+                            schemeName: String? = ActionsEnvironment.settings.schemeName,
+                            additionalFlags: String? = nil) throws -> String {
     ActionsEnvironment.logger.info("📦 Building and archiving...")
     let path = getPathContainingXcodeProj(xcodeProjPath)
     let scheme = try schemeName ?? ActionsEnvironment.xcodebuild.findSchemeName(at: path)
@@ -18,7 +19,11 @@ public func buildAndArchive(xcodeProjPath: String? = ActionsEnvironment.settings
     if schemeName == nil {
         ActionsEnvironment.logger.info("🔍 No scheme specified. Found '\(scheme)'.")
     }
-    try ActionsEnvironment.shell.run("xcodebuild archive -scheme '\(scheme)' -archivePath '\(archiveFileName)'", outputCallback: {
+    var command = "xcodebuild archive -scheme '\(scheme)' -archivePath '\(archiveFileName)'"
+    if let additionalFlags = additionalFlags {
+        command += " \(additionalFlags)"
+    }
+    try ActionsEnvironment.shell.run(command, outputCallback: {
         guard let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0), parsedLine != "" else { return }
         ActionsEnvironment.logger.info("\(parsedLine)")
     })
