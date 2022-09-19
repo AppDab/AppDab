@@ -1,15 +1,15 @@
 #if os(macOS)
 /**
  Run tests for a scheme in a project
- 
+
  - Parameter xcodeProjPath: The path to a specific Xcode project. If this is not specified, it will look in the current directory.
  - Parameter schemeName: The name of the scheme to test. If this is not specified, it will look for a scheme matching the name of the project or let the user select from a list.
  */
-public func runTests(xcodeProjPath: String? = nil, schemeName: String? = nil) throws {
+public func runTests(xcodeProjPath: String? = nil, schemeName: String? = nil, destination: String = "platform=iOS Simulator,name=iPhone 12 Pro") throws {
     ActionsEnvironment.logger.info("🧪 Running tests...")
     let path = getPathContainingXcodeProj(xcodeProjPath)
     let scheme = try schemeName ?? ActionsEnvironment.xcodebuild.findSchemeName(at: path)
-    let output = try ActionsEnvironment.shell.run("xcodebuild test -scheme '\(scheme)' -destination 'platform=iOS Simulator,name=iPhone 12 Pro'", outputCallback: {
+    let output = try ActionsEnvironment.shell.run("xcodebuild test -scheme '\(scheme)' -destination '\(destination)'", outputCallback: {
         if $0 == "" { ActionsEnvironment.logger.info("\($0)") }
         else if let parsedLine = ActionsEnvironment.parseXcodebuildOutput($0) { ActionsEnvironment.logger.info("\(parsedLine)") }
     })
