@@ -64,7 +64,7 @@ final class AltoolTests: ActionsTestCase {
         mockShell.mockOutputsByCommand[expectedUploadCommand] = ""
         var altool = Altool()
         altool.uuidCreator = { uuid }
-        altool.fileLoader = { fileUrl in
+        altool.textFileLoader = { fileUrl in
             XCTAssertEqual(fileUrl, unpackedFolderUrl.appendingPathComponent("Distribution"))
             return """
             <?xml version="1.0" encoding="utf-8"?>
@@ -105,7 +105,7 @@ final class AltoolTests: ActionsTestCase {
         mockShell.mockOutputsByCommand[expectedUnpackCommand] = ""
         var altool = Altool()
         altool.uuidCreator = { uuid }
-        altool.fileLoader = { _ in "" }
+        altool.textFileLoader = { _ in "" }
         XCTAssertThrowsError(try altool.upload(exportedArchivePath: exportedMacArchivePath, appAppleId: appAppleId)) { error in
             XCTAssertEqual(error as! UploadError, .couldNotReadMacPackageInfo)
         }
@@ -129,22 +129,10 @@ final class AltoolTests: ActionsTestCase {
         mockFileManager.contentsOfDirectoryByPath[unpackedFolderUrl.appendingPathComponent("Payload").path] = ["AppDab.app"]
         var altool = Altool()
         altool.uuidCreator = { uuid }
-        altool.fileLoader = { fileUrl in
+        altool.binaryFileLoader = { fileUrl, _ in
             XCTAssertEqual(fileUrl, unpackedFolderUrl.appendingPathComponent("Payload/AppDab.app/Info.plist"))
-            return """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-            <plist version="1.0">
-            <dict>
-                <key>CFBundleIdentifier</key>
-                <string>app.AppDab.AppDab</string>
-                <key>CFBundleShortVersionString</key>
-                <string>1.0</string>
-                <key>CFBundleVersion</key>
-                <string>4</string>
-            </dict>
-            </plist>
-            """
+            let binaryPlistUrl = Bundle.module.url(forResource: "Binary-Info", withExtension: "plist")!
+            return try! Data(contentsOf: binaryPlistUrl)
         }
         try altool.upload(exportedArchivePath: exportediOSArchivePath, appAppleId: appAppleId)
         XCTAssertEqual(mockFileManager.filesCreated, [
@@ -175,7 +163,7 @@ final class AltoolTests: ActionsTestCase {
         mockFileManager.contentsOfDirectoryByPath[unpackedFolderUrl.appendingPathComponent("Payload").path] = ["AppDab.app"]
         var altool = Altool()
         altool.uuidCreator = { uuid }
-        altool.fileLoader = { _ in "" }
+        altool.binaryFileLoader = { _, _ in Data() }
         XCTAssertThrowsError(try altool.upload(exportedArchivePath: exportediOSArchivePath, appAppleId: appAppleId)) { error in
             XCTAssertEqual(error as! UploadError, .couldNotReadiOSPackageInfo)
         }

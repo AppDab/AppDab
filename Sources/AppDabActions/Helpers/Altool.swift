@@ -8,7 +8,8 @@ internal protocol AltoolProtocol {
 
 internal struct Altool: AltoolProtocol {
     internal var uuidCreator = { UUID().uuidString }
-    internal var fileLoader = String.init(contentsOf:)
+    internal var textFileLoader = String.init(contentsOf:)
+    internal var binaryFileLoader = Data.init(contentsOf:options:)
 
     internal func validate(exportedArchivePath: String) throws {
         var parameters = [
@@ -43,8 +44,7 @@ internal struct Altool: AltoolProtocol {
             guard let appFolder = try ActionsEnvironment.fileManager
                 .contentsOfDirectory(atPath: unpackedFolderUrl.appendingPathComponent("Payload").path)
                 .first(where: { $0.hasSuffix(".app") }),
-                let infoPlistString = try? fileLoader(unpackedFolderUrl.appendingPathComponent("Payload/\(appFolder)/Info.plist")),
-                let infoPlistData = infoPlistString.data(using: .utf8),
+                let infoPlistData = try? binaryFileLoader(unpackedFolderUrl.appendingPathComponent("Payload/\(appFolder)/Info.plist"), []),
                 let infoPlist = try? PropertyListSerialization.propertyList(from: infoPlistData, format: nil) as? [String: Any],
                 let bundleShortVersionString = infoPlist["CFBundleShortVersionString"] as? String,
                 let bundleVersion = infoPlist["CFBundleVersion"] as? String,
@@ -56,7 +56,7 @@ internal struct Altool: AltoolProtocol {
         } else {
             parameters.append("--type osx")
             try ActionsEnvironment.shell.run("pkgutil --expand \(exportedArchivePath) \(unpackedFolderUrl.path)")
-            guard let distributionInfo = try? fileLoader(unpackedFolderUrl.appendingPathComponent("Distribution")),
+            guard let distributionInfo = try? textFileLoader(unpackedFolderUrl.appendingPathComponent("Distribution")),
                   let bundleShortVersionString = distributionInfo.firstMatch(forRegexPattern: #"CFBundleShortVersionString="([^"]*)""#),
                   let bundleVersion = distributionInfo.firstMatch(forRegexPattern: #"CFBundleVersion="([^"]*)""#),
                   let bundleId = distributionInfo.firstMatch(forRegexPattern: #"<bundle.* id="([^"]*)""#)
