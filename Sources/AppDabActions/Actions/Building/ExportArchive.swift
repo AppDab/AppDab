@@ -13,6 +13,8 @@ public func exportArchive(archivePath: String? = ActionsEnvironment.values.xcarc
                           exportPath: String = ActionsEnvironment.settings.exportPath,
                           exportOptionsPlistPath: String = ActionsEnvironment.settings.exportOptionsPlistPath)
     throws -> String {
+    ActionsEnvironment.logger.info("🧹 Cleaning export path...")
+    try ActionsEnvironment.fileManager.removeItem(atPath: exportPath)
     ActionsEnvironment.logger.info("🎁 Exporting archive...")
     guard let archivePath = archivePath else {
         throw XcodebuildError.archivePathMissing
