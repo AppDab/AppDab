@@ -13,12 +13,14 @@ final class ExportArchiveTests: ActionsTestCase {
         mockFileManager.contentsOfDirectoryByPath["./output"] = ["Awesome.ipa"]
         try! exportArchive()
         XCTAssertEqual(mockLogHandler.logs, [
+            Log(level: .info, message: "🧹 Cleaning export path..."),
             Log(level: .info, message: "🎁 Exporting archive..."),
             Log(level: .info, message: "Parsed: Exported Awesome to: /Users/tim/Projects/awesome"),
             Log(level: .info, message: "Parsed: ** EXPORT SUCCEEDED **"),
             Log(level: .info, message: "🎉 Archive exported"),
             Log(level: .trace, message: "The exported archive is here: ./output/Awesome.ipa"),
         ])
+        XCTAssertEqual(mockFileManager.itemsRemoved, ["./output"])
         XCTAssertEqual(ActionsEnvironment.values.ipaPath, "./output/Awesome.ipa")
     }
 
@@ -35,7 +37,10 @@ final class ExportArchiveTests: ActionsTestCase {
         XCTAssertThrowsError(try exportArchive()) { error in
             XCTAssertEqual(error as! XcodebuildError, .archivePathMissing)
         }
-        XCTAssertEqual(mockLogHandler.logs, [Log(level: .info, message: "🎁 Exporting archive...")])
+        XCTAssertEqual(mockLogHandler.logs, [
+            Log(level: .info, message: "🧹 Cleaning export path..."),
+            Log(level: .info, message: "🎁 Exporting archive...")
+        ])
     }
 
     func testExportArchive_ExportedArchiveNotFound() {
@@ -48,6 +53,7 @@ final class ExportArchiveTests: ActionsTestCase {
             XCTAssertEqual(error as! XcodebuildError, .exportedArchiveNotFound)
         }
         XCTAssertEqual(mockLogHandler.logs, [
+            Log(level: .info, message: "🧹 Cleaning export path..."),
             Log(level: .info, message: "🎁 Exporting archive..."),
             Log(level: .info, message: "🎉 Archive exported"),
         ])
