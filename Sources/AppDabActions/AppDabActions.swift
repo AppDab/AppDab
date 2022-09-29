@@ -3,18 +3,20 @@ import Foundation
 
 /**
  Map any error to an `AppDabError`.
- 
+
  If the error is unknown, and thus unhandled a stack trace is included.
- 
+
  - Parameters:
     - error: The error to map.
  - Returns: An `AppDabError`.
  */
 public func mapErrorToAppDabError(error: Error) -> AppDabError {
-    if let error = error as? ServiceError, let description = error.description {
-        return .simpleError(message: description)
+    if let error = error as? ServiceError, let message = error.description {
+        return .simpleError(message: message)
     } else if let error = error as? ActionError {
         return .simpleError(message: error.description)
+    } else if let error = error as? LocalizedError, let message = error.errorDescription {
+        return .simpleError(message: message)
     } else if let error = error as? ShellError {
         return .loggedError(message: error.message, logFileUrl: error.logFileUrl)
     } else {
@@ -25,9 +27,9 @@ public func mapErrorToAppDabError(error: Error) -> AppDabError {
 
 /**
  Log an `AppDabError`.
- 
+
  If the error is an `.unhandledError` the user is asked to report it on GitHub.
- 
+
  - Parameters:
     - error: The `AppDabError`.
  */
@@ -53,7 +55,7 @@ public enum AppDabError: Error {
     case loggedError(message: String, logFileUrl: URL)
     /// An unhandled error with a message and a stack trace.
     case unhandledError(message: String, stackTrace: String)
-    
+
     public var message: String {
         switch self {
         case .simpleError(let message), .loggedError(let message, _), .unhandledError(let message, _):
