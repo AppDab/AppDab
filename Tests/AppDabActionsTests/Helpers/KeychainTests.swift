@@ -13,23 +13,13 @@ final class KeychainTests: XCTestCase {
         -----END PRIVATE KEY-----
         """.utf8))
         let service = "AppDab"
-        let keychain = Keychain(secItemCopyMatching: { query, result in
-            let query = query as NSDictionary
-            let itemRef = "item"
-            if query[kSecReturnRef] != nil {
-                let queryService = (query as! [String: Any])[kSecAttrService as String] as! String
-                XCTAssertEqual(queryService, service)
-                result?.pointee = [itemRef] as CFTypeRef
-            } else {
-                let queryValueRef = (query as! [String: Any])[kSecValueRef as String] as! String
-                XCTAssertEqual(queryValueRef, itemRef)
-                result?.pointee = [
-                    kSecAttrLabel: genericPassword.label,
-                    kSecAttrAccount: genericPassword.account,
-                    kSecAttrGeneric: genericPassword.generic,
-                    kSecValueData: genericPassword.value
-                ] as CFTypeRef
-            }
+        let keychain = Keychain(secItemCopyMatching: { _, result in
+            result?.pointee = [[
+                kSecAttrLabel: genericPassword.label,
+                kSecAttrAccount: genericPassword.account,
+                kSecAttrGeneric: genericPassword.generic,
+                kSecValueData: genericPassword.value
+            ]] as CFTypeRef
             return errSecSuccess
         })
         XCTAssertEqual(try keychain.listGenericPasswords(forService: service), [genericPassword])
@@ -61,7 +51,7 @@ final class KeychainTests: XCTestCase {
             XCTAssertEqual(error as! KeychainError, .errorReadingFromKeychain(errSecSuccess))
         }
     }
-    
+
     // MARK: Update generic password
 
     func testAddGenericPassword() {
@@ -77,7 +67,7 @@ final class KeychainTests: XCTestCase {
             XCTAssertEqual(error as! KeychainError, .duplicatePassword)
         }
     }
-    
+
     func testAddGenericPassword_Unknown() {
         let status = errSecParam
         let keychain = Keychain(secItemAdd: { _, _ in status })

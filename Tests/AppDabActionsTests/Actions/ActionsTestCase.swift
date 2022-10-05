@@ -333,11 +333,11 @@ class MockKeychain: KeychainProtocol {
         return try keychain.createPublicKey(from: privateKey)
     }
 
-    func getGenericPassword(forService service: String, account: String) throws -> GenericPassword? {
+    func getGenericPassword(forService service: String, account: String, useDataProtectionKeychain: Bool) throws -> GenericPassword? {
         genericPasswordsInKeychain.first { $0.account == account }
     }
 
-    func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
+    func listGenericPasswords(forService service: String, useDataProtectionKeychain: Bool) throws -> [GenericPassword] {
         genericPasswordsInKeychain
     }
 
@@ -345,11 +345,11 @@ class MockKeychain: KeychainProtocol {
         try keychain.addGenericPassword(forService: service, password: password)
     }
 
-    func updateGenericPassword(forService service: String, password: GenericPassword) throws {
+    func updateGenericPassword(forService service: String, password: GenericPassword, searchInDataProtectionKeychain: Bool, updateInDataProtectionKeychain: Bool) throws {
         try keychain.updateGenericPassword(forService: service, password: password)
     }
 
-    func deleteGenericPassword(forService service: String, password: GenericPassword) throws {
+    func deleteGenericPassword(forService service: String, password: GenericPassword, useDataProtectionKeychain: Bool) throws {
         try keychain.deleteGenericPassword(forService: service, password: password)
     }
 }
