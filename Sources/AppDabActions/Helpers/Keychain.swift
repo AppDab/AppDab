@@ -222,9 +222,10 @@ internal struct Keychain: KeychainProtocol {
     }
 
     private static let dataProtectionAttributes: [AnyHashable: Any] = [
-        kSecAttrAccessGroup: "R7YA4RGA8U.app.AppDab.AppDab",
         kSecUseDataProtectionKeychain: true,
-        kSecAttrSynchronizable: true
+        kSecAttrAccessGroup: "R7YA4RGA8U.app.AppDab.AppDab",
+        kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlock,
+        kSecAttrSynchronizable: true,
     ]
 
     internal var secItemCopyMatching = SecItemCopyMatching
