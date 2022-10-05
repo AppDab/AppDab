@@ -6,11 +6,11 @@ internal protocol KeychainProtocol {
     func hasCertificates(serialNumbers: [String]) throws -> [String: Bool]
     func createPrivateKey(labeled label: String) throws -> SecKey
     func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data)
-    func getGenericPassword(forService service: String, account: String) throws -> GenericPassword?
-    func listGenericPasswords(forService service: String) throws -> [GenericPassword]
+    func getGenericPassword(forService service: String, account: String, useDataProtectionKeychain: Bool) throws -> GenericPassword?
+    func listGenericPasswords(forService service: String, useDataProtectionKeychain: Bool) throws -> [GenericPassword]
     func addGenericPassword(forService service: String, password: GenericPassword) throws
-    func updateGenericPassword(forService service: String, password: GenericPassword) throws
-    func deleteGenericPassword(forService service: String, password: GenericPassword) throws
+    func updateGenericPassword(forService service: String, password: GenericPassword, searchInDataProtectionKeychain: Bool, updateInDataProtectionKeychain: Bool) throws
+    func deleteGenericPassword(forService service: String, password: GenericPassword, useDataProtectionKeychain: Bool) throws
 }
 
 internal struct GenericPassword {
@@ -81,16 +81,24 @@ internal struct Keychain: KeychainProtocol {
         }
         return (key: publicKey, data: publicKeyData as Data)
     }
-    
-    func getGenericPassword(forService service: String, account: String) throws -> GenericPassword? {
-        return try listGenericPasswords(forService: service, account: account).first
+
+    func getGenericPassword(forService service: String, account: String, useDataProtectionKeychain: Bool = true) throws -> GenericPassword? {
+        if useDataProtectionKeychain {
+            return try listGenericPasswordsFromDataProtectionKeychain(forService: service, account: account).first
+        } else {
+            return try listGenericPasswordsFromFileBasedKeychain(forService: service, account: account).first
+        }
     }
 
-    func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
-        return try listGenericPasswords(forService: service, account: nil)
+    func listGenericPasswords(forService service: String, useDataProtectionKeychain: Bool = true) throws -> [GenericPassword] {
+        if useDataProtectionKeychain {
+            return try listGenericPasswordsFromDataProtectionKeychain(forService: service, account: nil)
+        } else {
+            return try listGenericPasswordsFromFileBasedKeychain(forService: service, account: nil)
+        }
     }
-    
-    private func listGenericPasswords(forService service: String, account: String? = nil) throws -> [GenericPassword] {
+
+    private func listGenericPasswordsFromFileBasedKeychain(forService service: String, account: String? = nil) throws -> [GenericPassword] {
         let query: NSMutableDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -126,15 +134,46 @@ internal struct Keychain: KeychainProtocol {
         }
     }
 
+    private func listGenericPasswordsFromDataProtectionKeychain(forService service: String, account: String? = nil) throws -> [GenericPassword] {
+        let query: NSMutableDictionary = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecMatchLimit: kSecMatchLimitAll,
+            kSecReturnAttributes: true,
+            kSecReturnData: true,
+        ]
+        query.addEntries(from: Self.dataProtectionAttributes)
+        if let account = account {
+            query[kSecAttrAccount] = account
+        }
+        var items: CFTypeRef?
+        let status = secItemCopyMatching(query, &items)
+        guard status != errSecItemNotFound else { return [] }
+        guard status == errSecSuccess, let items = items as? [Any] else {
+            throw KeychainError.errorReadingFromKeychain(status)
+        }
+        return try items.map { item -> GenericPassword in
+            guard let item = item as? [String: Any],
+                  let label = item[kSecAttrLabel as String] as? String,
+                  let account = item[kSecAttrAccount as String] as? String,
+                  let generic = item[kSecAttrGeneric as String] as? Data,
+                  let value = item[kSecValueData as String] as? Data else {
+                throw KeychainError.malformedPasswordData
+            }
+            return GenericPassword(account: account, label: label, generic: generic, value: value)
+        }
+    }
+
     func addGenericPassword(forService service: String, password: GenericPassword) throws {
-        let query: NSDictionary = [
+        let query: NSMutableDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: password.account,
             kSecAttrLabel: password.label,
             kSecAttrService: service,
             kSecAttrGeneric: password.generic,
-            kSecValueData: password.value,
+            kSecValueData: password.value
         ]
+        query.addEntries(from: Self.dataProtectionAttributes)
         let status = secItemAdd(query, nil)
         guard status != errSecDuplicateItem else {
             throw KeychainError.duplicatePassword
@@ -144,34 +183,49 @@ internal struct Keychain: KeychainProtocol {
         }
     }
 
-    func updateGenericPassword(forService service: String, password: GenericPassword) throws {
-        let query: NSDictionary = [
+    func updateGenericPassword(forService service: String, password: GenericPassword, searchInDataProtectionKeychain: Bool = true, updateInDataProtectionKeychain: Bool = true) throws {
+        let query: NSMutableDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: password.account,
             kSecAttrService: service,
         ]
-        let attributesToUpdate: NSDictionary = [
+        if searchInDataProtectionKeychain {
+            query.addEntries(from: Self.dataProtectionAttributes)
+        }
+        let attributesToUpdate: NSMutableDictionary = [
             kSecAttrLabel: password.label,
             kSecAttrGeneric: password.generic,
             kSecValueData: password.value,
         ]
+        if updateInDataProtectionKeychain {
+            attributesToUpdate.addEntries(from: Self.dataProtectionAttributes)
+        }
         let status = secItemUpdate(query, attributesToUpdate)
         guard status == errSecSuccess else {
             throw KeychainError.failedUpdatingPassword
         }
     }
 
-    func deleteGenericPassword(forService service: String, password: GenericPassword) throws {
-        let query: NSDictionary = [
+    func deleteGenericPassword(forService service: String, password: GenericPassword, useDataProtectionKeychain: Bool = true) throws {
+        let query: NSMutableDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: password.account,
             kSecAttrService: service,
         ]
+        if useDataProtectionKeychain {
+            query.addEntries(from: Self.dataProtectionAttributes)
+        }
         let status = secItemDelete(query)
         guard status == errSecSuccess else {
             throw KeychainError.failedDeletingPassword
         }
     }
+
+    private static let dataProtectionAttributes: [AnyHashable: Any] = [
+        kSecAttrAccessGroup: "R7YA4RGA8U.app.AppDab.AppDab",
+        kSecUseDataProtectionKeychain: true,
+        kSecAttrSynchronizable: true
+    ]
 
     internal var secItemCopyMatching = SecItemCopyMatching
     internal var secItemAdd = SecItemAdd
@@ -239,6 +293,7 @@ internal struct Keychain: KeychainProtocol {
 
 internal enum KeychainError: ActionError, Equatable {
     case errorReadingFromKeychain(OSStatus)
+    case malformedPasswordData
     case noPasswordFound
     case failedAddingPassword(OSStatus)
     case duplicatePassword
@@ -252,6 +307,8 @@ internal enum KeychainError: ActionError, Equatable {
         switch self {
         case .errorReadingFromKeychain(let status):
             return "Could not read from Keychain (OSStatus: \(status))"
+        case .malformedPasswordData:
+            return "The password is missing data"
         case .noPasswordFound:
             return "No password found in Keychain"
         case .failedAddingPassword:
