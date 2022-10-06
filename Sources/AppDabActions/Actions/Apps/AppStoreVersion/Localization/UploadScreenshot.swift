@@ -58,7 +58,7 @@ public func uploadScreenshot(toScreenshotSetWithId screenshotSetId: String,
                     uploadOperationInfo.headers.forEach { headerName, headerValue in
                         urlRequest.addValue(headerValue, forHTTPHeaderField: headerName)
                     }
-                    _ = try await ActionsEnvironment.urlSession.upload(for: urlRequest, from: uploadOperationInfo.data, delegate: nil)
+                    _ = try await ActionsEnvironment.uploadData(urlRequest, uploadOperationInfo.data, nil)
                     return uploadOperationInfo.data.count
                 }
             }

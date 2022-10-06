@@ -72,10 +72,15 @@ public enum ActionsEnvironment {
         if let _service = _service {
             return _service
         }
-        let service = BagbutikService(jwt: apiKey.jwt)
+        let service = BagbutikService(jwt: apiKey.jwt, fetchData: fetchData)
         _service = service
         return service
     }
+    
+    public static var fetchData: FetchData = URLSession.shared.data(for:delegate:)
+    public static var uploadData: UploadData = URLSession.shared.upload(for:from:delegate:)
+    
+    public typealias UploadData = (_ request: URLRequest, _ bodyData: Data, _ delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse)
 
     // MARK: - Internal
 
@@ -83,7 +88,6 @@ public enum ActionsEnvironment {
     internal static var keychain: KeychainProtocol = Keychain()
     internal static var locale: Locale = .current
     internal static var timeZone: TimeZone = .current
-    internal static var urlSession: AppDabURLSessionProtocol = URLSession.shared
     #if os(macOS)
     internal static var altool: AltoolProtocol = Altool()
     internal static var infoPlist: InfoPlistProtocol = InfoPlist()
