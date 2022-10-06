@@ -68,7 +68,7 @@ class ActionsTestCase: XCTestCase {
         mockTerminal = MockTerminal()
         ActionsEnvironment.terminal = mockTerminal
         mockURLSession = MockURLSession()
-        ActionsEnvironment.urlSession = mockURLSession
+        ActionsEnvironment.uploadData = mockURLSession.upload(for:from:delegate:)
         mockXcodebuild = MockXcodebuild()
         ActionsEnvironment.xcodebuild = mockXcodebuild
 
@@ -424,7 +424,7 @@ class MockTerminal: TerminalProtocol {
     }
 }
 
-class MockURLSession: AppDabURLSessionProtocol {
+class MockURLSession {
     var uploadResult: [URL: (data: Data, response: URLResponse, delay: Int)] = [:]
 
     func upload(for request: URLRequest, from bodyData: Data, delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse) {
