@@ -224,7 +224,6 @@ internal struct Keychain: KeychainProtocol {
     private static let dataProtectionAttributes: [AnyHashable: Any] = [
         kSecUseDataProtectionKeychain: true,
         kSecAttrAccessGroup: "R7YA4RGA8U.app.AppDab.AppDab",
-        kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlock,
         kSecAttrSynchronizable: true,
     ]
 
