@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "1db37fbe50e388218b2e3210f0d6628e0a436456",
-          "version": "3.0.1"
+          "revision": "ae3fb005c65d775d3be80cd48cad84ee18a2bb9a",
+          "version": "3.2.0"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/apple/swift-crypto",
         "state": {
           "branch": null,
-          "revision": "d9825fa541df64b1a7b182178d61b9a82730d01f",
-          "version": "2.1.0"
+          "revision": "9cc89f0170308b813af05dadcd26f9a2dee47713",
+          "version": "2.2.3"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "ad8c2d78158901e77a80e6dee940f7c369e5af13",
-          "version": "0.49.15"
+          "revision": "34cd9dd87b78048ce0d623a9153f9bf260ad6590",
+          "version": "0.50.7"
         }
       },
       {
