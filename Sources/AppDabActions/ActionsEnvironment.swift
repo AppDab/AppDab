@@ -8,6 +8,7 @@ import XCTestHTMLReportCore
 
 public protocol BagbutikServiceProtocol {
     func request<T: Decodable>(_ request: Request<T, ErrorResponse>) async throws -> T
+    @discardableResult func request(_ request: Request<EmptyResponse, ErrorResponse>) async throws -> EmptyResponse
     func requestAllPages<T: Decodable & PagedResponse>(_ request: Request<T, ErrorResponse>) async throws -> (responses: [T], data: [T.Data])
     func requestNextPage<T: Decodable & PagedResponse>(for response: T) async throws -> T?
     func requestAllPages<T: Decodable & PagedResponse>(for response: T) async throws -> (responses: [T], data: [T.Data])

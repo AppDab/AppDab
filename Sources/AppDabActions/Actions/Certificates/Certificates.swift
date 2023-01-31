@@ -26,7 +26,7 @@ public enum EnsureCertificatePolicy {
     - certificateSerialNumber: The serial number of the certificate to use.
  - Postcondition: A valid certificate is present in Keychain.
  */
-public func ensureCertificate(type: ListCertificatesV1.Filter.CertificateType = .distribution, policy: EnsureCertificatePolicy = .readOnly, encryptedCertificatesFolderPath: String = "Signing", certificateSerialNumber requestedCertificateSerialNumber: String? = nil) async throws {
+public func ensureCertificate(type: CertificateType = .distribution, policy: EnsureCertificatePolicy = .readOnly, encryptedCertificatesFolderPath: String = "Signing", certificateSerialNumber requestedCertificateSerialNumber: String? = nil) async throws {
     ActionsEnvironment.logger.info("⏬ Fetching list of available certificates...")
     var filters: [ListCertificatesV1.Filter] = [.certificateType([type])]
     if let requestedCertificateSerialNumber = requestedCertificateSerialNumber {
@@ -173,13 +173,10 @@ private func saveCertificateInKeychain(certificate: Certificate, encryptedCertif
     }
 }
 
-private func maybeCreateCertificate(type: ListCertificatesV1.Filter.CertificateType, policy: EnsureCertificatePolicy, encryptedCertificatesFolderPath: String) async throws {
+private func maybeCreateCertificate(type: CertificateType, policy: EnsureCertificatePolicy, encryptedCertificatesFolderPath: String) async throws {
     if policy == .readOnly {
         ActionsEnvironment.logger.error("🚫 In read-only mode, so no new certificate is created")
     } else {
-        guard let typeToCreate = CertificateType(rawValue: type.rawValue) else {
-            throw CertificateError.typeCantBeCreated
-        }
         let label = "AppDab \(Date().timeIntervalSince1970)"
         let privateKey = try Keychain().createPrivateKey(labeled: label)
         let publicKey = try Keychain().createPublicKey(from: privateKey)
@@ -188,7 +185,7 @@ private func maybeCreateCertificate(type: ListCertificatesV1.Filter.CertificateT
             throw CertificateError.errorCreatingSigningRequest
         }
         let requestBody = CertificateCreateRequest(data: .init(attributes: .init(
-            certificateType: typeToCreate,
+            certificateType: type,
             csrContent: csrString
         )))
         ActionsEnvironment.logger.info("🚀 Creating certificate online...")
