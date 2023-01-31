@@ -17,6 +17,8 @@ public func mapErrorToAppDabError(error: Error) -> AppDabError {
         } else {
             return .simpleError(message: firstError.parsedDetail)
         }
+    } else if let error = error as? ServiceError {
+        return .simpleError(message: error.description!)
     } else if let error = error as? ActionError {
         return .simpleError(message: error.description)
     } else if let error = error as? LocalizedError, let message = error.errorDescription {

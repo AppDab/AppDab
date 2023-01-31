@@ -19,8 +19,6 @@ public enum CertificateError: ActionError, Equatable {
     case invalidOnlineCertificateData
     /// Could not import certificate and private key.
     case errorImportingP12
-    /// The type of certificate can't be created.
-    case typeCantBeCreated
     /// Could not create public key.
     case errorCreatingPublicKey
     /// Could not create signing request.
@@ -44,8 +42,6 @@ public enum CertificateError: ActionError, Equatable {
             return "The certificate fetched from App Store Connect is incomplete"
         case .errorImportingP12:
             return "Could not import certificate and private key"
-        case .typeCantBeCreated:
-            return "The type of certificate specified can't be created"
         case .errorCreatingPublicKey:
             return "Could not create public key"
         case .errorCreatingSigningRequest:
