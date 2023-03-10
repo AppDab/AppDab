@@ -30,6 +30,8 @@ public func mapErrorToAppDabError(error: Error, parseAppStoreConnectErrors: Bool
         return .simpleError(message: message)
     } else if let error = error as? ShellError {
         return .loggedError(message: error.message, logFileUrl: error.logFileUrl)
+    } else if (error as NSError).domain == NSURLErrorDomain, (error as NSError).code == -999 {
+        return .cancelled
     } else {
         let stackTrace = Thread.callStackSymbols.joined(separator: "\n")
         return .unhandledError(message: error.localizedDescription, stackTrace: stackTrace)
@@ -54,6 +56,8 @@ public func logAppDabError(_ error: AppDabError) {
     case .loggedError(let message, let logFileUrl):
         ActionsEnvironment.logger.error("💥 \(message)")
         ActionsEnvironment.logger.error("The full log is here: \(logFileUrl)")
+    case .cancelled:
+        break
     case .unhandledError(let message, let stackTrace):
         ActionsEnvironment.logger.error("💥 Unhandled error. Please report it as an issue on GitHub 🥰")
         ActionsEnvironment.logger.error("Error description: \(message)")
@@ -69,6 +73,8 @@ public enum AppDabError: Error, Equatable {
     case errorWithAssociatedErrors(message: String, associatedMessages: [String])
     /// A logged error with a message and an URL for the log file produced.
     case loggedError(message: String, logFileUrl: URL)
+    /// The actions was cancelled
+    case cancelled
     /// An unhandled error with a message and a stack trace.
     case unhandledError(message: String, stackTrace: String)
 
@@ -76,6 +82,8 @@ public enum AppDabError: Error, Equatable {
         switch self {
         case .simpleError(let message), .loggedError(let message, _), .unhandledError(let message, _):
             return message
+        case .cancelled:
+            return "Cancelled"
         case .errorWithAssociatedErrors(let message, associatedMessages: let associatedMessages):
             return message + "\n" + associatedMessages.map { "• \($0)" }.joined(separator: "\n")
         }
