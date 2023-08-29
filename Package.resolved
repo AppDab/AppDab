@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "0014e6b53354f02baec55386ec28047be5976b2c",
-          "version": "5.0.0"
+          "revision": "b4f2d5b56d1b8938d5fb20c082f9e6d64e41462f",
+          "version": "7.0.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/cbaker6/CertificateSigningRequest",
         "state": {
           "branch": null,
-          "revision": "9fdbfeea4b53323c8710859c4373923c737aeaa7",
-          "version": "1.29.0"
+          "revision": "457627f8ff57a721851ee14cc552d529c37c8329",
+          "version": "1.30.0"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
-          "version": "1.2.2"
+          "revision": "8f4d2753f0e4778c76d5f05ad16c74f707390531",
+          "version": "1.2.3"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/apple/swift-crypto",
         "state": {
           "branch": null,
-          "revision": "da0fe44138ab86e380f40a2acbd8a611b07d3f64",
-          "version": "2.4.0"
+          "revision": "60f13f60c4d093691934dc6cfdf5f508ada1f894",
+          "version": "2.6.0"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "32e8d724467f8fe623624570367e3d50c5638e46",
-          "version": "1.5.2"
+          "revision": "532d8b529501fb73a2455b179e0bbb6d49b652ed",
+          "version": "1.5.3"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "8d3dc46b96d0f19fb44ff14b5e0570a941afe859",
-          "version": "0.51.2"
+          "revision": "1780bcdc3237633a50e4aaa97422de37e77130bd",
+          "version": "0.52.2"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/thii/xcbeautify",
         "state": {
           "branch": null,
-          "revision": "4fa47a80f5801649e97ee3bb67b8d00337e90abd",
-          "version": "0.18.0"
+          "revision": "6000eb1d17ee657826eb3f72cfdb8be6cae0597c",
+          "version": "0.21.1"
         }
       },
       {
@@ -105,8 +105,8 @@
         "repositoryURL": "https://github.com/MaxDesiatov/XMLCoder.git",
         "state": {
           "branch": null,
-          "revision": "c438dad94f6a243b411b70a4b4bac54595064808",
-          "version": "0.15.0"
+          "revision": "b1e944cbd0ef33787b13f639a5418d55b3bed501",
+          "version": "0.17.1"
         }
       },
       {
