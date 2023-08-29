@@ -57,7 +57,7 @@ final class UploadScreenshotTests: ActionsTestCase {
             Log(level: .info, message: "🚀 Committing screenshot..."),
             Log(level: .info, message: "👍 Screenshot uploaded and will now be processed"),
         ])
-        wait(for: [didCreateExpectation, progressChangedExpectation], timeout: 1)
+        await fulfillment(of: [didCreateExpectation, progressChangedExpectation])
         XCTAssertEqual(numberOfProgressChangedCalls.sorted(), [2000000, 2770139])
     }
 }
