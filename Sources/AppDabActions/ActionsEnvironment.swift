@@ -98,7 +98,7 @@ public enum ActionsEnvironment {
     #endif
 
     internal static var getCurrentDate: () -> Date = { Date() }
-    internal static var parseXcodebuildOutput: (String) -> String? = Parser(additionalLines: { nil }).parse(line:)
+    internal static var parseXcodebuildOutput: (String) -> String? = Parser(renderer: .terminal, additionalLines: { nil }).parse(line:)
     internal static var writeStringFile: (_ contents: String, _ path: String) throws -> Void = { contents, path in
         try contents.write(toFile: path, atomically: true, encoding: .utf8)
     }
