@@ -85,6 +85,8 @@ extension ScreenshotDisplayType {
             return "Apple Watch Series 3"
         case .appAppleTV:
             return "Apple TV"
+        case .appAppleVisionPro:
+            return "Apple Vision Pro"
         case .iMessageAppIphone67:
             return #"iPhone 6.7" Display"#
         case .iMessageAppIphone65:

@@ -105,7 +105,7 @@ public enum ActionsEnvironment {
 
     #if os(macOS)
     internal static var generateTestResultHtmlReport: (_ xcresultPath: String) -> String = { xcresultPath in
-        Summary(resultPaths: [xcresultPath], renderingMode: .inline).generatedHtmlReport()
+        Summary(resultPaths: [xcresultPath], renderingMode: .inline, downsizeImagesEnabled: false).generatedHtmlReport()
     }
     #endif
 }
