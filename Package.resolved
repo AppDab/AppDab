@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "b4f2d5b56d1b8938d5fb20c082f9e6d64e41462f",
-          "version": "7.0.0"
+          "revision": "adf80a2e784a3b70652b5d3c92c50fc6064f6cb7",
+          "version": "8.3.0"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "8f4d2753f0e4778c76d5f05ad16c74f707390531",
-          "version": "1.2.3"
+          "revision": "c8ed701b513cf5177118a175d85fbbbcd707ab41",
+          "version": "1.3.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "1780bcdc3237633a50e4aaa97422de37e77130bd",
-          "version": "0.52.2"
+          "revision": "fef156a6135e584985ed26713dd2e9ee41f952cb",
+          "version": "0.53.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/thii/xcbeautify",
         "state": {
           "branch": null,
-          "revision": "6000eb1d17ee657826eb3f72cfdb8be6cae0597c",
-          "version": "0.21.1"
+          "revision": "84d24a9854e6fdcd2c91122d50a3189b072e8136",
+          "version": "1.4.0"
         }
       },
       {
@@ -95,9 +95,9 @@
         "package": "XCTestHTMLReport",
         "repositoryURL": "https://github.com/TitouanVanBelle/XCTestHTMLReport",
         "state": {
-          "branch": "develop",
-          "revision": "5bd986c247fd84f98db1f3313601e7f24baeeb61",
-          "version": null
+          "branch": null,
+          "revision": "20e5e9804753ab78b0b51ee5f2d8fcd81318aca7",
+          "version": "2.2.3"
         }
       },
       {
