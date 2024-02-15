@@ -38,6 +38,11 @@ internal struct Keychain: KeychainProtocol {
             kSecMatchLimit: kSecMatchLimitAll,
             kSecReturnRef: true,
         ] as NSDictionary, &copyResult)
+        if statusCopyingIdentities == errSecItemNotFound {
+            return serialNumbers.reduce(into: [:]) { result, serialNumber in
+                result[serialNumber] = false
+            }
+        }
         guard statusCopyingIdentities == errSecSuccess, let identities = copyResult as? [SecIdentity] else {
             throw CertificateError.errorReadingFromKeychain(statusCopyingIdentities)
         }
