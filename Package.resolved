@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "82884f0692325e85f4574eba1d042efd11c1edbf",
-          "version": "9.0.0"
+          "revision": "d96af2ad06f3c40a2530170d29ad1a756822334f",
+          "version": "9.1.1"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "532d8b529501fb73a2455b179e0bbb6d49b652ed",
-          "version": "1.5.3"
+          "revision": "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
+          "version": "1.5.4"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "fef156a6135e584985ed26713dd2e9ee41f952cb",
-          "version": "0.53.0"
+          "revision": "402367fbe91d6a453bc608bfc0d93b14a301a519",
+          "version": "0.53.1"
         }
       },
       {
