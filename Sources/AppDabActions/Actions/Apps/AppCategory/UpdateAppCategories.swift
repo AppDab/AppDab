@@ -35,7 +35,7 @@ public func updateAppCategories(forAppInfoId appInfoId: String,
                                 secondarySubcategoryOneId: UpdateCategoryParameter? = nil,
                                 secondarySubcategoryTwoId: UpdateCategoryParameter? = nil) async throws -> AppInfo {
     ActionsEnvironment.logger.info("🚀 Fetching list of available categories...")
-    let categoriesResponse = try await ActionsEnvironment.service.request(.listAppCategoriesV1(includes: [.subcategories]))
+    let categoriesResponse = try await ActionsEnvironment.service.requestAllPages(.listAppCategoriesV1(includes: [.subcategories], limits: [.limit(50), .subcategories(50)]))
     ActionsEnvironment.logger.info("👍 Did fetch list of available categories")
 
     let (primaryCategoryId, realPrimaryCategory) = try validateCategoryId(primaryCategoryId, realCategories: categoriesResponse.data)
