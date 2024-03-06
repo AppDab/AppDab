@@ -57,14 +57,12 @@ public func updateAppInfoLocalization(forLocale locale: String, forAppId appId: 
     ActionsEnvironment.logger.info("🚀 Fetching app info localization by locale '\(locale)' for app id '\(appId)'...")
     let appInfosResponse = try await ActionsEnvironment.service.request(
         .listAppInfosForAppV1(id: appId,
-                              fields: [.appInfos([.appStoreState, .appInfoLocalizations]),
+                              fields: [.appInfos([.state, .appInfoLocalizations]),
                                        .appInfoLocalizations([.locale])],
                               includes: [.appInfoLocalizations])
     )
     let appInfoLocalization: AppInfoLocalization? = appInfosResponse.data.compactMap { appInfo -> AppInfoLocalization? in
-        guard appInfo.attributes!.appStoreState != .readyForSale,
-              appInfo.attributes!.appStoreState != .preorderReadyForSale
-        else {
+        guard appInfo.attributes!.state != .readyForDistribution else {
             return nil
         }
         let localizationIds = appInfo.relationships?.appInfoLocalizations?.data?.map(\.id) ?? []

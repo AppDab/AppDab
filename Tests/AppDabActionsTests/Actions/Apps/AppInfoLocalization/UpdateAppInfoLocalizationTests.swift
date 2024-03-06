@@ -6,8 +6,8 @@ import XCTest
 final class UpdateAppInfoLocalizationTests: ActionsTestCase {
     func testUpdateAppInfoLocalization() async {
         let fetchResponse = AppInfosResponse(
-            data: [.init(id: "some-locked-id", links: .init(self: ""), attributes: .init(appStoreState: .readyForSale)),
-                   .init(id: "some-id", links: .init(self: ""), attributes: .init(appStoreState: .prepareForSubmission), relationships: .init(appInfoLocalizations: .init(data: [.init(id: "localization-id")])))],
+            data: [.init(id: "some-locked-id", links: .init(self: ""), attributes: .init(state: .readyForDistribution)),
+                   .init(id: "some-id", links: .init(self: ""), attributes: .init(state: .prepareForSubmission), relationships: .init(appInfoLocalizations: .init(data: [.init(id: "localization-id")])))],
             included: [.appInfoLocalization(.init(id: "localization-id", links: .init(self: "")))],
             links: .init(self: "")
         )
@@ -38,8 +38,8 @@ final class UpdateAppInfoLocalizationTests: ActionsTestCase {
 
     func testUpdateAppInfoLocalization_ForLocale_NotFound() async {
         let fetchResponse = AppInfosResponse(
-            data: [.init(id: "some-locked-id", links: .init(self: ""), attributes: .init(appStoreState: .readyForSale)),
-                   .init(id: "some-id", links: .init(self: ""), attributes: .init(appStoreState: .prepareForSubmission), relationships: .init(ageRatingDeclaration: .init(data: .init(id: "ageRatingDeclaration-id"))))],
+            data: [.init(id: "some-locked-id", links: .init(self: ""), attributes: .init(state: .readyForDistribution)),
+                   .init(id: "some-id", links: .init(self: ""), attributes: .init(state: .prepareForSubmission), relationships: .init(ageRatingDeclaration: .init(data: .init(id: "ageRatingDeclaration-id"))))],
             included: [.ageRatingDeclaration(.init(id: "ageRatingDeclaration-id", links: .init(self: ""))), .appInfoLocalization(.init(id: "localization-id", links: .init(self: "")))],
             links: .init(self: "")
         )

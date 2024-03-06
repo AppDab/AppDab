@@ -60,11 +60,10 @@ public func createAppInfoLocalization(forLocale locale: String, forAppInfoId app
 public func createAppInfoLocalization(forLocale locale: String, forAppId appId: String, name: String? = nil, subtitle: String? = nil, privacyPolicyUrl: String? = nil) async throws -> AppInfoLocalization {
     ActionsEnvironment.logger.info("🚀 Fetching app info for app id '\(appId)'...")
     let appInfosResponse = try await ActionsEnvironment.service.request(
-        .listAppInfosForAppV1(id: appId, fields: [.appInfos([.appStoreState])], includes: [.appInfoLocalizations])
+        .listAppInfosForAppV1(id: appId, fields: [.appInfos([.state])], includes: [.appInfoLocalizations])
     )
     let appInfo: AppInfo = appInfosResponse.data.first { appInfo in
-        appInfo.attributes!.appStoreState != .readyForSale &&
-            appInfo.attributes!.appStoreState != .preorderReadyForSale
+        appInfo.attributes!.state != .readyForDistribution
     }!
     ActionsEnvironment.logger.info("👍 Found app info for app id '\(appId)' (\(appInfo.id))")
     return try await createAppInfoLocalization(forLocale: locale, forAppInfoId: appInfo.id, name: name, subtitle: subtitle, privacyPolicyUrl: privacyPolicyUrl)

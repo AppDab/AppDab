@@ -6,8 +6,8 @@ import XCTest
 final class CreateAppInfoLocalizationTests: ActionsTestCase {
     func testCreateAppInfoLocalization() async {
         let fetchResponse = AppInfosResponse(
-            data: [.init(id: "some-locked-id", links: .init(self: ""), attributes: .init(appStoreState: .readyForSale)),
-                   .init(id: "some-id", links: .init(self: ""), attributes: .init(appStoreState: .prepareForSubmission), relationships: .init(appInfoLocalizations: .init(data: [.init(id: "localization-id")])))],
+            data: [.init(id: "some-locked-id", links: .init(self: ""), attributes: .init(state: .readyForDistribution)),
+                   .init(id: "some-id", links: .init(self: ""), attributes: .init(state: .prepareForSubmission), relationships: .init(appInfoLocalizations: .init(data: [.init(id: "localization-id")])))],
             included: [.appInfoLocalization(.init(id: "localization-id", links: .init(self: "")))],
             links: .init(self: "")
         )
