@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "d96af2ad06f3c40a2530170d29ad1a756822334f",
-          "version": "9.1.1"
+          "revision": "274c8ea904129aaea2ddcbff56205c9a259b9392",
+          "version": "10.0.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "402367fbe91d6a453bc608bfc0d93b14a301a519",
-          "version": "0.53.1"
+          "revision": "dbc9a4406d21cc52f16caf1e299172b097145e5e",
+          "version": "0.53.3"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/thii/xcbeautify",
         "state": {
           "branch": null,
-          "revision": "84d24a9854e6fdcd2c91122d50a3189b072e8136",
-          "version": "1.4.0"
+          "revision": "82bc54c25c78284555759277d4d92fef5627f95e",
+          "version": "1.6.0"
         }
       },
       {
@@ -107,15 +107,6 @@
           "branch": null,
           "revision": "b1e944cbd0ef33787b13f639a5418d55b3bed501",
           "version": "0.17.1"
-        }
-      },
-      {
-        "package": "Zip",
-        "repositoryURL": "https://github.com/marmelroy/Zip.git",
-        "state": {
-          "branch": null,
-          "revision": "67fa55813b9e7b3b9acee9c0ae501def28746d76",
-          "version": "2.1.2"
         }
       }
     ]
