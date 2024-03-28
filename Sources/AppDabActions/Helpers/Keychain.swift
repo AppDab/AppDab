@@ -3,6 +3,7 @@ import Security
 
 public protocol KeychainProtocol {
     func addCertificate(certificate: SecCertificate, named name: String) throws
+    func hasCertificate(serialNumber: String) async throws -> Bool
     func hasCertificates(serialNumbers: [String]) throws -> [String: Bool]
     func createPrivateKey(labeled label: String) throws -> SecKey
     func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data)
@@ -20,7 +21,7 @@ public struct GenericPassword {
     let value: Data
 }
 
-internal struct Keychain: KeychainProtocol {
+struct Keychain: KeychainProtocol {
     func addCertificate(certificate: SecCertificate, named name: String) throws {
         let addquery: NSDictionary = [kSecClass: kSecClassCertificate,
                                       kSecValueRef: certificate,
@@ -28,6 +29,39 @@ internal struct Keychain: KeychainProtocol {
         let addStatus = secItemAdd(addquery, nil)
         guard addStatus == errSecSuccess || addStatus == errSecDuplicateItem else {
             throw AddCertificateToKeychainError.errorAddingCertificateToKeychain(status: addStatus)
+        }
+    }
+
+    func hasCertificate(serialNumber: String) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            Task {
+                do {
+                    var copyResult: CFTypeRef?
+                    let statusCopyingIdentities = secItemCopyMatching([
+                        kSecClass: kSecClassIdentity,
+                        kSecMatchLimit: kSecMatchLimitAll,
+                        kSecReturnRef: true,
+                    ] as NSDictionary, &copyResult)
+                    guard statusCopyingIdentities != errSecItemNotFound else {
+                        continuation.resume(returning: false)
+                        return
+                    }
+                    guard statusCopyingIdentities == errSecSuccess, let identities = copyResult as? [SecIdentity] else {
+                        throw CertificateError.errorReadingFromKeychain(statusCopyingIdentities)
+                    }
+                    let serialNumbersInKeychain: [String] = try identities.compactMap { identity in
+                        var certificate: SecCertificate?
+                        let statusCopyingCertificate = secIdentityCopyCertificate(identity, &certificate)
+                        guard statusCopyingCertificate == errSecSuccess, let certificate else {
+                            throw KeychainError.errorReadingFromKeychain(statusCopyingCertificate)
+                        }
+                        return (secCertificateCopySerialNumberData(certificate, nil)! as Data).hexadecimalString.lowercased()
+                    }
+                    continuation.resume(returning: serialNumbersInKeychain.contains(serialNumber.lowercased()))
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
 
@@ -49,7 +83,7 @@ internal struct Keychain: KeychainProtocol {
         let serialNumbersInKeychain: [String] = try identities.compactMap { identity in
             var certificate: SecCertificate?
             let statusCopyingCertificate = secIdentityCopyCertificate(identity, &certificate)
-            guard statusCopyingCertificate == errSecSuccess, let certificate = certificate else {
+            guard statusCopyingCertificate == errSecSuccess, let certificate else {
                 throw KeychainError.errorReadingFromKeychain(statusCopyingCertificate)
             }
             return (secCertificateCopySerialNumberData(certificate, nil)! as Data).hexadecimalString.lowercased()
@@ -89,17 +123,17 @@ internal struct Keychain: KeychainProtocol {
 
     func getGenericPassword(forService service: String, account: String, useDataProtectionKeychain: Bool = true) throws -> GenericPassword? {
         if useDataProtectionKeychain {
-            return try listGenericPasswordsFromDataProtectionKeychain(forService: service, account: account).first
+            try listGenericPasswordsFromDataProtectionKeychain(forService: service, account: account).first
         } else {
-            return try listGenericPasswordsFromFileBasedKeychain(forService: service, account: account).first
+            try listGenericPasswordsFromFileBasedKeychain(forService: service, account: account).first
         }
     }
 
     func listGenericPasswords(forService service: String, useDataProtectionKeychain: Bool = true) throws -> [GenericPassword] {
         if useDataProtectionKeychain {
-            return try listGenericPasswordsFromDataProtectionKeychain(forService: service, account: nil)
+            try listGenericPasswordsFromDataProtectionKeychain(forService: service, account: nil)
         } else {
-            return try listGenericPasswordsFromFileBasedKeychain(forService: service, account: nil)
+            try listGenericPasswordsFromFileBasedKeychain(forService: service, account: nil)
         }
     }
 
@@ -110,7 +144,7 @@ internal struct Keychain: KeychainProtocol {
             kSecMatchLimit: kSecMatchLimitAll,
             kSecReturnRef: true,
         ]
-        if let account = account {
+        if let account {
             query[kSecAttrAccount] = account
         }
         var itemRefs: CFTypeRef?
@@ -148,7 +182,7 @@ internal struct Keychain: KeychainProtocol {
             kSecReturnData: true,
         ]
         query.addEntries(from: Self.dataProtectionAttributes)
-        if let account = account {
+        if let account {
             query[kSecAttrAccount] = account
         }
         var items: CFTypeRef?
@@ -232,17 +266,17 @@ internal struct Keychain: KeychainProtocol {
         kSecAttrSynchronizable: true,
     ]
 
-    internal var secItemCopyMatching = SecItemCopyMatching
-    internal var secItemAdd = SecItemAdd
-    internal var secItemUpdate = SecItemUpdate
-    internal var secItemDelete = SecItemDelete
-    internal var secIdentityCopyCertificate = SecIdentityCopyCertificate
-    internal var secCertificateCopySerialNumberData = SecCertificateCopySerialNumberData
-    internal var secKeyCreateRandomKey = SecKeyCreateRandomKey
-    internal var secKeyCopyPublicKey = SecKeyCopyPublicKey
-    internal var secKeyCopyExternalRepresentation = SecKeyCopyExternalRepresentation
-    internal var secPKCS12Import = SecPKCS12Import
-    internal var dataLoader = Data.init(contentsOf:options:)
+    var secItemCopyMatching = SecItemCopyMatching
+    var secItemAdd = SecItemAdd
+    var secItemUpdate = SecItemUpdate
+    var secItemDelete = SecItemDelete
+    var secIdentityCopyCertificate = SecIdentityCopyCertificate
+    var secCertificateCopySerialNumberData = SecCertificateCopySerialNumberData
+    var secKeyCreateRandomKey = SecKeyCreateRandomKey
+    var secKeyCopyPublicKey = SecKeyCopyPublicKey
+    var secKeyCopyExternalRepresentation = SecKeyCopyExternalRepresentation
+    var secPKCS12Import = SecPKCS12Import
+    var dataLoader = Data.init(contentsOf:options:)
 
     // MARK: - The following should not be used anymore
 
@@ -250,7 +284,7 @@ internal struct Keychain: KeychainProtocol {
         "AppDab certificate \(serialNumber)"
     }
 
-    internal func readP12Passphrase(certificateSerialNumber serialNumber: String) throws -> String {
+    func readP12Passphrase(certificateSerialNumber serialNumber: String) throws -> String {
         let query: NSDictionary = [kSecClass: kSecClassGenericPassword,
                                    kSecAttrService: Keychain.getService(forSerialNumber: serialNumber),
                                    kSecMatchLimit: kSecMatchLimitOne,
@@ -269,7 +303,7 @@ internal struct Keychain: KeychainProtocol {
         return password
     }
 
-    internal func saveP12Password(_ password: String, certificateSerialNumber serialNumber: String) throws {
+    func saveP12Password(_ password: String, certificateSerialNumber serialNumber: String) throws {
         let passwordData = password.data(using: String.Encoding.utf8)!
         let addAttributes: NSDictionary = [kSecClass: kSecClassGenericPassword,
                                            kSecAttrService: Keychain.getService(forSerialNumber: serialNumber),
@@ -286,7 +320,7 @@ internal struct Keychain: KeychainProtocol {
         guard addStatus == errSecSuccess else { throw KeychainError.failedAddingPassword(addStatus) }
     }
 
-    internal func importPCKS12(atPath p12Path: String, passphrase: String) throws {
+    func importPCKS12(atPath p12Path: String, passphrase: String) throws {
         let data = try dataLoader(URL(fileURLWithPath: p12Path), []) as CFData
         let options = [kSecImportExportPassphrase: passphrase] as CFDictionary
         var rawItems: CFArray?
@@ -296,7 +330,7 @@ internal struct Keychain: KeychainProtocol {
     }
 }
 
-internal enum KeychainError: ActionError, Equatable {
+enum KeychainError: ActionError, Equatable {
     case errorReadingFromKeychain(OSStatus)
     case malformedPasswordData
     case noPasswordFound
@@ -308,28 +342,28 @@ internal enum KeychainError: ActionError, Equatable {
     case errorImportingP12
     case unknown(status: OSStatus)
 
-    internal var description: String {
+    var description: String {
         switch self {
         case .errorReadingFromKeychain(let status):
-            return "Could not read from Keychain (OSStatus: \(status))"
+            "Could not read from Keychain (OSStatus: \(status))"
         case .malformedPasswordData:
-            return "The password is missing data"
+            "The password is missing data"
         case .noPasswordFound:
-            return "No password found in Keychain"
+            "No password found in Keychain"
         case .failedAddingPassword:
-            return "Could not add password to Keychain"
+            "Could not add password to Keychain"
         case .duplicatePassword:
-            return "Password already in Keychain"
+            "Password already in Keychain"
         case .failedUpdatingPassword:
-            return "Could not update password in Keychain"
+            "Could not update password in Keychain"
         case .failedDeletingPassword:
-            return "Could not delete password from Keychain"
+            "Could not delete password from Keychain"
         case .wrongPassphraseForP12:
-            return "Wrong passphrase for encrypted certificate and private key"
+            "Wrong passphrase for encrypted certificate and private key"
         case .errorImportingP12:
-            return "Could not import certificate and private key"
+            "Could not import certificate and private key"
         case .unknown(let status):
-            return "Unknown error occurred when interacting with Keychain (OSStatus: \(status))"
+            "Unknown error occurred when interacting with Keychain (OSStatus: \(status))"
         }
     }
 }

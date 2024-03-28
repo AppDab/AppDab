@@ -318,6 +318,10 @@ class MockKeychain: KeychainProtocol {
     func addCertificate(certificate: SecCertificate, named name: String) throws {
         try keychain.addCertificate(certificate: certificate, named: name)
     }
+    
+    func hasCertificate(serialNumber: String) throws -> Bool {
+        return serialNumbersForCertificatesInKeychain.contains(serialNumber)
+    }
 
     func hasCertificates(serialNumbers: [String]) throws -> [String: Bool] {
         serialNumbers.reduce(into: [:]) { result, serialNumber in
