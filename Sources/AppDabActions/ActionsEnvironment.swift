@@ -78,6 +78,8 @@ public enum ActionsEnvironment {
         return service
     }
     
+    public static var keychain: KeychainProtocol = Keychain()
+    
     public static var fetchData: FetchData = URLSession.shared.data(for:delegate:)
     public static var uploadData: UploadData = URLSession.shared.upload(for:from:delegate:)
     
@@ -86,7 +88,6 @@ public enum ActionsEnvironment {
     // MARK: - Internal
 
     internal static var fileManager: FileManagerProtocol = FileManager.default
-    internal static var keychain: KeychainProtocol = Keychain()
     internal static var locale: Locale = .current
     internal static var timeZone: TimeZone = .current
     #if os(macOS)

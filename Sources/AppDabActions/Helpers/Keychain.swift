@@ -1,7 +1,7 @@
 import Foundation
 import Security
 
-internal protocol KeychainProtocol {
+public protocol KeychainProtocol {
     func addCertificate(certificate: SecCertificate, named name: String) throws
     func hasCertificates(serialNumbers: [String]) throws -> [String: Bool]
     func createPrivateKey(labeled label: String) throws -> SecKey
@@ -13,7 +13,7 @@ internal protocol KeychainProtocol {
     func deleteGenericPassword(forService service: String, password: GenericPassword, useDataProtectionKeychain: Bool) throws
 }
 
-internal struct GenericPassword {
+public struct GenericPassword {
     let account: String
     let label: String
     let generic: Data
