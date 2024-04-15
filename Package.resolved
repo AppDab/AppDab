@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "274c8ea904129aaea2ddcbff56205c9a259b9392",
-          "version": "10.0.0"
+          "revision": "be723e1e722653d2ffbfed5a0d8af4f1f3c1e8e6",
+          "version": "10.1.1"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "c8ed701b513cf5177118a175d85fbbbcd707ab41",
-          "version": "1.3.0"
+          "revision": "46989693916f56d1186bd59ac15124caef896560",
+          "version": "1.3.1"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/apple/swift-crypto",
         "state": {
           "branch": null,
-          "revision": "cc76b894169a3c86b71bac10c78a4db6beb7a9ad",
-          "version": "3.2.0"
+          "revision": "f0525da24dc3c6cbb2b6b338b65042bc91cbc4bb",
+          "version": "3.3.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "dbc9a4406d21cc52f16caf1e299172b097145e5e",
-          "version": "0.53.3"
+          "revision": "825b4cdadbcabb91661243a09aeb44c3d4ef459d",
+          "version": "0.53.7"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/thii/xcbeautify",
         "state": {
           "branch": null,
-          "revision": "82bc54c25c78284555759277d4d92fef5627f95e",
-          "version": "1.6.0"
+          "revision": "3d4d7943c7c1400e2bc3fbcf93d87a76dfbca53f",
+          "version": "1.7.0"
         }
       },
       {
