@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "5f3c9e9009f0bae6e916a1e64229d9b32c8100c8",
-          "version": "11.0.0"
+          "revision": "21fe7de322e1176aefc009875848344a9d28d571",
+          "version": "12.0.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "4bf475154c1c98dcdf751037f930f8e5c72597a4",
-          "version": "0.53.10"
+          "revision": "dd989a46d0c6f15c016484bab8afe5e7a67a4022",
+          "version": "0.54.0"
         }
       },
       {
