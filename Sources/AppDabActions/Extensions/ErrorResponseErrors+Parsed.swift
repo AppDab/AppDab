@@ -11,15 +11,13 @@ internal extension ErrorResponse.Errors {
             return "A required screenshot is missing: \(displayType.prettyName)"
         } else if code.hasPrefix("ENTITY_ERROR.ATTRIBUTE.REQUIRED"),
                   case .jsonPointer(let jsonPointer) = source,
-                  let pointer = jsonPointer.pointer,
-                  pointer.hasPrefix("/data/attributes/") {
-            let attributeName = String(pointer.suffix(from: .init(utf16Offset: 17, in: pointer)))
+                  jsonPointer.pointer.hasPrefix("/data/attributes/") {
+            let attributeName = String(jsonPointer.pointer.suffix(from: .init(utf16Offset: 17, in: jsonPointer.pointer)))
             return "A required value is missing: \(attributeName.camelCasedToTitleCased.magicWordsFixed)"
         } else if code.hasPrefix("ENTITY_ERROR.RELATIONSHIP.INVALID"),
                   case .jsonPointer(let jsonPointer) = source,
-                  let pointer = jsonPointer.pointer,
-                  pointer.hasPrefix("/data/relationships/") {
-            let relationshipName = String(pointer.suffix(from: .init(utf16Offset: 20, in: pointer)))
+                  jsonPointer.pointer.hasPrefix("/data/relationships/") {
+            let relationshipName = String(jsonPointer.pointer.suffix(from: .init(utf16Offset: 20, in: jsonPointer.pointer)))
             return "A associated type is missing or invalid: \(relationshipName.camelCasedToTitleCased.magicWordsFixed)"
         }
         return detail ?? title

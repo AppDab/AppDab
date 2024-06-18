@@ -11,7 +11,7 @@ import Bagbutik_Models
  */
 @discardableResult
 public func updateAppPrimaryLocale(forAppId appId: String, newPrimaryLocale: String) async throws -> App {
-    let requestBody = AppUpdateRequest(data: .init(id: appId, attributes: .init(primaryLocale: newPrimaryLocale)), included: [])
+    let requestBody = AppUpdateRequest(data: .init(id: appId, attributes: .init(primaryLocale: newPrimaryLocale)))
     ActionsEnvironment.logger.info("🚀 Updating primary locale '\(newPrimaryLocale)' for app with id '\(appId)'...")
     let appResponse = try await ActionsEnvironment.service.request(.updateAppV1(id: appId, requestBody: requestBody))
     ActionsEnvironment.logger.info("👍 Primary locale updated")
