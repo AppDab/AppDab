@@ -14,7 +14,7 @@ public func getAPIKey(withId keyId: String) throws -> APIKey {
 
 internal func getAPIKey(withId keyId: String, logLevel: Logger.Level) throws -> APIKey {
     ActionsEnvironment.logger.log(level: logLevel, "🔐 Getting API Key with id '\(keyId)' from Keychain...")
-    let apiKey: APIKey? = try ActionsEnvironment.keychain.getGenericPassword(forService: "AppDab", account: keyId, useDataProtectionKeychain: true)
+    let apiKey: APIKey? = try ActionsEnvironment.keychain.getGenericPassword(forService: "AppDab", account: keyId)
         .map {
             guard let apiKey = try? APIKey(password: $0)
             else { throw APIKeyError.invalidAPIKeyFormat }

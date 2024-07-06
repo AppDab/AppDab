@@ -9,7 +9,7 @@ import Security
 @discardableResult
 public func listAPIKeys() throws -> [APIKey] {
     ActionsEnvironment.logger.info("🔐 Loading list of API Keys from Keychain...")
-    let apiKeys = try ActionsEnvironment.keychain.listGenericPasswords(forService: "AppDab", useDataProtectionKeychain: true)
+    let apiKeys = try ActionsEnvironment.keychain.listGenericPasswords(forService: "AppDab")
         .map { password -> APIKey in
             guard let apiKey = try? APIKey(password: password)
             else { throw APIKeyError.invalidAPIKeyFormat }
