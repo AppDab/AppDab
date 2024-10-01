@@ -26,7 +26,7 @@ final class ListCertificatesTests: ActionsTestCase {
     }
 }
 
-extension Certificate: Equatable {
+extension Certificate: @retroactive Equatable {
     public static func == (lhs: Certificate, rhs: Certificate) -> Bool {
         lhs.id == rhs.id
     }

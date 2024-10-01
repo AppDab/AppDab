@@ -22,7 +22,7 @@ final class ListBundleIdsTests: ActionsTestCase {
     }
 }
 
-extension BundleId: Equatable {
+extension BundleId: @retroactive Equatable {
     public static func == (lhs: BundleId, rhs: BundleId) -> Bool {
         lhs.id == rhs.id
     }

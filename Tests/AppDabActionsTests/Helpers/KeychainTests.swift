@@ -268,7 +268,7 @@ final class KeychainTests: XCTestCase {
     }
 }
 
-extension GenericPassword: Equatable {
+extension GenericPassword: @retroactive Equatable {
     public static func == (lhs: GenericPassword, rhs: GenericPassword) -> Bool {
         lhs.account == rhs.account
             && lhs.label == rhs.label

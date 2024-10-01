@@ -82,7 +82,7 @@ class ActionsTestCase: XCTestCase {
     override func tearDown() {
         super.tearDown()
         let dependenciesToCheck = EnvironmentDependency.allCases.filter { !dependenciesToSkipTearDownCheck.contains($0) }
-        dependenciesToCheck.forEach { dependency in
+        for dependency in dependenciesToCheck {
             switch dependency {
             case .bagbutikService:
                 XCTAssertTrue(mockBagbutikService.allEndpointsCalled, "Not all mocked endpoints were called. If this is expected, add a call to skipTearDownCheck(for: .bagbutikService)")
@@ -120,11 +120,11 @@ class MockBagbutikService: BagbutikServiceProtocol {
     private var endpointsCalled = 0
     fileprivate var allEndpointsCalled: Bool { endpointsCalled == responseDataByEndpoint.count + errorResponseDataByEndpoint.count }
 
-    func setResponse<T>(_ response: T, for endpoint: Endpoint) where T: Encodable {
+    func setResponse(_ response: some Encodable, for endpoint: Endpoint) {
         responseDataByEndpoint[endpoint] = try! JSONEncoder().encode(response)
     }
 
-    func setErrorResponse<T>(_ errorResponse: T, for endpoint: Endpoint) where T: Encodable {
+    func setErrorResponse(_ errorResponse: some Encodable, for endpoint: Endpoint) {
         errorResponseDataByEndpoint[endpoint] = try! JSONEncoder().encode(errorResponse)
     }
 
@@ -222,13 +222,13 @@ class MockInfoPlist: InfoPlistProtocol {
 
     func findInfoPlist() throws -> String {
         findInfoPlistCalled = true
-        guard let infoPlistPath = infoPlistPath else { throw MockError.missingInfoPlistPath }
+        guard let infoPlistPath else { throw MockError.missingInfoPlistPath }
         return infoPlistPath
     }
 
     func loadInfoPlist(at path: String) throws -> NSMutableDictionary {
         loadInfoPlistCalled = true
-        guard let loadedInfoPlist = loadedInfoPlist else { throw MockError.missingLoadedInfoPlist }
+        guard let loadedInfoPlist else { throw MockError.missingLoadedInfoPlist }
         return loadedInfoPlist
     }
 
@@ -279,48 +279,46 @@ class MockKeychain: KeychainProtocol {
 
     var genericPasswordsInKeychain: [GenericPassword] = []
 
-    lazy var keychain: Keychain = {
-        Keychain(secItemCopyMatching: keychainLookup, secItemAdd: { parameters, _ in
-            self.parametersForAdd.append(parameters as! [String: Any])
-            return self.returnStatusForAdd
-        }, secItemUpdate: { parameters, _ in
-            self.parametersForUpdate.append(parameters as! [String: Any])
-            return self.returnStatusForUpdate
-        }, secItemDelete: { parameters in
-            self.parametersForDelete.append(parameters as! [String: Any])
-            return self.returnStatusForDelete
-        }, secKeyCreateRandomKey: { parameters, errorPointer in
-            self.parametersForCreateRandomKey.append(parameters as! [String: Any])
-            guard self.createRandomKeyShouldSucceed else {
-                let error = CFErrorCreate(nil, "SecKeyCreateRandomKey" as CFString, -1, nil)!
-                errorPointer?.initialize(to: Unmanaged.passRetained(error))
-                return nil
-            }
-            return SecKeyCreateRandomKey(parameters, errorPointer)
-        }, secKeyCopyPublicKey: { privateKey in
-            guard self.copyPublicKeyShouldSucceed else {
-                return nil
-            }
-            if let publicKeyToReturn = self.publicKeyToReturn {
-                return publicKeyToReturn
-            }
-            return SecKeyCopyPublicKey(privateKey)
-        }, secKeyCopyExternalRepresentation: { publicKey, errorPointer in
-            guard self.copyPublicKeyDataShouldSucceed else {
-                let error = CFErrorCreate(nil, "SecKeyCopyExternalRepresentation" as CFString, -1, nil)!
-                errorPointer?.initialize(to: Unmanaged.passRetained(error))
-                return nil
-            }
-            return SecKeyCopyExternalRepresentation(publicKey, errorPointer)
-        })
-    }()
+    lazy var keychain: Keychain = .init(secItemCopyMatching: keychainLookup, secItemAdd: { parameters, _ in
+        self.parametersForAdd.append(parameters as! [String: Any])
+        return self.returnStatusForAdd
+    }, secItemUpdate: { parameters, _ in
+        self.parametersForUpdate.append(parameters as! [String: Any])
+        return self.returnStatusForUpdate
+    }, secItemDelete: { parameters in
+        self.parametersForDelete.append(parameters as! [String: Any])
+        return self.returnStatusForDelete
+    }, secKeyCreateRandomKey: { parameters, errorPointer in
+        self.parametersForCreateRandomKey.append(parameters as! [String: Any])
+        guard self.createRandomKeyShouldSucceed else {
+            let error = CFErrorCreate(nil, "SecKeyCreateRandomKey" as CFString, -1, nil)!
+            errorPointer?.initialize(to: Unmanaged.passRetained(error))
+            return nil
+        }
+        return SecKeyCreateRandomKey(parameters, errorPointer)
+    }, secKeyCopyPublicKey: { privateKey in
+        guard self.copyPublicKeyShouldSucceed else {
+            return nil
+        }
+        if let publicKeyToReturn = self.publicKeyToReturn {
+            return publicKeyToReturn
+        }
+        return SecKeyCopyPublicKey(privateKey)
+    }, secKeyCopyExternalRepresentation: { publicKey, errorPointer in
+        guard self.copyPublicKeyDataShouldSucceed else {
+            let error = CFErrorCreate(nil, "SecKeyCopyExternalRepresentation" as CFString, -1, nil)!
+            errorPointer?.initialize(to: Unmanaged.passRetained(error))
+            return nil
+        }
+        return SecKeyCopyExternalRepresentation(publicKey, errorPointer)
+    })
 
     func addCertificate(certificate: SecCertificate, named name: String) throws {
         try keychain.addCertificate(certificate: certificate, named: name)
     }
-    
+
     func hasCertificate(serialNumber: String) throws -> Bool {
-        return serialNumbersForCertificatesInKeychain.contains(serialNumber)
+        serialNumbersForCertificatesInKeychain.contains(serialNumber)
     }
 
     func hasCertificates(serialNumbers: [String]) throws -> [String: Bool] {
@@ -334,14 +332,14 @@ class MockKeychain: KeychainProtocol {
     }
 
     func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data) {
-        return try keychain.createPublicKey(from: privateKey)
+        try keychain.createPublicKey(from: privateKey)
     }
 
-    func getGenericPassword(forService service: String, account: String, useDataProtectionKeychain: Bool) throws -> GenericPassword? {
+    func getGenericPassword(forService service: String, account: String) throws -> GenericPassword? {
         genericPasswordsInKeychain.first { $0.account == account }
     }
 
-    func listGenericPasswords(forService service: String, useDataProtectionKeychain: Bool) throws -> [GenericPassword] {
+    func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
         genericPasswordsInKeychain
     }
 
@@ -349,11 +347,11 @@ class MockKeychain: KeychainProtocol {
         try keychain.addGenericPassword(forService: service, password: password)
     }
 
-    func updateGenericPassword(forService service: String, password: GenericPassword, searchInDataProtectionKeychain: Bool, updateInDataProtectionKeychain: Bool) throws {
+    func updateGenericPassword(forService service: String, password: GenericPassword) throws {
         try keychain.updateGenericPassword(forService: service, password: password)
     }
 
-    func deleteGenericPassword(forService service: String, password: GenericPassword, useDataProtectionKeychain: Bool) throws {
+    func deleteGenericPassword(forService service: String, password: GenericPassword) throws {
         try keychain.deleteGenericPassword(forService: service, password: password)
     }
 }

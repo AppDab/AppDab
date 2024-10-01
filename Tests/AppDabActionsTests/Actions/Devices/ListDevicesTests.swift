@@ -21,7 +21,7 @@ final class ListDevicesTests: ActionsTestCase {
     }
 }
 
-extension Device: Equatable {
+extension Device: @retroactive Equatable {
     public static func == (lhs: Device, rhs: Device) -> Bool {
         lhs.id == rhs.id
     }

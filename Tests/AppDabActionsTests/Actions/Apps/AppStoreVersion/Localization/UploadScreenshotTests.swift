@@ -62,7 +62,7 @@ final class UploadScreenshotTests: ActionsTestCase {
     }
 }
 
-extension AppScreenshot: Equatable {
+extension AppScreenshot: @retroactive Equatable {
     public static func == (lhs: AppScreenshot, rhs: AppScreenshot) -> Bool {
         lhs.id == rhs.id
     }

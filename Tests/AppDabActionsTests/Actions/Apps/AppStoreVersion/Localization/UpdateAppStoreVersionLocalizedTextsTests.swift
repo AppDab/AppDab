@@ -45,7 +45,7 @@ final class UpdateAppStoreVersionLocalizedTextsTests: ActionsTestCase {
     }
 }
 
-extension AppStoreVersionLocalization: Equatable {
+extension AppStoreVersionLocalization: @retroactive Equatable {
     public static func == (lhs: AppStoreVersionLocalization, rhs: AppStoreVersionLocalization) -> Bool {
         lhs.id == rhs.id
     }

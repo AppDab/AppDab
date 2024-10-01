@@ -38,7 +38,7 @@ final class UpdateAppStoreVersionTests: ActionsTestCase {
     }
 }
 
-extension AppStoreVersion: Equatable {
+extension AppStoreVersion: @retroactive Equatable {
     public static func == (lhs: AppStoreVersion, rhs: AppStoreVersion) -> Bool {
         lhs.id == rhs.id
     }

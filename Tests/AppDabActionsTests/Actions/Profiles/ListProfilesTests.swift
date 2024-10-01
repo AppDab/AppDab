@@ -28,7 +28,7 @@ final class ListProfilesTests: ActionsTestCase {
     }
 }
 
-extension Profile: Equatable {
+extension Profile: @retroactive Equatable {
     public static func == (lhs: Profile, rhs: Profile) -> Bool {
         lhs.id == rhs.id
     }

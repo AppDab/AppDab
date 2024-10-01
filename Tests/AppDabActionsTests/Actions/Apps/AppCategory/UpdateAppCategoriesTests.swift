@@ -74,7 +74,7 @@ final class UpdateAppCategoriesTests: ActionsTestCase {
     }
 }
 
-extension AppInfo: Equatable {
+extension AppInfo: @retroactive Equatable {
     public static func == (lhs: AppInfo, rhs: AppInfo) -> Bool {
         lhs.id == rhs.id
     }

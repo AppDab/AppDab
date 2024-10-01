@@ -53,7 +53,7 @@ final class UpdateAppInfoLocalizationTests: ActionsTestCase {
     }
 }
 
-extension AppInfoLocalization: Equatable {
+extension AppInfoLocalization: @retroactive Equatable {
     public static func == (lhs: AppInfoLocalization, rhs: AppInfoLocalization) -> Bool {
         lhs.id == rhs.id
     }
