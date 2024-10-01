@@ -1,5 +1,5 @@
 /// A method for bumping a version. Versions with 3 places (major, minor and patch) are supported.
-public enum VersionBump: String {
+public enum VersionBump: String, Sendable {
     /// The first number in the version
     case major
     /// The second number in the version
