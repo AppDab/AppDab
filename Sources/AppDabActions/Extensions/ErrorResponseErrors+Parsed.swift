@@ -75,6 +75,8 @@ extension ScreenshotDisplayType {
             return "Mac"
         case .appWatchUltra:
             return "Apple Watch Ultra"
+        case .appWatchSeries10:
+            return "Apple Watch Series 10"
         case .appWatchSeries7:
             return "Apple Watch Series 7"
         case .appWatchSeries4:
