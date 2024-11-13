@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "e440ade54af154bc7aef05f17f8cc3d4dcaf0125",
-          "version": "14.2.0"
+          "revision": "9e96d5bea2c7fcd847195614c94b3232b48852fe",
+          "version": "15.0.0"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/thii/xcbeautify",
         "state": {
           "branch": null,
-          "revision": "49f5ce8191af9767ccc594316acbed3a7cfec2f9",
-          "version": "2.14.1"
+          "revision": "097471346ea7a2ab7c667bd3b2c4497291ba61c5",
+          "version": "2.15.0"
         }
       },
       {

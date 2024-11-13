@@ -17,11 +17,11 @@ let package = Package(
             targets: ["AppDabRunner"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/MortenGregersen/Bagbutik", from: "14.1.0"),
+        .package(url: "https://github.com/MortenGregersen/Bagbutik", from: "15.0.0"),
         .package(url: "https://github.com/cbaker6/CertificateSigningRequest", from: "1.30.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
         .package(url: "https://github.com/apple/swift-log", from: "1.6.1"),
-        .package(url: "https://github.com/thii/xcbeautify", from: "2.11.0"),
+        .package(url: "https://github.com/thii/xcbeautify", from: "2.15.0"),
         .package(url: "https://github.com/TitouanVanBelle/XCTestHTMLReport", from: "2.5.0"),
     ],
     targets: [
