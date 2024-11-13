@@ -17,7 +17,7 @@ import Foundation
  */
 @discardableResult
 public func createAppInfoLocalization(forLocale locale: String, forAppInfoId appInfoId: String, name: String? = nil, subtitle: String? = nil, privacyPolicyUrl: String? = nil) async throws -> AppInfoLocalization {
-    guard name != nil || subtitle != nil || privacyPolicyUrl != nil else {
+    guard let name, subtitle != nil || privacyPolicyUrl != nil else {
         throw AppInfoLocalizationError.noNewValuesSpecified
     }
     let requestBody = AppInfoLocalizationCreateRequest(data: .init(
@@ -25,13 +25,11 @@ public func createAppInfoLocalization(forLocale locale: String, forAppInfoId app
         relationships: .init(appInfo: .init(data: .init(id: appInfoId)))
     ))
     var logValues = [String]()
-    if let name = name {
-        logValues.append("name '\(name)'")
-    }
-    if let subtitle = subtitle {
+    logValues.append("name '\(name)'")
+    if let subtitle {
         logValues.append("subtitle '\(subtitle)'")
     }
-    if let privacyPolicyUrl = privacyPolicyUrl {
+    if let privacyPolicyUrl {
         logValues.append("privacy policy URL '\(privacyPolicyUrl)'")
     }
     ActionsEnvironment.logger.info("🚀 Create localization with \(ListFormatter.localizedString(byJoining: logValues))...")
