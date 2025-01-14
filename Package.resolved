@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "23b803e75d27795dca05d5bfb104f0d9dc090e9b",
-          "version": "15.1.0"
+          "revision": "5855ae9895c309b4c24d1dad4a273c425deee8b0",
+          "version": "15.2.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
         "state": {
           "branch": null,
-          "revision": "2d5a2b6bde636c1feae2c852ab9a50f221e98c66",
-          "version": "0.55.3"
+          "revision": "4e92b81311f528cfdca8015d629c650d0aff94ce",
+          "version": "0.55.4"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/thii/xcbeautify",
         "state": {
           "branch": null,
-          "revision": "097471346ea7a2ab7c667bd3b2c4497291ba61c5",
-          "version": "2.15.0"
+          "revision": "a15d3785b48046a7209568f08522b43ceb76b31b",
+          "version": "2.17.0"
         }
       },
       {
