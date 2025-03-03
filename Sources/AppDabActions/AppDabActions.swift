@@ -11,6 +11,9 @@ import Foundation
  - Returns: An `AppDabError`.
  */
 public func mapErrorToAppDabError(error: Error, parseAppStoreConnectErrors: Bool = true) -> AppDabError {
+    if let appDabError = error as? AppDabError {
+        return appDabError
+    }
     if let firstError = (error as? ServiceError)?.errorResponse?.errors?.first {
         if let associatedErrors = firstError.meta?.associatedErrors?.values.flatMap({ $0 }) {
             return .errorWithAssociatedErrors(message: firstError.parsedDetail, associatedMessages: associatedErrors.map {
