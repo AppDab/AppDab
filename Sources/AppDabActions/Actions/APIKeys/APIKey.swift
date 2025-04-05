@@ -8,8 +8,8 @@ public struct APIKey: Identifiable, Hashable {
     public let name: String
     /// The private key ID from App Store Connect; for example 2X9R4HXF34.
     public let keyId: String
-    /// The issuer ID from the API Keys page in App Store Connect; for example, 57246542-96fe-1a63-e053-0824d011072a.
-    public let issuerId: String
+    /// The issuer ID (only for Team keys) from the API Keys page in App Store Connect; for example, 57246542-96fe-1a63-e053-0824d011072a.
+    public let issuerId: String?
     /// The contents of the private key from App Store Connect. Starting with `-----BEGIN PRIVATE KEY-----`.
     public let privateKey: String
     /// The generated JWT from the keys.
@@ -24,16 +24,20 @@ public struct APIKey: Identifiable, Hashable {
      - Parameters:
         - name: The user specified name of the API Key.
         - keyId: The private key ID from App Store Connect; for example 2X9R4HXF34.
-        - issuerId: The issuer ID from the API Keys page in App Store Connect; for example, 57246542-96fe-1a63-e053-0824d011072a.
+        - issuerId: The issuer ID (only for Team keys) from the API Keys page in App Store Connect; for example, 57246542-96fe-1a63-e053-0824d011072a.
         - privateKey: The contents of the private key from App Store Connect. Starting with `-----BEGIN PRIVATE KEY-----`.
      - Throws: An error if the private key is invalid.
      */
-    public init(name: String, keyId: String, issuerId: String, privateKey: String) throws {
+    public init(name: String, keyId: String, issuerId: String? = nil, privateKey: String) throws {
         self.name = name
         self.keyId = keyId
         self.issuerId = issuerId
         self.privateKey = privateKey
-        self.jwt = try .init(keyId: keyId, issuerId: issuerId, privateKey: privateKey)
+        if let issuerId {
+            self.jwt = try .init(keyId: keyId, issuerId: issuerId, privateKey: privateKey)
+        } else {
+            self.jwt = try .init(keyId: keyId, privateKey: privateKey)
+        }
     }
 
     internal init(password: GenericPassword) throws {
@@ -50,7 +54,7 @@ public struct APIKey: Identifiable, Hashable {
     internal func getGenericPassword() throws -> GenericPassword {
         .init(account: keyId,
               label: name,
-              generic: Data(issuerId.utf8),
+              generic: issuerId.map { Data($0.utf8) } ?? Data(),
               value: Data(privateKey.utf8))
     }
 

@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "59d561106296d4679196ae7a38ee92674540d0a3",
-          "version": "16.0.0"
+          "revision": "4647b828d084868b5e2e3e060b5c3df7f65d8e5d",
+          "version": "16.2.0"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/apple/swift-crypto",
         "state": {
           "branch": null,
-          "revision": "b828ba476ab068f0b00d6b41f92f364961b0f323",
-          "version": "3.10.2"
+          "revision": "a6ce32a18b81b04ce7e897d1d98df6eb2da04786",
+          "version": "3.12.2"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "96a2f8a0fa41e9e09af4585e2724c4e825410b91",
-          "version": "1.6.2"
+          "revision": "3d8596ed08bd13520157f0355e35caed215ffbfa",
+          "version": "1.6.3"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/thii/xcbeautify",
         "state": {
           "branch": null,
-          "revision": "ba81c9a8d5e9d8ab080182acac6d2565a611c5e4",
-          "version": "2.25.0"
+          "revision": "98b2042a24d19db9d9b23174c646018d6f599072",
+          "version": "2.28.0"
         }
       },
       {
@@ -96,8 +96,8 @@
         "repositoryURL": "https://github.com/davidahouse/XCResultKit.git",
         "state": {
           "branch": null,
-          "revision": "63a93e454e30084b8948cba0ee42112fca1f6010",
-          "version": "1.2.0"
+          "revision": "d49890579f3fd10253ae3d4ba056b89e76ea971e",
+          "version": "1.2.2"
         }
       },
       {
@@ -105,8 +105,8 @@
         "repositoryURL": "https://github.com/TitouanVanBelle/XCTestHTMLReport",
         "state": {
           "branch": null,
-          "revision": "7bbc8dbff049cf46f8abd5776881a4f9883e4e6e",
-          "version": "2.5.0"
+          "revision": "bc4e30e37c4ef6bd4b5c5dc253db6306991e9e38",
+          "version": "2.5.1"
         }
       },
       {
