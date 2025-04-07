@@ -31,16 +31,17 @@ public struct APIKey: Identifiable, Hashable {
     public init(name: String, keyId: String, issuerId: String? = nil, privateKey: String) throws {
         self.name = name
         self.keyId = keyId
-        self.issuerId = issuerId
         self.privateKey = privateKey
-        if let issuerId {
+        if let issuerId, !issuerId.isEmpty {
+            self.issuerId = issuerId
             self.jwt = try .init(keyId: keyId, issuerId: issuerId, privateKey: privateKey)
         } else {
+            self.issuerId = nil
             self.jwt = try .init(keyId: keyId, privateKey: privateKey)
         }
     }
 
-    internal init(password: GenericPassword) throws {
+    init(password: GenericPassword) throws {
         guard let issuerId = String(data: password.generic, encoding: .utf8),
               let privateKey = String(data: password.value, encoding: .utf8) else {
             throw APIKeyError.invalidAPIKeyFormat
@@ -51,7 +52,7 @@ public struct APIKey: Identifiable, Hashable {
                       privateKey: privateKey)
     }
 
-    internal func getGenericPassword() throws -> GenericPassword {
+    func getGenericPassword() throws -> GenericPassword {
         .init(account: keyId,
               label: name,
               generic: issuerId.map { Data($0.utf8) } ?? Data(),
