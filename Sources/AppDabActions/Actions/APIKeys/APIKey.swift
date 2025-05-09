@@ -2,7 +2,7 @@ import Bagbutik_Core
 import Foundation
 
 /// A collection of the required keys and values for an API Key from App Store Connect.
-public struct APIKey: Identifiable, Hashable {
+public struct APIKey: Codable, Identifiable, Hashable {
     public var id: String { keyId }
     /// The user specified name of the API Key.
     public let name: String
@@ -34,11 +34,34 @@ public struct APIKey: Identifiable, Hashable {
         self.privateKey = privateKey
         if let issuerId, !issuerId.isEmpty {
             self.issuerId = issuerId
-            self.jwt = try .init(keyId: keyId, issuerId: issuerId, privateKey: privateKey)
+            jwt = try .init(keyId: keyId, issuerId: issuerId, privateKey: privateKey)
         } else {
             self.issuerId = nil
-            self.jwt = try .init(keyId: keyId, privateKey: privateKey)
+            jwt = try .init(keyId: keyId, privateKey: privateKey)
         }
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        keyId = try container.decode(String.self, forKey: .keyId)
+        let issuerId = try container.decodeIfPresent(String.self, forKey: .issuerId)
+        privateKey = try container.decode(String.self, forKey: .privateKey)
+        if let issuerId, !issuerId.isEmpty {
+            self.issuerId = issuerId
+            jwt = try .init(keyId: keyId, issuerId: issuerId, privateKey: privateKey)
+        } else {
+            self.issuerId = nil
+            jwt = try .init(keyId: keyId, privateKey: privateKey)
+        }
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(keyId, forKey: .keyId)
+        try container.encodeIfPresent(issuerId, forKey: .issuerId)
+        try container.encode(privateKey, forKey: .privateKey)
     }
 
     init(password: GenericPassword) throws {
@@ -60,7 +83,10 @@ public struct APIKey: Identifiable, Hashable {
     }
 
     public static func == (lhs: APIKey, rhs: APIKey) -> Bool {
-        lhs.id == rhs.id
+        lhs.name == rhs.name
+            && lhs.keyId == rhs.keyId
+            && lhs.issuerId == rhs.issuerId
+            && lhs.privateKey == rhs.privateKey
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -68,5 +94,9 @@ public struct APIKey: Identifiable, Hashable {
         hasher.combine(keyId)
         hasher.combine(issuerId)
         hasher.combine(privateKey)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case name, keyId, issuerId, privateKey
     }
 }
