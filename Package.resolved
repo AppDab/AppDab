@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
         "state": {
           "branch": null,
-          "revision": "74cc223bc88d694edf92b0a41a398d36d560f813",
-          "version": "16.3.0"
+          "revision": "10c4d2dbce1c11d921fcbf2bc4d7b30d3a6b9af2",
+          "version": "17.0.0"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "41982a3656a71c768319979febd796c6fd111d5c",
-          "version": "1.5.0"
+          "revision": "011f0c765fb46d9cac61bca19be0527e99c98c8b",
+          "version": "1.5.1"
         }
       },
       {
@@ -71,15 +71,6 @@
           "branch": null,
           "revision": "3d8596ed08bd13520157f0355e35caed215ffbfa",
           "version": "1.6.3"
-        }
-      },
-      {
-        "package": "SwiftFormat",
-        "repositoryURL": "https://github.com/nicklockwood/SwiftFormat",
-        "state": {
-          "branch": null,
-          "revision": "468a7d32dedc8d352c191594b3b45d9fd8ba291b",
-          "version": "0.55.5"
         }
       },
       {
