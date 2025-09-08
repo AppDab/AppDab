@@ -2,7 +2,7 @@ import Bagbutik_Core
 import Foundation
 
 /// A collection of the required keys and values for an API Key from App Store Connect.
-public struct APIKey: Codable, Identifiable, Hashable {
+public struct APIKey: Codable, Identifiable, Hashable, Sendable {
     public var id: String { keyId }
     /// The user specified name of the API Key.
     public let name: String
