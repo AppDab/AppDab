@@ -19,7 +19,7 @@ public struct GenericPassword {
     public let label: String
     public let generic: Data
     public let value: Data
-    
+
     public init(account: String, label: String, generic: Data, value: Data) {
         self.account = account
         self.label = label
@@ -28,8 +28,10 @@ public struct GenericPassword {
     }
 }
 
-struct Keychain: KeychainProtocol {
-    func addCertificate(certificate: SecCertificate, named name: String) throws {
+public struct Keychain: KeychainProtocol {
+    public init() {}
+
+    public func addCertificate(certificate: SecCertificate, named name: String) throws {
         let addquery: NSDictionary = [kSecClass: kSecClassCertificate,
                                       kSecValueRef: certificate,
                                       kSecAttrLabel: name]
@@ -39,7 +41,7 @@ struct Keychain: KeychainProtocol {
         }
     }
 
-    func hasCertificate(serialNumber: String) async throws -> Bool {
+    public func hasCertificate(serialNumber: String) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             Task {
                 do {
@@ -72,7 +74,7 @@ struct Keychain: KeychainProtocol {
         }
     }
 
-    func hasCertificates(serialNumbers: [String]) throws -> [String: Bool] {
+    public func hasCertificates(serialNumbers: [String]) throws -> [String: Bool] {
         var copyResult: CFTypeRef?
         let statusCopyingIdentities = secItemCopyMatching([
             kSecClass: kSecClassIdentity,
@@ -100,7 +102,7 @@ struct Keychain: KeychainProtocol {
         }
     }
 
-    func createPrivateKey(labeled label: String) throws -> SecKey {
+    public func createPrivateKey(labeled label: String) throws -> SecKey {
         let tag = label.data(using: .utf8)!
         let parameters: NSDictionary =
             [kSecAttrKeyType: kSecAttrKeyTypeRSA,
@@ -117,7 +119,7 @@ struct Keychain: KeychainProtocol {
         return privateKey
     }
 
-    func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data) {
+    public func createPublicKey(from privateKey: SecKey) throws -> (key: SecKey, data: Data) {
         guard let publicKey = secKeyCopyPublicKey(privateKey) else {
             throw CreateCertificateError.errorCreatingPublicKey
         }
@@ -128,11 +130,11 @@ struct Keychain: KeychainProtocol {
         return (key: publicKey, data: publicKeyData as Data)
     }
 
-    func getGenericPassword(forService service: String, account: String) throws -> GenericPassword? {
+    public func getGenericPassword(forService service: String, account: String) throws -> GenericPassword? {
         try listGenericPasswords(forService: service, account: account).first
     }
 
-    func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
+    public func listGenericPasswords(forService service: String) throws -> [GenericPassword] {
         try listGenericPasswords(forService: service, account: nil)
     }
 
@@ -166,7 +168,7 @@ struct Keychain: KeychainProtocol {
         }
     }
 
-    func addGenericPassword(forService service: String, password: GenericPassword) throws {
+    public func addGenericPassword(forService service: String, password: GenericPassword) throws {
         let query: NSMutableDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: password.account,
@@ -185,7 +187,7 @@ struct Keychain: KeychainProtocol {
         }
     }
 
-    func updateGenericPassword(forService service: String, password: GenericPassword) throws {
+    public func updateGenericPassword(forService service: String, password: GenericPassword) throws {
         let query: NSMutableDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: password.account,
@@ -204,7 +206,7 @@ struct Keychain: KeychainProtocol {
         }
     }
 
-    func deleteGenericPassword(forService service: String, password: GenericPassword) throws {
+    public func deleteGenericPassword(forService service: String, password: GenericPassword) throws {
         let query: NSMutableDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: password.account,
