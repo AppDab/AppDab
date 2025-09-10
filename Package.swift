@@ -1,12 +1,13 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.10
 
 import PackageDescription
 
 let package = Package(
     name: "AppDab",
     platforms: [
-        .macOS(.v12),
         .iOS(.v15),
+        .macOS(.v12),
+        .watchOS(.v8)
     ],
     products: [
         .library(
