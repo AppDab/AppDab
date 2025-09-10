@@ -29,7 +29,30 @@ public struct GenericPassword {
 }
 
 public struct Keychain: KeychainProtocol {
-    public init() {}
+    public init(
+        secItemCopyMatching: @escaping (CFDictionary, UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus = SecItemCopyMatching,
+        secItemAdd: @escaping (CFDictionary, UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus = SecItemAdd,
+        secItemUpdate: @escaping (CFDictionary, CFDictionary) -> OSStatus = SecItemUpdate,
+        secItemDelete: @escaping (CFDictionary) -> OSStatus = SecItemDelete,
+        secIdentityCopyCertificate: @escaping (SecIdentity, UnsafeMutablePointer<SecCertificate?>) -> OSStatus = SecIdentityCopyCertificate,
+        secCertificateCopySerialNumberData: @escaping (SecCertificate, UnsafeMutablePointer<Unmanaged<CFError>?>?) -> CFData? = SecCertificateCopySerialNumberData,
+        secKeyCreateRandomKey: @escaping (CFDictionary, UnsafeMutablePointer<Unmanaged<CFError>?>?) -> SecKey? = SecKeyCreateRandomKey,
+        secKeyCopyPublicKey: @escaping (SecKey) -> SecKey? = SecKeyCopyPublicKey,
+        secKeyCopyExternalRepresentation: @escaping (SecKey, UnsafeMutablePointer<Unmanaged<CFError>?>?) -> CFData? = SecKeyCopyExternalRepresentation,
+        secPKCS12Import: @escaping (CFData, CFDictionary, UnsafeMutablePointer<CFArray?>) -> OSStatus = SecPKCS12Import,
+        dataLoader: @escaping (__shared URL, Data.ReadingOptions) throws -> Data = Data.init(contentsOf:options:)) {
+        self.secItemCopyMatching = secItemCopyMatching
+        self.secItemAdd = secItemAdd
+        self.secItemUpdate = secItemUpdate
+        self.secItemDelete = secItemDelete
+        self.secIdentityCopyCertificate = secIdentityCopyCertificate
+        self.secCertificateCopySerialNumberData = secCertificateCopySerialNumberData
+        self.secKeyCreateRandomKey = secKeyCreateRandomKey
+        self.secKeyCopyPublicKey = secKeyCopyPublicKey
+        self.secKeyCopyExternalRepresentation = secKeyCopyExternalRepresentation
+        self.secPKCS12Import = secPKCS12Import
+        self.dataLoader = dataLoader
+    }
 
     public func addCertificate(certificate: SecCertificate, named name: String) throws {
         let addquery: NSDictionary = [kSecClass: kSecClassCertificate,

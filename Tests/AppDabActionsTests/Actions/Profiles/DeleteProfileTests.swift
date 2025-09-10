@@ -1,6 +1,7 @@
 import AppDabActions
 import Bagbutik_Core
 import Bagbutik_Models
+import Bagbutik_Provisioning
 import Foundation
 import XCTest
 

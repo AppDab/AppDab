@@ -9,7 +9,10 @@ final class AltoolTests: ActionsTestCase {
     func testValidate_pkg() throws {
         let temporaryPath = ActionsEnvironment.fileManager.temporaryDirectory.path
         let apiKey = ActionsEnvironment.apiKey
-        let expectedCommand = "xcrun altool --validate-app -f '\(exportedMacArchivePath)' --type osx --apiKey '\(apiKey.keyId)' --apiIssuer '\(apiKey.issuerId)' -API_PRIVATE_KEYS_DIR '\(temporaryPath)'"
+        var expectedCommand = "xcrun altool --validate-app -f '\(exportedMacArchivePath)' --type osx --apiKey '\(apiKey.keyId)' -API_PRIVATE_KEYS_DIR '\(temporaryPath)'"
+        if let issuerId = apiKey.issuerId {
+            expectedCommand += " --apiIssuer '\(issuerId)'"
+        }
         mockShell.mockOutputsByCommand = [expectedCommand: ""]
         try Altool().validate(exportedArchivePath: exportedMacArchivePath)
         XCTAssertEqual(mockFileManager.filesCreated, [
@@ -31,7 +34,10 @@ final class AltoolTests: ActionsTestCase {
     func testValidate_ipa() throws {
         let temporaryPath = ActionsEnvironment.fileManager.temporaryDirectory.path
         let apiKey = ActionsEnvironment.apiKey
-        let expectedCommand = "xcrun altool --validate-app -f '\(exportediOSArchivePath)' --type ios --apiKey '\(apiKey.keyId)' --apiIssuer '\(apiKey.issuerId)' -API_PRIVATE_KEYS_DIR '\(temporaryPath)'"
+        var expectedCommand = "xcrun altool --validate-app -f '\(exportediOSArchivePath)' --type ios --apiKey '\(apiKey.keyId)' -API_PRIVATE_KEYS_DIR '\(temporaryPath)'"
+        if let issuerId = apiKey.issuerId {
+            expectedCommand += " --apiIssuer '\(issuerId)'"
+        }
         mockShell.mockOutputsByCommand = [expectedCommand: ""]
         try Altool().validate(exportedArchivePath: exportediOSArchivePath)
         XCTAssertEqual(mockShell.runs, [
@@ -59,7 +65,10 @@ final class AltoolTests: ActionsTestCase {
         let unpackedFolderUrl = temporaryFolderUrl.appendingPathComponent(uuid)
         let apiKey = ActionsEnvironment.apiKey
         let expectedUnpackCommand = "pkgutil --expand \(exportedMacArchivePath) \(unpackedFolderUrl.path)"
-        let expectedUploadCommand = "xcrun altool --upload-package '\(exportedMacArchivePath)' --apple-id '\(appAppleId)' --type osx --bundle-short-version-string '1.0' --bundle-version '4' --bundle-id 'app.AppDab.AppDab' --apiKey '\(apiKey.keyId)' --apiIssuer '\(apiKey.issuerId)' -API_PRIVATE_KEYS_DIR '\(temporaryFolderUrl.path)'"
+        var expectedUploadCommand = "xcrun altool --upload-package '\(exportedMacArchivePath)' --apple-id '\(appAppleId)' --type osx --bundle-short-version-string '1.0' --bundle-version '4' --bundle-id 'app.AppDab.AppDab' --apiKey '\(apiKey.keyId)' -API_PRIVATE_KEYS_DIR '\(temporaryFolderUrl.path)'"
+        if let issuerId = apiKey.issuerId {
+            expectedUploadCommand += " --apiIssuer '\(issuerId)'"
+        }
         mockShell.mockOutputsByCommand[expectedUnpackCommand] = ""
         mockShell.mockOutputsByCommand[expectedUploadCommand] = ""
         var altool = Altool()
@@ -123,7 +132,10 @@ final class AltoolTests: ActionsTestCase {
         let unpackedFolderUrl = temporaryFolderUrl.appendingPathComponent(uuid)
         let apiKey = ActionsEnvironment.apiKey
         let expectedUnpackCommand = "unzip \(exportediOSArchivePath) -d \(unpackedFolderUrl.path)"
-        let expectedUploadCommand = "xcrun altool --upload-package '\(exportediOSArchivePath)' --apple-id '\(appAppleId)' --type ios --bundle-short-version-string '1.0' --bundle-version '4' --bundle-id 'app.AppDab.AppDab' --apiKey '\(apiKey.keyId)' --apiIssuer '\(apiKey.issuerId)' -API_PRIVATE_KEYS_DIR '\(temporaryFolderUrl.path)'"
+        var expectedUploadCommand = "xcrun altool --upload-package '\(exportediOSArchivePath)' --apple-id '\(appAppleId)' --type ios --bundle-short-version-string '1.0' --bundle-version '4' --bundle-id 'app.AppDab.AppDab' --apiKey '\(apiKey.keyId)' -API_PRIVATE_KEYS_DIR '\(temporaryFolderUrl.path)'"
+        if let issuerId = apiKey.issuerId {
+            expectedUploadCommand += " --apiIssuer '\(issuerId)'"
+        }
         mockShell.mockOutputsByCommand[expectedUnpackCommand] = ""
         mockShell.mockOutputsByCommand[expectedUploadCommand] = ""
         mockFileManager.contentsOfDirectoryByPath[unpackedFolderUrl.appendingPathComponent("Payload").path] = ["AppDab.app"]

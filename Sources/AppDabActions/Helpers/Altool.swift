@@ -95,11 +95,13 @@ internal struct Altool: AltoolProtocol {
 
         ActionsEnvironment.logger.info(.init(stringLiteral: beginLog))
         let apiKey = ActionsEnvironment.apiKey
-        let parameters = extraParameters + [
+        var parameters = extraParameters + [
             "--apiKey '\(apiKey.keyId)'",
-            "--apiIssuer '\(apiKey.issuerId)'",
             "-API_PRIVATE_KEYS_DIR '\(privateKeyFolderPath)'"
         ]
+        if let issuerId = apiKey.issuerId {
+            parameters.append("--apiIssuer '\(issuerId)'")
+        }
         do {
             try ActionsEnvironment.shell.run("xcrun altool \(parameters.joined(separator: " "))")
             ActionsEnvironment.logger.info(.init(stringLiteral: endLog))

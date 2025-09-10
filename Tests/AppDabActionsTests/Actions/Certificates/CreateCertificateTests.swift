@@ -1,5 +1,6 @@
 import AppDabActions
 import Bagbutik_Models
+import Bagbutik_Provisioning
 import XCTest
 
 final class CreateCertificateTests: ActionsTestCase {

@@ -80,7 +80,9 @@ public enum ActionsEnvironment {
     
     public static var keychain: KeychainProtocol = Keychain()
     
-    public static var fetchData: FetchData = URLSession.shared.data(for:delegate:)
+    public static var fetchData: FetchData = { request, delegate in
+        try await URLSession.shared.data(for: request, delegate: delegate)
+    }
     public static var uploadData: UploadData = URLSession.shared.upload(for:from:delegate:)
     
     public typealias UploadData = (_ request: URLRequest, _ bodyData: Data, _ delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse)
