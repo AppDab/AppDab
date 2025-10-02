@@ -1,115 +1,114 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Bagbutik",
-        "repositoryURL": "https://github.com/MortenGregersen/Bagbutik",
-        "state": {
-          "branch": null,
-          "revision": "2cb97967e8b942364043df31d43bc48cbc1968f0",
-          "version": "18.0.0"
-        }
-      },
-      {
-        "package": "CertificateSigningRequest",
-        "repositoryURL": "https://github.com/cbaker6/CertificateSigningRequest",
-        "state": {
-          "branch": null,
-          "revision": "457627f8ff57a721851ee14cc552d529c37c8329",
-          "version": "1.30.0"
-        }
-      },
-      {
-        "package": "Colorizer",
-        "repositoryURL": "https://github.com/getGuaka/Colorizer.git",
-        "state": {
-          "branch": null,
-          "revision": "2ccc99bf1715e73c4139e8d40b6e6b30be975586",
-          "version": "0.2.1"
-        }
-      },
-      {
-        "package": "Rainbow",
-        "repositoryURL": "https://github.com/onevcat/Rainbow.git",
-        "state": {
-          "branch": null,
-          "revision": "626c3d4b6b55354b4af3aa309f998fae9b31a3d9",
-          "version": "3.2.0"
-        }
-      },
-      {
-        "package": "swift-argument-parser",
-        "repositoryURL": "https://github.com/apple/swift-argument-parser",
-        "state": {
-          "branch": null,
-          "revision": "309a47b2b1d9b5e991f36961c983ecec72275be3",
-          "version": "1.6.1"
-        }
-      },
-      {
-        "package": "swift-asn1",
-        "repositoryURL": "https://github.com/apple/swift-asn1.git",
-        "state": {
-          "branch": null,
-          "revision": "f70225981241859eb4aa1a18a75531d26637c8cc",
-          "version": "1.4.0"
-        }
-      },
-      {
-        "package": "swift-crypto",
-        "repositoryURL": "https://github.com/apple/swift-crypto",
-        "state": {
-          "branch": null,
-          "revision": "d1c6b70f7c5f19fb0b8750cb8dcdf2ea6e2d8c34",
-          "version": "3.15.0"
-        }
-      },
-      {
-        "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log",
-        "state": {
-          "branch": null,
-          "revision": "ce592ae52f982c847a4efc0dd881cc9eb32d29f2",
-          "version": "1.6.4"
-        }
-      },
-      {
-        "package": "xcbeautify",
-        "repositoryURL": "https://github.com/thii/xcbeautify",
-        "state": {
-          "branch": null,
-          "revision": "b7dd0fd2ce60e7e8b22830b171246688b624d228",
-          "version": "2.30.1"
-        }
-      },
-      {
-        "package": "XCResultKit",
-        "repositoryURL": "https://github.com/davidahouse/XCResultKit.git",
-        "state": {
-          "branch": null,
-          "revision": "d49890579f3fd10253ae3d4ba056b89e76ea971e",
-          "version": "1.2.2"
-        }
-      },
-      {
-        "package": "XCTestHTMLReport",
-        "repositoryURL": "https://github.com/TitouanVanBelle/XCTestHTMLReport",
-        "state": {
-          "branch": null,
-          "revision": "bc4e30e37c4ef6bd4b5c5dc253db6306991e9e38",
-          "version": "2.5.1"
-        }
-      },
-      {
-        "package": "XMLCoder",
-        "repositoryURL": "https://github.com/MaxDesiatov/XMLCoder.git",
-        "state": {
-          "branch": null,
-          "revision": "b1e944cbd0ef33787b13f639a5418d55b3bed501",
-          "version": "0.17.1"
-        }
+  "originHash" : "466bf11cfcf88e9eeb692a01463fd63b117b04e2ac670a49c67ac8309b835a5b",
+  "pins" : [
+    {
+      "identity" : "bagbutik",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MortenGregersen/Bagbutik",
+      "state" : {
+        "revision" : "f0f6a113270fecc94e95f1b302be797f600fc599",
+        "version" : "18.1.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "certificatesigningrequest",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cbaker6/CertificateSigningRequest",
+      "state" : {
+        "revision" : "457627f8ff57a721851ee14cc552d529c37c8329",
+        "version" : "1.30.0"
+      }
+    },
+    {
+      "identity" : "colorizer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getGuaka/Colorizer.git",
+      "state" : {
+        "revision" : "2ccc99bf1715e73c4139e8d40b6e6b30be975586",
+        "version" : "0.2.1"
+      }
+    },
+    {
+      "identity" : "rainbow",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Rainbow.git",
+      "state" : {
+        "revision" : "626c3d4b6b55354b4af3aa309f998fae9b31a3d9",
+        "version" : "3.2.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "309a47b2b1d9b5e991f36961c983ecec72275be3",
+        "version" : "1.6.1"
+      }
+    },
+    {
+      "identity" : "swift-asn1",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-asn1.git",
+      "state" : {
+        "revision" : "f70225981241859eb4aa1a18a75531d26637c8cc",
+        "version" : "1.4.0"
+      }
+    },
+    {
+      "identity" : "swift-crypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-crypto",
+      "state" : {
+        "revision" : "d1c6b70f7c5f19fb0b8750cb8dcdf2ea6e2d8c34",
+        "version" : "3.15.0"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log",
+      "state" : {
+        "revision" : "ce592ae52f982c847a4efc0dd881cc9eb32d29f2",
+        "version" : "1.6.4"
+      }
+    },
+    {
+      "identity" : "xcbeautify",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/thii/xcbeautify",
+      "state" : {
+        "revision" : "b7dd0fd2ce60e7e8b22830b171246688b624d228",
+        "version" : "2.30.1"
+      }
+    },
+    {
+      "identity" : "xcresultkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/davidahouse/XCResultKit.git",
+      "state" : {
+        "revision" : "d49890579f3fd10253ae3d4ba056b89e76ea971e",
+        "version" : "1.2.2"
+      }
+    },
+    {
+      "identity" : "xctesthtmlreport",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/TitouanVanBelle/XCTestHTMLReport",
+      "state" : {
+        "revision" : "bc4e30e37c4ef6bd4b5c5dc253db6306991e9e38",
+        "version" : "2.5.1"
+      }
+    },
+    {
+      "identity" : "xmlcoder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MaxDesiatov/XMLCoder.git",
+      "state" : {
+        "revision" : "b1e944cbd0ef33787b13f639a5418d55b3bed501",
+        "version" : "0.17.1"
+      }
+    }
+  ],
+  "version" : 3
 }
